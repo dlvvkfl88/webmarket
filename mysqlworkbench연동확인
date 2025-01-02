@@ -1,0 +1,18 @@
+const mysql = require('mysql2');
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'mandu.',
+    database: 'reusable_market'
+});
+
+connection.connect();
+
+connection.query('SELECT * FROM items', (err, rows, fields) => {
+    if (err) throw err;
+    console.log(rows);
+});
+
+connection.end();
+ //
