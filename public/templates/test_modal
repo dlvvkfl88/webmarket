@@ -1,0 +1,535 @@
+<div class="modal_con">
+    <div class="modal_header">
+        <h2>물품 정보 입력</h2>
+        <button id="modalCloseBtn" class="btn_none green_borderBtn">
+            <img src="/images/X_icon.png">
+        </button>
+    </div>
+    <div class="modal_body">
+        <div class="form_wrap">
+            <!-- 구분 -->
+            <div class="form_request">
+                <label for="구분">
+                    구분
+                    <span class="point_txt">* 필수</span>
+                </label>
+                <div class="sortation_btn">
+                    <button id="reuseBtn">재사용 비품</button>
+                    <button id="shareBtn">나눔 물품</button>
+                </div>
+            </div>
+            <!-- 구분 -->
+
+            <!-- 사진 / 파일 첨부 -->
+            <div class="form_request">
+                <div class="pic_wrap pic_left">
+                    <label for="사진 / 파일첨부">사진 / 파일첨부<span class="point_txt">* 필수</span></label>
+                    <div class="pic_btn">
+                        <button class="btn_none picture_btn">사진 첨부</button>
+                        <div class="file_btn">
+                            <button class="btn_upload" onclick="uploadShareImage()">파일 첨부</button>
+                            <input type="file" name="file" id="file">
+                        </div>
+                    </div>
+                </div>
+                <div class="pic_wrap pic_right">
+                    <img id="imgSharePreview" src="/images/Picture_img.png">
+                    <p class="file_size">jpg, png 이미지 파일</p>
+                </div>
+                <input name='setShareImage' type="file" class="real-share-upload" accept="image/*" required multiple hidden />
+            </div>
+            <!-- 사진 / 파일 첨부 -->
+            <div class="form_group border_bott">
+                <div class="uploadImg">
+                    <ul id="imgShareSet1" class="image-preview"></ul>
+                    <ul id="imgShareSet2" class="image-preview"></ul>
+                    <ul id="imgShareSet3" class="image-preview"></ul>
+                </div>
+            </div>
+            <!-- 제목 -->
+            <div class="form_request">
+                <label for="제목">제목<span class="point_txt">* 필수</span></label>
+                <input id="createReusable_Name" class="Direct_input" placeholder="제목을 입력해주세요.">
+            </div>
+            <!-- 제목 -->
+
+            <!-- 내용 -->
+            <div class="form_request">
+                <label for="내용">내용<span class="point_txt">* 필수</span></label>
+                <textarea class="Direct_input" id="createShareMemo" rows="10" placeholder="내용을 입력해주세요."></textarea>
+            </div>
+            <!-- 내용 -->
+
+
+            <!-- 버튼 클릭 시 추가 내용 -->
+            <div id="addContent"></div>
+            <!-- 버튼 클릭 시 추가 내용 -->
+        </div>
+        <div class="btn_wrap">
+            <div class="req_Btn">
+                <button type="submit" id="okBtn" name="okBtn" onclick="createShareData()">등록 완료</button>
+                <button type="reset" id="modalCancelBtn" class="modalCancelBtn">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        // 버튼 및 영역 가져오기
+        const reuseBtn = document.getElementById('reuseBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const addContent = document.getElementById('addContent');
+
+        // 초기 상태: 추가 영역 비움
+        addContent.innerHTML = "";
+
+        // 공통 HTML (재사용 비품과 나눔 물품의 다른 부분)
+        const reuseContent = `
+        <div class="form_request">
+            <label for="등급">물품등급<span class="point_txt">* 필수</span></label>
+            <select class="Direct_input">
+                <option value="0" selected="">선택</option>
+                <option value="1">A</option>
+                <option value="2">B</option>
+                <option value="3">C</option>
+                <option value="4">D</option>
+            </select>
+        </div>
+        <div class="info_text">
+            <ul>
+                <li><p>물품등급 안내</p></li>
+                <li>
+                    <p class="p01">A 등급</p>
+                    <p class="p02">최근 불용한 물품으로, 신품과 유사한 상태의 물품</p>
+                </li>
+                <li>
+                    <p class="p01">B 등급</p>
+                    <p class="p02">약간의 사용감이 있는 상태의 물품</p>
+                </li>
+                <li>
+                    <p class="p01">C 등급</p>
+                    <p class="p02">사용하기에 문제가 없으나, 외관상 약간의 하자가 있는 물품</p>
+                </li>
+                <li>
+                    <p class="p01">D 등급</p>
+                    <p class="p02">수리불가, 불용</p>
+                </li>
+            </ul>
+        </div>
+        <div class="form_request flex_column">
+            <label for="수령 정보">수령 정보<span class="point_txt">* 필수</span></label>
+            <div class="fix_flexbetween text">
+                <label for="수령 위치">수령 위치</label>
+                <input class="Direct_input" placeholder="수령 위치를 입력해 주세요.">
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="이메일">이메일</label>
+                <input class="Direct_input" placeholder="이메일을 입력해 주세요.">
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="연락처">연락처</label>
+                <input class="Direct_input" placeholder="연락처를 입력해 주세요.">
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="기타">기타(선택)</label>
+                <input class="Direct_input" placeholder="기타 사항을 입력해 주세요.">
+            </div>
+        </div>
+        <div class="form_request flex_column">
+            <div class="fix_flexbetween">
+                <label for="비품 선택">비품 선택<span class="point_txt">* 필수</span></label>
+                <button class="green_btn02" onclick="CheckMyItems()">물품 조회</button>
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="물품명">물품명</label>
+                <input class="Auto_input" disabled>
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="취득금액">취득금액</label>
+                <input class="Auto_input" disabled>
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="취득일자">취득일자</label>
+                <input class="Auto_input" disabled>
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="물품번호">물품번호</label>
+                <input class="Auto_input" disabled>
+            </div>
+        </div>
+        </div>
+        <div class="form_request flex_column">
+            <div class="checkbox_container">
+                <input type="checkbox" id="confirmCheckbox" class="checkbox_input">
+                <label for="confirmCheckbox" class="checkbox_label">
+                    IT 기기 및 저장 장치의 데이터 및 비밀번호를 초기화했음을 확인합니다.
+                </label>
+            </div>
+        </div>
+        `;
+
+        const shareContent = `
+        <div class="form_request">
+            <label for="등급">물품등급<span class="point_txt">* 필수</span></label>
+            <select id="createReusable_Rank" name="createReusable_Rank" class="Direct_input">
+                <option value="0" selected="">선택</option>
+                <option value="1">A</option>
+                <option value="2">B</option>
+                <option value="3">C</option>
+            </select>
+        </div>
+        <div class="info_text">
+            <ul>
+                <li><p>물품등급 안내</p></li>
+                <li>
+                    <p class="p01">A 등급</p>
+                    <p class="p02">최근 불용한 물품으로, 신품과 유사한 상태의 물품</p>
+                </li>
+                <li>
+                    <p class="p01">B 등급</p>
+                    <p class="p02">약간의 사용감이 있는 상태의 물품</p>
+                </li>
+                <li>
+                    <p class="p01">C 등급</p>
+                    <p class="p02">사용하기에 문제가 없으나, 외관상 약간의 하자가 있는 물품</p>
+                </li>
+            </ul>
+        </div>
+        <div class="form_request flex_column">
+            <label for="수령 정보">수령 정보<span class="point_txt">* 필수</span></label>
+            <div class="fix_flexbetween text">
+                <label for="수령 위치">수령 위치</label>
+                <input id="createReusable_Place" class="Direct_input" placeholder="수령 위치를 입력해 주세요.">
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="이메일">이메일</label>
+                <input id="createReusable_userEmail" class="Direct_input" placeholder="이메일을 입력해 주세요.">
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="연락처">연락처</label>
+                <input id="createReusable_userPhone" class="Direct_input" placeholder="연락처를 입력해 주세요.">
+            </div>
+            <div class="fix_flexbetween text">
+                <label for="기타">기타(선택)</label>
+                <input class="Direct_input" placeholder="기타 사항을 입력해 주세요.">
+            </div>
+        </div>
+        </div>
+        <div class="form_request flex_column">
+            <p class="info_txt">
+                비품이 아닌 물품만 등록 가능합니다.<br>
+                잘못 등록된 물품에 대한 책임을 등록자에게 있습니다.
+            </p>
+            <div class="checkbox_container">
+                <input type="checkbox" id="confirmCheckbox" class="checkbox_input">
+                <label for="confirmCheckbox" class="checkbox_label">
+                    본 물품을 고려대학교 물품번호가 부여된 비품이 아님을 확인합니다.
+                </label>
+            </div>
+            <div class="checkbox_container">
+                <input type="checkbox" id="confirmCheckbox" class="checkbox_input">
+                <label for="confirmCheckbox" class="checkbox_label">
+                    IT 기기 및 저장 장치의 데이터 및 비밀번호를 초기화했음을 확인합니다.
+                </label>
+            </div>
+        </div>
+        `;
+
+        // 초기 버튼 상태 해제
+        reuseBtn.classList.remove('active');
+        shareBtn.classList.remove('active');
+
+        // 버튼 클릭 이벤트
+        reuseBtn.addEventListener('click', () => {
+        reuseBtn.classList.add('active');
+        shareBtn.classList.remove('active');
+        addContent.innerHTML = reuseContent; // 재사용 비품 영역 표시
+        });
+
+        shareBtn.addEventListener('click', () => {
+        shareBtn.classList.add('active');
+        reuseBtn.classList.remove('active');
+        addContent.innerHTML = shareContent; // 나눔 물품 영역 표시
+        });
+
+        //open popup
+        function CheckMyItems() {
+            const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+            window.open('CheckMyItems_Popup', 'ApprovalPopup', popupOptions);
+        }
+
+        //사진만들기 로직 여기는 내가 추가 한 부분  //
+        var reusableImg = [];
+        var reusableImgBin = [];
+        var imgCnt = 0;
+
+
+        function createImageElement(e, file) {
+            const li = document.createElement('li');
+            const img = document.createElement('img');
+            img.setAttribute('src', e.target.result);
+            img.setAttribute('data-file', file.name);
+            
+            img.setAttribute('height', 75);
+            img.setAttribute('width', 75);
+
+            li.setAttribute("id", "prev"+ (imgCnt + 1))
+            li.appendChild(img);
+
+            imgCnt++;
+
+            //console.log("file",file);
+            //console.log("target",e.target);
+
+            reusableImg.push(file.name);
+            reusableImgBin.push(e.target.result);
+
+            return li;
+        }
+
+        function createImageElement_Modal(path, bin,count) {
+            const li = document.createElement('li');
+            const img = document.createElement('img');
+            img.setAttribute('src', bin);
+            img.setAttribute('data-file', path);
+            
+            img.setAttribute('height', 250);
+            img.setAttribute('width', 250);
+
+            li.setAttribute("id", "prev"+ (count + 1))
+            li.appendChild(img);
+
+            return li;
+        }
+
+        function getShareImageFiles(e) {
+            const uploadFiles = [];
+            const files = e.currentTarget.files;
+            const imagePreview1 = document.getElementById('imgShareSet1');
+            const imagePreview2 = document.getElementById('imgShareSet2');
+            const imagePreview3 = document.getElementById('imgShareSet3');
+            const docFrag = new DocumentFragment();
+
+            if ([...files].length >= 4) {
+                alert('이미지는 최대 3개 까지 업로드가 가능합니다.');
+                return;
+            }
+
+            imgCnt = 0;
+
+            reusableImg = [];
+            reusableImgBin = [];
+
+            // 파일 타입 검사
+            [...files].forEach(file => {
+                if (!file.type.match("image/.*")) {
+                    alert('이미지 파일만 업로드가 가능합니다.');
+                    return
+                }
+
+                // 파일 갯수 검사
+                if ([...files].length < 4) {
+                uploadFiles.push(file);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = createImageElement(e, file);
+                    //var data = e.target.readAsBinaryString(file);
+
+                    console.log("target",e.target);
+
+                    //imagePreview.appendChild(preview);
+
+                    const remove_li = document.createElement('li');
+                    const remove_img = document.createElement('img');
+                    remove_img.setAttribute('src', './images/assets/upload_del.png');
+                    remove_li.setAttribute("id", "remove"+ imgCnt);
+
+                    if(imgCnt == 1)
+                    {
+                        remove_li.setAttribute("onclick", "removeShareImg1()");
+                    }
+                    else if(imgCnt == 2)
+                    {
+                        remove_li.setAttribute("onclick", "removeShareImg2()");
+                    }
+                    else if(imgCnt == 3)
+                    {
+                        remove_li.setAttribute("onclick", "removeShareImg3()");
+                    }
+
+                    remove_li.appendChild(remove_img);
+
+                    //imagePreview.appendChild(remove_li);
+
+                    if(imgCnt == 1)
+                    {
+                        imagePreview1.appendChild(preview);
+                        imagePreview1.appendChild(remove_li);
+                    }
+                    else if(imgCnt == 2)
+                    {
+                        imagePreview2.appendChild(preview);
+                        imagePreview2.appendChild(remove_li);
+                    }
+                    else if(imgCnt == 3)
+                    {
+                        imagePreview3.appendChild(preview);
+                        imagePreview3.appendChild(remove_li);
+                    }
+                };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        const realShareUpload = document.querySelector('.real-share-upload');
+
+        function uploadShareImage()
+        {
+            realShareUpload.click();
+        }
+
+        realShareUpload.addEventListener('change', getShareImageFiles);
+
+        function removeShareImg1()
+        {
+            $("#imgShareSet1").remove();
+            $("#remove1").remove();
+        }
+
+        function removeShareImg2()
+        {
+            $("#imgShareSet2").remove();
+            $("#remove2").remove();
+        }
+
+        function removeShareImg3()
+        {
+            $("#imgShareSet3").remove();
+            $("#remove3").remove();
+        }
+
+        function createShareData() {
+            //var selReusable_Type = document.getElementById("createReusable_Type");
+
+            /*
+            if(selReusable_Type.selectedIndex == 0){
+                alert("카테고리를 선택해 주세요.");
+                return;
+            }
+            */
+
+            if(imgCnt == 0)
+            {
+                alert("사진을 추가해 주세요.");
+                return;
+            }
+
+            console.log("createShareData 1");
+
+            //var Reusable_Type_value = selReusable_Type.options[selReusable_Type.selectedIndex].value;
+
+            var createShareType = "";
+
+            var selReusable_Rank = document.getElementById("createReusable_Rank");
+
+            if(selReusable_Rank.selectedIndex == 0){
+                alert("물품등급을 선택해 주세요.");
+                return;
+            }
+
+            var createReusable_Name = document.getElementById ("createReusable_Name").value;
+
+            console.log("createShareData 2");
+
+            var createShareMemo = document.getElementById ("createShareMemo").value;
+
+            console.log("createShareData 3");
+
+            var createReusable_Place = document.getElementById ("createReusable_Place").value;
+
+            console.log("createShareData 4");
+
+            var createReusable_Content = document.getElementById ("createReusable_Name").value;
+
+            console.log("createShareData 5");
+
+            var user_email = document.getElementById ("createReusable_userEmail").value;
+
+            console.log("createShareData 6");
+
+            var user_phone = document.getElementById ("createReusable_userPhone").innerHTML;
+
+            console.log("createShareData 7");
+
+            var createReusable_Rank = selReusable_Rank.selectedIndex;
+
+            var jdata = {
+                'reusable_name': createReusable_Name,
+                'reusable_type': createShareType,
+                'reusable_contnet': createReusable_Content,
+                'reusable_memo': createShareMemo,
+                'reusable_place': createReusable_Place,
+                'reusable_rank': createReusable_Rank,
+                'user_email': user_email,
+                'user_phone': user_phone
+            };
+
+            jdata = JSON.stringify (jdata);
+
+            var requestCheck = confirm('나눔 물품을 등록하시겠습니까?');
+
+            if (requestCheck) {
+                // 여기에 추가적인 처리를 추가할 수 있습니다.
+
+                $.ajax ({
+                    url: '/create_reusable',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {data: jdata},
+                    success: function (result) {
+                        alert('등록이 완료되었습니다!');
+
+                        var reus_id = result.reus_id;
+
+                        var img_data = {
+                            'idx': reus_id,
+                            'reusableImg': reusableImg,
+                            'reusableImgBin': reusableImgBin
+                        };
+
+                        console.log(reusableImg.length);
+
+                        if(reusableImg.length >= 1) {
+                            $.ajax ({
+                                url: '/reusableImg_set',
+                                dataType: 'json',
+                                type: 'POST',
+                                data: {data: img_data},
+                                success: function (result) {
+                                    if (result) {
+                                        //alert (result.result);
+                                        closeShareModal();
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        }
+                        else 
+                        {
+                            closeShareModal();
+                            window.location.reload();
+                        }
+
+                    }
+                });
+
+            } else {
+                alert('등록이 취소되었습니다.');
+                // 여기에 취소 시의 처리를 추가할 수 있습니다.
+            }
+
+        }
+    // 사진 등록 post로 받는 거 까지 로직 추가 여기는 아님 
+
+</script>
