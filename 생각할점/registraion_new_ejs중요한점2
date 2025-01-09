@@ -1,0 +1,85 @@
+// 나눔 물품 기준 숫자 번호를 없애기 위해  post 이해 
+app.post('/create_reusable_new', async function (req, res) {
+
+	var data = JSON.parse(req.body.data);
+
+	var reusable_name = data.reusable_name;
+	var reusable_type = data.reusable_type;
+	var reusable_contnet = data.reusable_contnet;
+	var reusable_memo = data.reusable_memo;
+	var reusable_place = data.reusable_place;
+	var reusable_rank = data.reusable_rank;
+	var user_email = data.user_email;
+	var user_phone = data.user_phone;
+	var reusable_UserNo = req.session.user['userid'];
+	var prev_name = req.session.user['name'];
+	var now_name = req.session.user['name'];
+
+	var reusable_share = 1;
+
+	// var reusable_number = createRandNum(1000000000000000, 9999999999999999);
+	var reusable_number = "-";
+
+	let sql = 'INSERT INTO `tblReusable`(sReusableName, sReusableType, sReusableContent, sReusableMemo, sReusablePlace,sReusableUserNo, sReusableEmail, sReusableMobile,nReusableShare,sFixtureNo,sFixtureName,sFixtureType,dFixtureDate,sReusableNowUser,sReusablePrevUser,nReusableRank) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?);';
+
+	const createReusableManager = await directQuery(sql, [reusable_name, reusable_type, reusable_contnet, reusable_memo, reusable_place, reusable_UserNo, user_email, user_phone, reusable_share, reusable_number, reusable_name, reusable_type, prev_name, now_name, reusable_rank]);
+	var resIdx = createReusableManager.insertId;
+
+	res.send({ sucess: true, result: createReusableManager, reus_id: resIdx })
+});
+
+index.js 기준으로 보면 나는 reusable_number db값ㅇ "-" 나오도록 하거나 랜덤 값나올때 미리 설정됨 insert로 
+
+
+
+test_modal.ejs
+
+                        if (requestCheck) {
+                            // 여기에 추가적인 처리를 추가할 수 있습니다.
+
+                            $.ajax ({
+                                url: '/create_reusable',
+                                dataType: 'json',
+                                type: 'POST',
+                                data: {data: jdata},
+                                success: function (result) {
+                                    alert('등록이 완료되었습니다!');
+
+                                    var reus_id = result.reus_id;
+
+                                    var img_data = {
+                                        'idx': reus_id,
+                                        'reusableImg': reusableImg,
+                                        'reusableImgBin': reusableImgBin
+                                    };
+
+                                    console.log(reusableImg.length);
+
+                                    if(reusableImg.length >= 1) {
+                                        $.ajax ({
+                                            url: '/reusableImg_set',
+                                            dataType: 'json',
+                                            type: 'POST',
+                                            data: {data: img_data},
+                                            success: function (result) {
+                                                if (result) {
+                                                    //alert (result.result);
+                                                    closeShareModal();
+                                                    window.location.reload();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else 
+                                    {
+                                        closeShareModal();
+                                        window.location.reload();
+                                    }
+
+                                }
+                            });
+
+                        } else {
+                            alert('등록이 취소되었습니다.');
+                            // 여기에 취소 시의 처리를 추가할 수 있습니다. 
+                        }
