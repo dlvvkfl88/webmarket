@@ -14,3 +14,5 @@
 ![image](https://github.com/user-attachments/assets/a6352322-f2d8-4d08-a540-1b559ea8b2d8)
 
 열리는 팝업 자식팝업창에 값을 부모에 연동하기 
+![스크린샷 2025-01-10 14-38-16](https://github.com/user-attachments/assets/5fb0917a-b5ff-485d-b047-0b96796be7ff)
+ test_modal.ejs , CheckMyItem_Popup.ejs
