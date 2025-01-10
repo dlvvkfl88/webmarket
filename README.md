@@ -9,3 +9,8 @@
 
 
 기존 reusable_market.ejs처럼 함수를 거기다 넣고 sharecreate_detail.ejs 모달사이트에 연동 하기보다 test_modal에 직접함수 넣고 구문들 가져와서 연동하니 가능했다.
+![image](https://github.com/user-attachments/assets/669305d2-3403-401c-b3c2-101b31869046)
+
+![image](https://github.com/user-attachments/assets/a6352322-f2d8-4d08-a540-1b559ea8b2d8)
+
+열리는 팝업 자식팝업창에 값을 부모에 연동하기 
