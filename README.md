@@ -16,3 +16,6 @@
 열리는 팝업 자식팝업창에 값을 부모에 연동하기 
 ![스크린샷 2025-01-10 14-38-16](https://github.com/user-attachments/assets/5fb0917a-b5ff-485d-b047-0b96796be7ff)
  test_modal.ejs , CheckMyItem_Popup.ejs
+![image](https://github.com/user-attachments/assets/df82296f-22d7-48d5-809a-f67fce2a08f6)
+
+이런식으로 f12 눌러서 버튼누를때 전해지는 db에 post값으로 확인가능 
