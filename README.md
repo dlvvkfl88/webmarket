@@ -19,3 +19,6 @@
 ![image](https://github.com/user-attachments/assets/df82296f-22d7-48d5-809a-f67fce2a08f6)
 
 이런식으로 f12 눌러서 버튼누를때 전해지는 db에 post값으로 확인가능 
+
+0113 모달창문제 css충돌 해결 0113으로 붙은문서 
+![image](https://github.com/user-attachments/assets/16489b79-31d7-420f-a312-c5c8e1fe7f79)
