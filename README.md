@@ -25,3 +25,8 @@
 
 콜백함수 resuNo받는거 주의 
 ![스크린샷 2025-01-13 18-34-15](https://github.com/user-attachments/assets/045e70c9-da01-4ab7-ae72-d535340739f0)
+
+0113 이라 붙은것들 성공한것 사진
+
+![image](https://github.com/user-attachments/assets/4b965999-118e-4dd1-a01b-fe95dadf7b44)
+
