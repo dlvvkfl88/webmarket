@@ -22,3 +22,6 @@
 
 0113 모달창문제 css충돌 해결 0113으로 붙은문서 
 ![image](https://github.com/user-attachments/assets/16489b79-31d7-420f-a312-c5c8e1fe7f79)
+
+콜백함수 resuNo받는거 주의 
+![스크린샷 2025-01-13 18-34-15](https://github.com/user-attachments/assets/045e70c9-da01-4ab7-ae72-d535340739f0)
