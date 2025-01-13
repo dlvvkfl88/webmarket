@@ -75,7 +75,8 @@
                             <a href="registration_list_new" class="active">등록 물품 관리</a>
                         </li>
                         <li>
-                            <a href="applications_list_new">신청 물품 관리</a>
+                            <!--<a href="applications_list_new">신청 물품 관리</a>-->
+							<a href="applications_list_new2">신청 물품 관리</a>
                         </li>
                         <li>
                             <a href="return_application_list_new">반납 신청 목록</a>
@@ -154,7 +155,7 @@
                             </span>
                             <span class="grid_item2 registering">등록중</span>
                             <span class="grid_item2">
-                                <span class="gray_btn"><button type="button" onclick="cancelReusable(<%=rinfos[i].nReusableNo%>)"><i class="icofont icofont-pencil-alt-2"></i>취소</button></span>
+                                <span class="grid_item2"><button type="button" class="gray_btn" onclick="cancelReusable(<%=rinfos[i].nReusableNo%>)"><i class="icofont icofont-pencil-alt-2"></i>취소</button></span>
                                 <button class="gray_btn02">완료</button>
                             </span>
                         </div>
@@ -285,8 +286,7 @@
             const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
             window.open('applicant_checkPopup?resuNo='+ resuNo, 'applicantPopup', popupOptions);
         }
-
-        // 등록물품에 대한 취소(삭제 함수)
+        // 등록물품관리 - > 취소 삭제 동작
         function cancelReusable (resu_no)
         { 
             let obj = new Object();
