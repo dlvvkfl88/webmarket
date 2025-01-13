@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script>
+            var pageUrl ='';
+            
+            $(document).ready(function(){ 
+                onLoad();
+            })
+    
+            function onLoad(){
+    
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+    
+                const modex = urlParams.get("modex");
+                
+                //const room = urlParams.get("room");
+    
+                //$("#mainContent").load("/classroom");
+            }
+        </script>
+    </head>
+    <body>
+        <!-- skip 네비게이션 영역 -->
+        <nav id="skipToContent">
+            <ul>
+                <li><a href="#container">본문 바로가기</a></li>
+                <li><a href="#gnb">주메뉴 바로가기</a></li>
+                <li><a href="#header">상위메뉴 바로가기</a></li>
+                <li><a href="#footers">하위메뉴 바로가기</a></li>
+            </ul> 
+        </nav>
+        <!-- skip 네비게이션 영역 -->
+
+        
+        <section id="popup_wrap">
+            <h2 class="title">신청자 목록</h2>
+            <!-- grid -->
+            <div id="grid_wrap" class="grid">
+                <!-- grid title -->
+                <div class="grid-container_applicantCheckPopup grid_item_bg">
+                    <span class="grid-item">이름</span>
+                    <span class="grid-item">이메일</span>
+                    <span class="grid-item">연락처</span>
+                        <%
+                        if(appliV == 0)
+                        {
+                        %>
+                        <span class="grid-item">선정</span>
+                        <%
+                        }
+                        %>
+                    </div>
+                    <%
+                    for (var i = 0; i < arr_aplic.length; i++)
+                    {
+                    %>
+                    <div class="grid-container_applicantCheck">
+                        <span class="grid-item2"><%=arr_aplic[i]['name']%></span>
+                        <span class="grid-item2"><%=arr_aplic[i]['mail']%></span>
+                        <span class="grid-item2"><%=arr_aplic[i]['tel']%></span>
+                        <%
+                        if(appliV == 0)
+                        {
+                        %>
+                        <span class="grid-item2">
+                            <button class="green_btn btn_none" onclick="requestReusable(<%=resuNo%>,'<%=arr_aplic[i]['name']%>','<%=arr_aplic[i]['mail']%>','<%=arr_aplic[i]['userid']%>')">선정</button>
+                        </span>
+                        <%
+                        }
+                        %>
+                    </div>
+                    <%
+                    }
+                    %>
+                </div>                
+                <!-- grid inner -->
+            </div>
+            <!-- grid -->
+
+            <!-- pagination -->
+            <div id="report_page" class="pagination">
+                <ul>
+                    <li>
+                        <a href="#none" class="first">
+                            <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">1</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">2</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">3</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">4</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">5</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">6</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">7</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">8</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">9</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="num active">10</a>
+                    </li>
+                    <li>
+                        <a href="#none" class="last">
+                            <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- pagination -->
+
+            <!-- under_btn -->
+            <div class="under_btn">
+                <button class="btn_none green_border_btn popupCloseBtn" onclick="closePopup()">닫기</button>
+            </div>
+            <!-- under_btn -->
+
+        </section>
+    </body>
+
+
+    <script>
+        // 팝업을 닫는 함수
+        function closePopup() {
+            window.close();
+        }
+
+        // 재사용 신청 처리 함수 추가
+        function requestReusable(resu_no, name, email, user_no) {
+            var requestCheck = confirm('승인하시겠습니까?');
+
+            if (requestCheck) {
+                let obj = new Object();
+                obj['resu_no'] = resu_no;
+                obj['name'] = name;
+                obj['email'] = email;
+                obj['user_no'] = user_no;
+
+                $.ajax({
+                    url: '/requestReusable',
+                    type: "post",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function(result) {
+                        if (result) {
+                            //alert(result.result);
+                        }
+                    }
+                })
+                .always(() => {
+                    window.opener.refreshNow();
+                    window.close();
+                });
+            }
+        }
+    </script>
+</html>
