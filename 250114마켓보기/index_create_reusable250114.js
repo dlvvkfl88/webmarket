@@ -1,3 +1,5 @@
+// 날짜 포맷형식도 db 에서 받은것과 안맞으면 오류난다 formatDate를통해 바꿔주기 
+
 app.post('/create_reusable', async function (req, res) {
 	try {
 		var data = JSON.parse(req.body.data);
