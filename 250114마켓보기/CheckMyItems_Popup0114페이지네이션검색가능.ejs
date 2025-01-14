@@ -106,26 +106,40 @@
                 <div id="report_page" class="pagination">
                     <ul>
                         <% if (page_data.totalPages > 0) { %>
-                            <li>
-                                <a href="?page=1&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" class="first">
-                                    <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
-                                </a>
-                            </li>
+                            <% 
+                                const currentPage = page_data.currentPage;
+                                const pageGroup = Math.ceil(currentPage / 10);
+                                const startPage = (pageGroup - 1) * 10 + 1;
+                                const endPage = Math.min(pageGroup * 10, page_data.totalPages);
+                            %>
                             
-                            <% for(let i = 1; i <= page_data.totalPages; i++) { %>
+                            <!-- 이전 그룹으로 이동 -->
+                            <% if (startPage > 1) { %>
+                                <li>
+                                    <a href="?page=<%= startPage - 1 %>&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" class="first">
+                                        <img src="/images/page_prev.svg" alt="이전 페이지 그룹">
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <!-- 페이지 번호 -->
+                            <% for(let i = startPage; i <= endPage; i++) { %>
                                 <li>
                                     <a href="?page=<%= i %>&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" 
-                                       class="num <%= i === page_data.currentPage ? 'active' : '' %>">
+                                       class="num <%= i === currentPage ? 'active' : '' %>">
                                         <%= i %>
                                     </a>
                                 </li>
                             <% } %>
                             
-                            <li>
-                                <a href="?page=<%= page_data.totalPages %>&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" class="last">
-                                    <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
-                                </a>
-                            </li>
+                            <!-- 다음 그룹으로 이동 -->
+                            <% if (endPage < page_data.totalPages) { %>
+                                <li>
+                                    <a href="?page=<%= endPage + 1 %>&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" class="last">
+                                        <img src="/images/page_next.svg" alt="다음 페이지 그룹">
+                                    </a>
+                                </li>
+                            <% } %>
                         <% } %>
                     </ul>
                 </div>
