@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+        <link rel="stylesheet" href="/css/modal.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+    </head>
+    <body>
+        <!-- skip 네비게이션 영역 -->
+        <nav id="skipToContent">
+            <ul>
+                <li><a href="#container">본문 바로가기</a></li>
+                <li><a href="#gnb">주메뉴 바로가기</a></li>
+                <li><a href="#header">상위메뉴 바로가기</a></li>
+                <li><a href="#footers">하위메뉴 바로가기</a></li>
+            </ul> 
+        </nav>
+        <!-- skip 네비게이션 영역 -->
+        <section id="popup_container">
+            <div class="popup_header">
+                <h2 class="title_txt">내 물품 조회</h2>
+                <div class="popup_body">
+                    <!-- drop_search -->
+                    <div class="drop_search">
+                        <div class="dropDown">
+                            <select id="searchType">
+                                <option value="0" <%= searchType === '0' ? 'selected' : '' %>>선택</option>
+                                <option value="1" <%= searchType === '1' ? 'selected' : '' %>>물품명</option>
+                                <option value="2" <%= searchType === '2' ? 'selected' : '' %>>물품번호</option>
+                            </select>
+                        </div>
+                        <div class="search">
+                            <input id="searchKeyword" placeholder="검색어를 입력해주세요." value="<%= searchKeyword %>">
+                        </div>
+                        <button onclick="search()">검색</button>
+                    </div>
+                    <!-- drop_search -->
+                    <div id="grid_wrap" class="grid">
+                        <!-- grid title -->
+                        <div class="grid-container_CheckMyItemsList grid_item_bg">
+                            <span class="grid_item">
+                                <input type="checkbox" onclick="uncheckAll(this)">
+                                선택
+                            </span>
+                            <span class="grid_item">물품 이미지</span>
+                            <span class="grid_item">물품명</span>
+                            <span class="grid_item">물품번호</span>
+                            <span class="grid_item">취득금액</span>
+                            <span class="grid_item">취득일자</span>
+                        </div>
+                        <!-- grid title -->
+                                             
+    <!-- // (이미지에 style 줬음) -->
+                        <!-- grid inner -->
+                        <% for (var i = 0; i < pinfos.length; i++) { %>
+                            <!-- grid inner -->
+                            <div class="grid-container_CheckMyItemsList grid_item2_bg">
+                                <span class="grid-item2">
+                                    <input type="checkbox" name="itemCheckbox" onclick="uncheckOthers(this)">
+                                </span> 
+                                <span class="grid_item2">
+                                    <button class="detail_modal" onclick="returnApplicationsitemDetail_modal()">
+                                        <% 
+                                            var matchingImg = pinfos_img.find(img => img.nFixtureIdx === pinfos[i].sFixtureNo);
+                                            if (matchingImg && matchingImg.sImgPath && matchingImg.sImgBin) { 
+                                        %>
+                                            <img data-file="<%=matchingImg.sImgPath%>" src="<%=matchingImg.sImgBin%>" alt="물품 이미지" style="width: 160px; height: 160px;" />
+                                        <% } else { %>
+                                            <img src="images/assets/Picture_img.png" alt="이미지 없음" />
+                                        <% } %>
+                                    </button>
+                                </span>
+                                <span class="grid-item2"><%=pinfos[i].sFixtureName%></span>
+                                <span class="grid-item2"><%=pinfos[i].sFixtureNo%></span>
+                                <span class="grid-item2"><%=pinfos[i].sFixturePrice%></span>
+                                <span class="grid-item2"><%=pinfos[i].dFixtureDate%></span>
+                            </div>
+                        <% } %>
+                        <!-- grid inner -->
+                    </div>
+                </div>
+                
+                <!-- pagination -->
+                <div id="report_page" class="pagination">
+                    <ul>
+                        <% if (page_data.totalPages > 0) { %>
+                            <li>
+                                <a href="?page=1&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" class="first">
+                                    <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
+                                </a>
+                            </li>
+                            
+                            <% for(let i = 1; i <= page_data.totalPages; i++) { %>
+                                <li>
+                                    <a href="?page=<%= i %>&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" 
+                                       class="num <%= i === page_data.currentPage ? 'active' : '' %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <li>
+                                <a href="?page=<%= page_data.totalPages %>&searchType=<%= searchType %>&searchKeyword=<%= searchKeyword %>" class="last">
+                                    <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+                <!-- pagination -->
+            </div>
+            <!-- popup under btn -->
+            <div class="popup_under_btn">
+                <button class="btn_none green_btn popupCloseBtn" onclick="selectAndClose()">물품 선택</button>
+                <button class="btn_none green_border_btn popupCloseBtn" onclick="closePopup()">취소</button>
+            </div>
+            <!-- popup under btn -->
+        </section>
+    </body>
+    <script>
+        // 팝업을 닫는 함수
+        function closePopup() {
+            window.close(); // 현재 팝업 창을 닫습니다.
+        }
+
+        // 선택된 물품 정보를 저장할 전역 변수
+        let selectedItem = null;
+
+        // 체크박스 클릭 시 다른 체크박스 해제하고 선택된 항목 저장
+        function uncheckOthers(checkbox) {
+            // 다른 모든 체크박스 해제
+            const checkboxes = document.getElementsByName('itemCheckbox');
+            checkboxes.forEach(box => {
+                if (box !== checkbox) {
+                    box.checked = false;
+                }
+            });
+
+            if (checkbox.checked) {
+                // 선택된 항목의 부모 요소에서 데이터 가져오기
+                const container = checkbox.closest('.grid-container_CheckMyItemsList');
+                selectedItem = {
+                    name: container.querySelector('.grid-item2:nth-child(3)').textContent,    // 물품명
+                    number: container.querySelector('.grid-item2:nth-child(4)').textContent,  // 물품번호
+                    price: container.querySelector('.grid-item2:nth-child(5)').textContent,   // 취득금액
+                    date: container.querySelector('.grid-item2:nth-child(6)').textContent     // 취득일자
+                };
+            } else {
+                selectedItem = null;
+            }
+        }
+
+        // 물품선택 버튼 클릭 시 실행될 함수
+        function selectAndClose() {
+            if (!selectedItem) {
+                alert('물품을 선택해주세요.');
+                return;
+            }
+
+            // 부모 창(test_modal)의 입력 필드에 선택된 물품 정보 설정
+            window.opener.document.querySelector('input.Auto_input[disabled]').value = selectedItem.name;      // 물품명
+            window.opener.document.querySelectorAll('input.Auto_input[disabled]')[1].value = selectedItem.price; // 취득금액
+            window.opener.document.querySelectorAll('input.Auto_input[disabled]')[2].value = selectedItem.date;  // 취득일자
+            window.opener.document.querySelectorAll('input.Auto_input[disabled]')[3].value = selectedItem.number; // 물품번호
+
+            // 팝업창 닫기
+            window.close();
+        }
+
+        // 헤더의 체크박스 클릭시 모든 체크박스 해제
+        function uncheckAll(headerCheckbox) {
+            headerCheckbox.checked = false;
+            const checkboxes = document.getElementsByName('itemCheckbox');
+            checkboxes.forEach((item) => {
+                item.checked = false;
+            });
+        }
+
+        // 검색 함수
+        function search() {
+            const searchType = document.getElementById('searchType').value;
+            const searchKeyword = document.getElementById('searchKeyword').value;
+            
+            window.location.href = `/CheckMyItems_Popup?page=1&searchType=${searchType}&searchKeyword=${searchKeyword}`;
+        }
+
+        // Enter 키로 검색 실행
+        document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+    </script>
+</html>
