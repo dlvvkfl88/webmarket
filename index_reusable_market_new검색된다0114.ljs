@@ -1,3 +1,4 @@
+/// reusable_market_new 종료
 app.get('/reusable_market_new', session_exists, async function (req, res) {
 	var nIndex = 0;
 	var user_email = req.session.user['email'];
@@ -15,10 +16,13 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 	if (searchKeyword && searchType !== '0') {
 		switch (searchType) {
 			case '1': // 전체
-				baseQuery += ` AND (a.sReusableName LIKE ? OR a.sReusableContent LIKE ? OR a.sReusablePlace LIKE ?)`;
+				baseQuery += ` AND (a.sReusableName LIKE ? OR a.sReusableMemo LIKE ? OR a.sReusablePlace LIKE ?)`;
 				break;
 			case '2': // 제목
 				baseQuery += ` AND a.sReusableName LIKE ?`;
+				break;
+			case '3': // 내용	
+				baseQuery += ` AND a.sReusableMemo LIKE ?`;
 				break;
 		}
 	}
@@ -34,7 +38,7 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 		if (searchType === '1') {
 			const likeParam = `%${searchKeyword}%`;
 			queryParams = [likeParam, likeParam, likeParam, nIndex];
-		} else if (searchType === '2') {
+		} else if (searchType === '2' || searchType === '3') {
 			queryParams = [`%${searchKeyword}%`, nIndex];
 		}
 	} else {
