@@ -1,0 +1,126 @@
+/// reusable_market_new 종료
+app.get('/reusable_market_new', session_exists, async function (req, res) {
+	var nIndex = 0;
+	var user_email = req.session.user['email'];
+	var user_phone = req.session.user['tel'];
+
+	// 검색 파라미터 받기
+	const searchType = req.query.searchType || '0';
+	const searchKeyword = req.query.searchKeyword || '';
+
+	// 기본 쿼리문
+	let baseQuery = 'SELECT a.*,b.sImgPath,b.sImgBin FROM tblReusable a, tblReusableImg b WHERE a.nReusableNo=b.nReusableIdx AND a.nReusableState = 1 AND a.nApplicantState = 0';
+
+	// 검색 조건 추가
+	if (searchKeyword && searchType !== '0') {
+		switch (searchType) {
+			case '1': // 전체
+				baseQuery += ` AND (a.sReusableName LIKE ? OR a.sReusableMemo LIKE ? OR a.sReusablePlace LIKE ?)`;
+				break;
+			case '2': // 제목
+				baseQuery += ` AND a.sReusableName LIKE ?`;
+				break;
+			case '3': // 내용	
+				baseQuery += ` AND a.sReusableMemo LIKE ?`;
+				break;
+		}
+	}
+
+
+
+	// 페이지네이션 설정
+	const page = parseInt(req.query.page) || 1;
+	const itemsPerPage = 12; // 페이지당 12개 아이템
+	const offset = (page - 1) * itemsPerPage;
+
+	// 전체 아이템 수를 가져오는 쿼리
+	let countQuery = baseQuery.replace('SELECT a.*,b.sImgPath,b.sImgBin', 'SELECT COUNT(*) as total');
+	countQuery = countQuery.split('ORDER BY')[0];
+
+	// 페이지네이션을 위한 LIMIT과 OFFSET 추가
+	baseQuery = baseQuery.split('ORDER BY')[0]; // 기존 ORDER BY 제거
+	baseQuery += ' ORDER BY nReusableNo LIMIT ? OFFSET ?';
+
+	//var sql = 'SELECT * FROM tblReusable WHERE nReusableState = 1 AND nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;';
+	//var sql = 'SELECT a.*,b.sImgPath,b.sImgBin FROM tblReusable a JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.nReusableState = 1 AND a.nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;'
+	// 쿼리 파라미터 설정
+	let queryParams = [];
+	if (searchKeyword && searchType !== '0') {
+		if (searchType === '1') { // 전체 검색
+			const likeParam = `%${searchKeyword}%`;
+			queryParams = [likeParam, likeParam, likeParam, itemsPerPage, offset];
+		} else if (searchType === '2' || searchType === '3') { // 제목 또는 내용 검색
+			queryParams = [`%${searchKeyword}%`, itemsPerPage, offset];
+		}
+	} else {
+		queryParams = [itemsPerPage, offset];
+	}
+
+	// 전체 개수와 페이지 데이터 조회
+	const countResult = await directQuery(countQuery, queryParams.slice(0, -2));
+	const totalItems = countResult[0].total;
+	const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+	// 데이터 조회
+	const rinfos = await directQuery(baseQuery, queryParams);
+
+	// 검색 쿼리 처리
+	// 검색 쿼리 처리
+
+
+	//const rinfos = await directQuery(sql, params);
+	/*
+	var resu_list_str = JSON.stringify(rinfos[0].sReusableApplicant_List);
+	var resu_str = resu_list_str.replaceAll('"','');
+	var resu_str2 = resu_str.replaceAll('[','');
+	var resu_str3 = resu_str2.replaceAll(']','');
+	var resu_list = resu_str3.split(',');
+	*/
+
+	//console.log("list",resu_list[0]);
+
+	//sql = 'SELECT * FROM tblReusable WHERE nReusableShare=0 AND nReusableState = 1 AND nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;';
+	//sql = 'SELECT a.*,b.sImgPath,b.sImgBin FROM tblReusable a JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.nReusableShare=0 AND a.nReusableState = 1 AND a.nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;'
+	baseQuery = baseQuery.replace('WHERE', 'WHERE a.nReusableShare=0 AND');
+	var rinfos_reus = await directQuery(baseQuery, queryParams);
+
+
+	//sql = 'SELECT * FROM tblReusable WHERE nReusableShare=1 AND nReusableState = 1 AND nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;';
+	//sql = 'SELECT a.*,b.sImgPath,b.sImgBin FROM tblReusable a JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.nReusableShare=1 AND a.nReusableState = 1 AND a.nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;'
+	baseQuery = baseQuery.replace('nReusableShare=0', 'nReusableShare=1');
+	var rinfos_share = await directQuery(baseQuery, queryParams);
+
+	//email: 'kbw5636@kounosoft.com',
+	//tel: '010-9318-5636',
+
+	sql = "SELECT * FROM tblAuthority WHERE sAuthorityNum=?";
+	var authority_list = await directQuery(sql, [req.session.user.userid]);
+
+	sql = "SELECT * FROM tblUser WHERE sNumber=?";
+
+	for (var idx = 0; idx < authority_list.length; idx++) {
+		if (authority_list[idx].sStdId == "210597") {
+			authority_list[idx].sName = "원격교육센터 02";
+		}
+		else if (authority_list[idx].sStdId == "597210") {
+			authority_list[idx].sName = "테스트자산관리01";
+		}
+		else if (authority_list[idx].sStdId == "666308") {
+			authority_list[idx].sName = "테스트자산관리02";
+		}
+		else {
+			var result = await directQuery(sql, [authority_list[idx].sStdId]);
+
+			if (result.length > 0) {
+				authority_list[idx].sName = result[0].sName;
+			}
+			else {
+				authority_list[idx].sName = "데이터 없음";
+			}
+		}
+
+	}
+
+	//res.render("reusable_market", { idx: req.session.user.name, userid: req.session.user.userid, rinfos: rinfos, rinfos_img: rinfos_img, rinfos_reus: rinfos_reus, rinfos_reus_img: rinfos_reus_img, rinfos_share: rinfos_share, rinfos_share_img: rinfos_share_img, nIndex: nIndex,user_email: user_email,user_phone: user_phone, permission: req.session.user.permission });
+	res.render("reusable_market_new", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, rinfos: rinfos, rinfos_reus: rinfos_reus, rinfos_share: rinfos_share, nIndex: nIndex, user_email: user_email, user_phone: user_phone, searchType: searchType, searchKeyword: searchKeyword, permission_reusable: req.session.user.permission_reusable, authority_list: authority_list, sel_authority: req.session.user.selectAuithority, currentPage: page, totalPages: totalPages, searchType: searchType, searchKeyword: searchKeyword });
+});
