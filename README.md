@@ -30,3 +30,5 @@
 
 ![image](https://github.com/user-attachments/assets/4b965999-118e-4dd1-a01b-fe95dadf7b44)
 
+0115 test_modal 하니씩 preview가능한거 250115마켓보기백업
+![image](https://github.com/user-attachments/assets/bfaebd9c-c81b-4252-9c79-7ca868340d2b)
