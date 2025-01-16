@@ -32,3 +32,7 @@
 
 0115 test_modal 하니씩 preview가능한거 250115마켓보기백업
 ![image](https://github.com/user-attachments/assets/bfaebd9c-c81b-4252-9c79-7ca868340d2b)
+
+
+등록물품관리 0116완성
+![image](https://github.com/user-attachments/assets/6579cbd4-64d7-46f9-88b9-d98789d94b72)
