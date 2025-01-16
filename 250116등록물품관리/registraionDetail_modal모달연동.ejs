@@ -1,0 +1,101 @@
+<div class="modal_con">
+    <div class="modal_header">
+        <h2 class="modal-title">물품 정보</h2>
+        <button id="modalCloseBtn03" class="btn_none green_borderBtn" onclick="registereditemDetailModal_close()">
+            <img src="/images/X_icon.png">
+        </button>
+    </div>
+    <div class="modal_body">
+        <div class="form_wrap">
+            <!-- 물품 사진 -->
+            <div class="form_request flex_column">
+                <label for="물품 사진">물품 사진</label>
+                <div class="pro_detail">
+                    <div class="box_img">
+                        <img id="modal-image" src="" alt="물품 이미지" style="height:200px; width:200px;">
+                        <div id="share-badge" class="badge" style="display: none;">나눔</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 제목 / 내용 -->
+            <div class="form_request flex_column">
+                <h2 id="modal-name"></h2>
+                <p id="modal-content"></p>
+            </div>
+
+            <!-- 물품 등급 -->
+            <div class="form_request">
+                <label for="물품 등급">물품 등급</label>
+                <input id="modal-rank" class="Auto_input" readonly>
+            </div>
+            
+            <!-- 비품 정보 (재사용 비품일 때만 표시) -->
+            <div id="fixture-info" class="form_request flex_column" style="display: none;">
+                <label for="비품">비품</label>
+                <div class="fix_flexbetween text">
+                    <label for="물품명">물품명(중분류)</label>
+                    <input id="modal-fixture-name" class="Auto_input" readonly>
+                </div>
+                <div class="fix_flexbetween text">
+                    <label for="취득금액">취득금액</label>
+                    <input id="modal-fixture-price" class="Auto_input" readonly>
+                </div>
+                <div class="fix_flexbetween text">
+                    <label for="취득일자">취득일자</label>
+                    <input id="modal-fixture-date" class="Auto_input" readonly>
+                </div>
+                <div class="fix_flexbetween text">
+                    <label for="물품번호">물품번호</label>
+                    <input id="modal-fixture-no" class="Auto_input" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="btn_wrap">
+            <button type="reset" id="modalCancelBtn03" class="modalCancelBtn" onclick="registereditemDetailModal_close()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showDetailModal(shareType, reusableNo) {
+    // 모달을 표시하기 전에 데이터를 가져옴
+    fetch('/getReusableDetail', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reusableNo: reusableNo })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 공통 필드 설정
+        document.getElementById('modal-image').src = data.imgSrc;
+        document.getElementById('modal-name').textContent = data.name;
+        document.getElementById('modal-content').textContent = data.content;
+        document.getElementById('modal-rank').value = data.rank;
+
+        // 나눔/재사용 구분에 따른 설정
+        if (shareType === 1) {
+            // 나눔물품
+            document.querySelector('.modal-title').textContent = '물품 정보 (나눔 물품)';
+            document.getElementById('share-badge').style.display = 'block';
+            document.getElementById('fixture-info').style.display = 'none';
+        } else {
+            // 재사용비품
+            document.querySelector('.modal-title').textContent = '물품 정보 (재사용 비품)';
+            document.getElementById('share-badge').style.display = 'none';
+            document.getElementById('fixture-info').style.display = 'block';
+            
+            // 비품 정보 설정
+            document.getElementById('modal-fixture-name').value = data.fixtureName;
+            document.getElementById('modal-fixture-price').value = data.fixturePrice;
+            document.getElementById('modal-fixture-date').value = data.fixtureDate;
+            document.getElementById('modal-fixture-no').value = data.fixtureNo;
+        }
+
+        // 모달 표시
+        document.getElementById('registereditemDetail_modal').classList.remove('hidden');
+    });
+}
+</script> 
