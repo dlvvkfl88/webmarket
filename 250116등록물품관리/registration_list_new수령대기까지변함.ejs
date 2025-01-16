@@ -153,8 +153,14 @@
                             <span class="grid_item2">
                                 <button class="green_border_btn" onclick="applicant_checkPopup(<%=rinfos[i].nReusableNo%>)">신청자 확인</button>
                             </span>
-                            <span class="grid_item2 registering">
-                                <%= rinfos[i].hasApplicants ? '신청자 있음' : '등록중' %>
+                            <span class="grid_item2 <%= 
+                                rinfos[i].nReusableState === 2 && rinfos[i].nApplicantState === 2 ? 'waiting_receive' : 
+                                rinfos[i].hasApplicants ? 'applicant_present' : 'registering' 
+                            %>">
+                                <%= 
+                                rinfos[i].nReusableState === 2 && rinfos[i].nApplicantState === 2 ? '수령 대기' : 
+                                rinfos[i].hasApplicants ? '신청자 있음' : '등록중' 
+                                %>
                             </span>
                             <span class="grid_item2">
                                 <span class="grid_item2"><button type="button" class="gray_btn" onclick="cancelReusable(<%=rinfos[i].nReusableNo%>)"><i class="icofont icofont-pencil-alt-2"></i>취소</button></span>
