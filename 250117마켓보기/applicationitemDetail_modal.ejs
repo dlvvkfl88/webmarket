@@ -1,0 +1,141 @@
+<div class="modal_con">
+    <div class="modal_header">
+        <h2 class="modal-title">물품 정보</h2>
+        <button id="modalCloseBtn03" class="btn_none green_borderBtn" onclick="applicationsitemDetail_close()">
+            <img src="/images/X_icon.png">
+        </button>
+    </div>
+    <div class="modal_body">
+        <div class="form_wrap">
+            <!-- 물품 사진 -->
+            <div class="form_request flex_column">
+                <label for="물품 사진">물품 사진</label>
+                <div class="pro_detail">
+                    <div class="box_img">
+                        <img id="modal-image" src="" alt="물품 이미지" style="height:200px; width:200px;">
+                        <div id="share-badge" class="badge" style="display: none;">나눔</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 제목 / 내용 -->
+            <div class="form_request flex_column">
+                <h2 id="modal-name"></h2>
+                <p id="modal-content"></p>
+            </div>
+
+            <!-- 물품 등급 -->
+            <div class="form_request">
+                <label for="물품 등급">물품 등급</label>
+                <input id="modal-rank" class="Auto_input" readonly>
+            </div>
+            
+            <!-- 비품 정보 (재사용 비품일 때만 표시) -->
+            <div id="fixture-info" class="form_request flex_column" style="display: none;">
+                <label for="비품">비품</label>
+                <div class="fix_flexbetween text">
+                    <label for="물품명">물품명(중분류)</label>
+                    <input id="modal-fixture-name" class="Auto_input" readonly>
+                </div>
+                <div class="fix_flexbetween text">
+                    <label for="취득금액">취득금액</label>
+                    <input id="modal-fixture-price" class="Auto_input" readonly>
+                </div>
+                <div class="fix_flexbetween text">
+                    <label for="취득일자">취득일자</label>
+                    <input id="modal-fixture-date" class="Auto_input" readonly>
+                </div>
+                <div class="fix_flexbetween text">
+                    <label for="물품번호">물품번호</label>
+                    <input id="modal-fixture-no" class="Auto_input" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="btn_wrap">
+            <button type="reset" id="modalCancelBtn03" class="modalCancelBtn" onclick="applicationsitemDetail_close()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 모달 열기 함수
+    function showDetailModal(shareType, reusableNo) {
+        const modal = document.getElementById('applicationsitemDetail_modal');
+        
+        fetch('/getReusableDetail', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ reusableNo: reusableNo })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) {
+                throw new Error('데이터가 없습니다.');
+            }
+
+            // 이미지 설정
+            const modalImage = document.getElementById('modal-image');
+            if (data.imgBin) {
+                modalImage.src = `data:image/jpeg;base64,${data.imgBin}`;
+            } else if (data.imgSrc) {
+                modalImage.src = data.imgSrc;
+            } else {
+                modalImage.src = '/images/pro_img.png';
+            }
+
+            // 제목과 내용 설정
+            document.getElementById('modal-name').textContent = data.sReusableName || '';
+            document.getElementById('modal-content').textContent = data.sReusableContent || '';
+            document.getElementById('modal-rank').value = data.nReusableRank ? 
+                ['A', 'B', 'C', 'D'][data.nReusableRank - 1] : '';
+
+            // 나눔/재사용 구분에 따른 설정
+            if (shareType === 1) {
+                document.querySelector('.modal-title').textContent = '물품 정보 (나눔 물품)';
+                document.getElementById('share-badge').style.display = 'block';
+                document.getElementById('fixture-info').style.display = 'none';
+            } else {
+                document.querySelector('.modal-title').textContent = '물품 정보 (재사용 비품)';
+                document.getElementById('share-badge').style.display = 'none';
+                document.getElementById('fixture-info').style.display = 'block';
+                
+                // 비품 정보 설정
+                document.getElementById('modal-fixture-name').value = data.sFixtureName || '';
+                document.getElementById('modal-fixture-price').value = data.nFixturePrice || '';
+                document.getElementById('modal-fixture-date').value = data.dtFixtureDate || '';
+                document.getElementById('modal-fixture-no').value = data.sFixtureNo || '';
+            }
+
+            // 모달 표시
+            modal.classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('데이터를 불러오는 중 오류가 발생했습니다: ' + error.message);
+        });
+    }
+
+    // 모달 닫기 함수
+    function applicationsitemDetail_close() {
+        const modal = document.getElementById('applicationsitemDetail_modal');
+        modal.classList.add('hidden');
+    }
+
+    //open popup
+    function registrar_checkPopup() {
+        const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+        window.open('registrar_checkPopup', 'ApprovalPopup', popupOptions);
+    }
+    
+    function resuableCheck(resuNo) {
+        window.open('registrar_checkPopup?resuNo='+ resuNo, 'Popup', 'width=1000,height=650');
+    }
+
+</script>
