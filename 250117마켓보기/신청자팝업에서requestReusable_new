@@ -1,0 +1,86 @@
+////////////////// 위 와 구분 짓자 ///////////////////////////
+app.post('/requestReusable_new', async function (req, res) {
+	var resu_no = req.body.resu_no;
+	var user_email = req.body.email;
+	var user_name = req.body.name;
+	var user_no = req.body.user_no;
+	var user_tel = req.body.user_tel;
+
+	var sql = "SELECT * FROM tblReusable WHERE nReusableNo=? ";
+	var res_resu = await directQuery(sql, [resu_no]);
+
+	var resu_state = res_resu[0].nApplicantState;
+	var resu_email = res_resu[0].sReusableEmail;
+	var resu_name = res_resu[0].sReusableName;
+	var resu_place = res_resu[0].sReusablePlace;
+
+	var html = ``;
+
+	if (resu_state == 1) {
+		sql = "UPDATE tblReusable SET sReusableApplicant=?, nReusableState=?, nApplicantState=? WHERE nReusableNo=?";
+		await directQuery(sql, [user_name, 2, 2, resu_no]);
+
+		sql = "DELETE FROM tblReusableApplicant WHERE nReusableNo=? AND sApplicantNumber!=?;";
+		await directQuery(sql, [resu_no, user_no]);
+
+		html = `<!DOCTYPE html>
+		<html><head><meta charset="UTF-8"><title>재사용 마켓</title></head>
+		<body><script>alert ('재사용 물품을 신청하였습니다.');window.close ();</script></body>
+		</html>`;
+
+		let today = new Date();
+
+		var html_data = user_name + " 님께서 다음과 같은 재사용 물품에 신청을 하였습니다.<br>";
+		html_data += "일자 : " + today.toLocaleString() + "<br>";
+		html_data += "재사용 물품 이름 : " + resu_name + "<br>";
+		html_data += "수령 위치 : " + resu_place + "<br>";
+
+		let mailOptions = {
+			from: 'kbw3672@naver.com', // 보내는 메일의 주소
+			to: resu_email, // 수신할 이메일
+			subject: "고려대학교 자산관리 시스템 재사용 물품 신청", // 메일 제목
+			html: html_data, // 메일 내용
+		};
+
+		transporter.sendMail(mailOptions);
+
+		var applic_email = "";
+		if (user_no == '210597') {
+			applic_email = 'kbw5636@kounosoft.com';
+		}
+		else if (user_no == '597210') {
+			applic_email = 'jaebeen2@kounosoft.com';
+		}
+		else if (user_no == '666308') {
+			applic_email = 'sizin@kounosoft.com';
+		}
+		else {
+			sql = 'SELECT a.sEmail email';
+			sql += 'FROM tblUser a ';
+			sql += 'WHERE a.sNumber=?';
+			var res_org = await directQuery(sql, [user_no]);
+			applic_email = res_org[0].email;
+		}
+
+		var html_data_applic = resu_email + " 님께서 재사용 물품의 신청을 승인하였습니다.<br>";
+		html_data_applic += "일자 : " + today.toLocaleString() + "<br>";
+		html_data_applic += "재사용 물품 이름 : " + resu_name + "<br>";
+		html_data_applic += "수령 위치 : " + resu_place + "<br>";
+
+		let mailOptions_applic = {
+			from: 'kbw5636@kounosoft.com', // 보내는 메일의 주소
+			to: applic_email, // 수신할 이메일
+			subject: "고려대학교 자산관리 시스템 재사용 물품 신청", // 메일 제목
+			html: html_data_applic, // 메일 내용
+		};
+
+		transporter.sendMail(mailOptions_applic);
+	}
+	else {
+		html = `<!DOCTYPE html>
+		<html><head><meta charset="UTF-8"><title>재사용 마켓</title></head>
+		<body><script>alert ('이미 신청한 사용자가 존재한 상태입니다.');window.close ();</script></body>
+		</html>`;
+	}
+	res.send(html);
+});
