@@ -5100,7 +5100,7 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 	res.render("reusable_market_new", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, rinfos: rinfos, rinfos_reus: rinfos_reus, rinfos_share: rinfos_share, nIndex: nIndex, user_email: user_email, user_phone: user_phone, searchType: searchType, searchKeyword: searchKeyword, permission_reusable: req.session.user.permission_reusable, authority_list: authority_list, sel_authority: req.session.user.selectAuithority, currentPage: page, totalPages: totalPages, searchType: searchType, searchKeyword: searchKeyword });
 });
 
-
+//바꾼거
 app.get('/CheckMyItems_Popup', async function (req, res) {
 	try {
 		// 세션에서 사용자 정보 가져오기
@@ -5273,6 +5273,7 @@ app.post('/create_reusable', async function (req, res) {
 
 
 /// resuable_market_new 종료
+/// resuable_market_new 종료
 app.get('/registration_list_new', session_exists, async function (req, res) {
 	try {
 		// 세션에서 사용자 정보 가져오기
@@ -5320,7 +5321,8 @@ app.get('/registration_list_new', session_exists, async function (req, res) {
 		console.log("user_id", user_id);
 
 		// 이미지 조회
-		var img_sql = `SELECT a.*, b.sImgPath, b.sImgBin FROM tblReusable a LEFT JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.sReusableUserNo=? ORDER BY a.dFixtureDate DESC LIMIT ? OFFSET ?`; var rinfos_img = await directQuery(img_sql, [user_id, itemsPerPage, nStart * itemsPerPage]);
+		var img_sql = 'SELECT b.* FROM tblReusable a INNER JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.sReusableUserNo=? ORDER BY a.dFixtureDate DESC LIMIT ? OFFSET ?';
+		var rinfos_img = await directQuery(img_sql, [user_id, itemsPerPage, nStart * itemsPerPage]);
 
 
 		//registration_list_new 라우트 내부
@@ -5452,6 +5454,57 @@ app.get('/registration_list_new', session_exists, async function (req, res) {
 	}
 });
 
+// 상제정보 라우트 
+app.post('/getReusableDetail', async function (req, res) {
+	try {
+		const reusableNo = req.body.reusableNo;
+
+		if (!reusableNo) {
+			return res.status(400).json({ error: '물품 번호가 필요합니다.' });
+		}
+
+		// 재사용/나눔 물품 정보 조회
+		const sql = `
+            SELECT r.*, ri.sImgBin 
+            FROM tblReusable r 
+            LEFT JOIN tblReusableImg ri ON r.nReusableNo = ri.nReusableIdx 
+            WHERE r.nReusableNo = ?
+        `;
+		const result = await directQuery(sql, [reusableNo]);
+
+		if (result && result.length > 0) {
+			const item = result[0];
+
+			// 날짜 포맷팅 (dFixtureDate가 있는 경우)
+			let formattedDate = null;
+			if (item.dFixtureDate) {
+				const date = new Date(item.dFixtureDate);
+				formattedDate = date.toISOString().split('T')[0];
+			}
+
+			res.json({
+				imgSrc: item.sImgBin,
+				name: item.sReusableName,
+				content: item.sReusableContent,
+				rank: item.nReusableRank,
+				fixtureName: item.sFixtureName,
+				fixturePrice: item.dFixturePrice ?
+					new Intl.NumberFormat('ko-KR').format(item.dFixturePrice) : '',
+				fixtureDate: formattedDate,
+				fixtureNo: item.sFixtureNo
+			});
+		} else {
+			res.status(404).json({ error: '물품을 찾을 수 없습니다.' });
+		}
+	} catch (error) {
+		console.error('Error in getReusableDetail:', error);
+		res.status(500).json({
+			error: '서버 오류가 발생했습니다.',
+			details: error.message
+		});
+	}
+});
+// 등록물품관리 신청자확인팝업
 
 // 등록물품관리 신청자확인팝업
 
@@ -5521,6 +5574,73 @@ app.get('/applicant_checkPopup', async function (req, res) {
 });
 
 
+
+app.get('/new_applicant_checkPopup', async function (req, res) {
+	try {
+		var resuNo = req.query.resuNo;
+		var appliV = false;
+
+		//첫 번째 쿼리
+		var sql = 'SELECT * FROM tblReusable WHERE nReusableNo=?;';
+		var rinfos = await directQuery(sql, [resuNo]);
+
+		if (!rinfos || rinfos.length === 0) {
+			return res.status(404).send('데이터를 찾을 수 없습니다.');
+		}
+
+		if (rinfos[0].nApplicantState != 0) {
+			appliV = true;
+		}
+
+		// 두 번째 쿼리
+		sql = 'SELECT * FROM tblReusableApplicant WHERE nReusableNo=?;';
+		var rinfos_list = await directQuery(sql, [resuNo]);
+
+		var arr_aplic = [];
+
+		if (rinfos_list.length > 0) {
+			for (var idx = 0; idx < rinfos_list.length; idx++) {
+				var userID = rinfos_list[idx].sApplicantNumber;
+
+				console.log(userID);
+
+				if (userID == '210597') {
+					var jsonData = { 'userid': '210597', 'potalId': 'atdtest02', 'name': '원격교육센터 02', 'class': '총무부', 'mail': 'kbw5636@kounosoft.com', 'tel': '010-9318-5636' };
+					arr_aplic.push(jsonData);
+				}
+				else if (userID == '597210') {
+					var jsonData = { 'userid': '597210', 'potalId': 'test_esgasset01', 'name': '테스트자산관리01', 'class': '공과대학행정팀', 'mail': 'jaebeen2@kounosoft.com', 'tel': '010-6277-4800' };
+					arr_aplic.push(jsonData);
+				}
+				else if (userID == '666308') {
+					var jsonData = { 'userid': '666308', 'potalId': 'test_esgasset02', 'name': '테스트자산관리02', 'class': '학생지원팀', 'mail': 'sizin@kounosoft.com', 'tel': '010-3380-4340' };
+					arr_aplic.push(jsonData);
+				}
+				else if (userID == '') {
+
+				}
+				else {
+					sql = 'SELECT distinct(b.sName) org, a.sName name,a.sEmail email, a.sTel tel, a.nPermission permission ';
+					sql += 'FROM tblUser a,tblOrganization b ';
+					sql += 'WHERE a.sNumber=? and a.nOrgIdx=b.nIndex';
+					var res_org = await directQuery(sql, [userID]);
+
+					jsonData = { 'userid': userID, 'potalId': userID, 'name': res_org[0].name, 'class': res_org[0].org, 'mail': res_org[0].email, 'tel': res_org[0].tel };
+					arr_aplic.push(jsonData);
+				}
+			}
+		}
+
+
+
+		res.render("new_applicant_checkPopup", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, modex: req.session.mode, resuNo: resuNo, arr_aplic: arr_aplic, appliV: appliV });
+	} catch (error) {
+		console.error('Error in applicant_checkPopup:', error);
+		res.status(500).send('서버 오류가 발생했습니다');
+	}
+});
+
+
 app.get('/applications_list_new', session_exists, async function (req, res) {
 	var sql = "SELECT * FROM tblAuthority WHERE sAuthorityNum=?";
 	var authority_list = await directQuery(sql, [req.session.user.userid]);
@@ -5578,11 +5698,15 @@ app.get('/applications_list_new2', session_exists, async function (req, res) {
 	//var nStart = 0;
 	// 아이템 조회
 	var sql = "SELECT * FROM tblReusable WHERE sReusableUserNo=? ORDER BY dFixtureDate DESC LIMIT ? OFFSET ?";
+	//var sql = "SELECT * FROM tblReusable WHERE sReusableUserNo=? and nApplicantState in ('1','2','3') ORDER BY dFixtureDate DESC LIMIT ? OFFSET ?";
 	var rinfos = await directQuery(sql, [user_id, itemsPerPage, nStart * itemsPerPage]);
 	//var rinfos = await directQuery(sql, [Number(nStart * 10)]);
 	// 재사용 물품의 이미지 정보를 가져오는 쿼리
 	var img_sql = 'SELECT b.* FROM tblReusable a INNER JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.sReusableUserNo=? ORDER BY a.dFixtureDate DESC LIMIT ? OFFSET ?';
+	//var img_sql = 'SELECT b.* FROM tblReusable a INNER JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.sReusableUserNo=? and a.nApplicantState in (1, 2, 3) ORDER BY a.dFixtureDate DESC LIMIT ? OFFSET ?';
 	var rinfos_img = await directQuery(img_sql, [user_id, 10, Number(nStart * 10)]);
+
+	console.log('rinfos_img===>', rinfos_img);
 
 	// 사용자가 등록한 재사용 물품 조회
 	sql = "SELECT * FROM tblReusable WHERE sReusableUserNo=? ORDER BY dFixtureDate DESC";
@@ -6025,6 +6149,671 @@ app.get('/approval_box_new', session_exists, async function (req, res) {
 	});
 });
 
+app.post('/searchApprovalProcess', async function (req, res) {
+	var ssearch = req.body.ssearch;
+	var svalue = req.body.svalue;
+	var date_start = req.body.startDate;
+	var date_end = req.body.endDate;
+
+	var sql = "SELECT * FROM tblApprover where sPortal = ?;";
+	var appprover_list = await directQuery(sql, [req.session.user.portalid]);
+
+	var sql = "SELECT * FROM tblApproval where nApprovalType=2 and nApprovalState!=4 and nIndex=?";
+
+	var result = [];
+
+	if (date_start == "" && date_end == "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "카메라")
+				svalue = 2
+			else if (svalue == "악기류")
+				svalue = 3
+			else if (svalue == "모니터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+	else if (date_start != "" && date_end == "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "컴퓨터")
+				svalue = 2
+			else if (svalue == "컴퓨터")
+				svalue = 3
+			else if (svalue == "컴퓨터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and dApprovalDate > ?;";
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue, date_start]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue, date_start]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, date_start]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+	else if (date_start == "" && date_end != "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "컴퓨터")
+				svalue = 2
+			else if (svalue == "컴퓨터")
+				svalue = 3
+			else if (svalue == "컴퓨터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and dApprovalDate < ?;";
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue, date_start, date_end]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue, date_start, date_end]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, date_start, date_end]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+	else if (date_start != "" && date_end != "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "컴퓨터")
+				svalue = 2
+			else if (svalue == "컴퓨터")
+				svalue = 3
+			else if (svalue == "컴퓨터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue, date_end]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue, date_end]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, date_end]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+
+	res.send({ result: result });
+});
+
+app.post('/searchApprovalComplete', async function (req, res) {
+	var ssearch = req.body.ssearch;
+	var svalue = req.body.svalue;
+	var date_start = req.body.startDate;
+	var date_end = req.body.endDate;
+
+	var sql = "SELECT * FROM tblApprover where sPortal = ?;";
+	var appprover_list = await directQuery(sql, [req.session.user.portalid]);
+
+	var sql = "SELECT * FROM tblApproval where nApprovalType=2 and nApprovalState=4 and nIndex=?";
+
+	var result = [];
+
+	if (date_start == "" && date_end == "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "카메라")
+				svalue = 2
+			else if (svalue == "악기류")
+				svalue = 3
+			else if (svalue == "모니터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+	else if (date_start != "" && date_end == "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "컴퓨터")
+				svalue = 2
+			else if (svalue == "컴퓨터")
+				svalue = 3
+			else if (svalue == "컴퓨터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and dApprovalDate > ?;";
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue, date_start]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue, date_start]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, date_start]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+	else if (date_start == "" && date_end != "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "컴퓨터")
+				svalue = 2
+			else if (svalue == "컴퓨터")
+				svalue = 3
+			else if (svalue == "컴퓨터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and dApprovalDate < ?;";
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate < ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue, date_start, date_end]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue, date_start, date_end]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, date_start, date_end]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+	else if (date_start != "" && date_end != "") {
+		var svalue_def1 = 0;
+		var svalue_def2 = 0;
+
+		if (ssearch == 1) {
+			sql += " and sApprovalTitle = ?";
+
+			if (svalue == "컴퓨터")
+				svalue_def1 = 1
+			else if (svalue == "카메라")
+				svalue_def1 = 2
+			else if (svalue == "악기류")
+				svalue_def1 = 3
+			else if (svalue == "모니터")
+				svalue_def1 = 4
+			else
+				svalue_def1 = 0;
+
+			sql += " and nApprovalType = ?";
+
+			svalue_def2 = "%" + svalue + "%";
+
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and sFixtureName = ?";
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 2) {
+			sql += " and sApprovalTitle = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 3) {
+			if (svalue == "컴퓨터")
+				svalue = 1
+			else if (svalue == "컴퓨터")
+				svalue = 2
+			else if (svalue == "컴퓨터")
+				svalue = 3
+			else if (svalue == "컴퓨터")
+				svalue = 4
+			else
+				svalue = 0;
+
+			sql += " and nApprovalType = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 4) {
+			sql += ' and (sBuild LIKE ? or sRoomNo LIKE ?)';
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+
+			svalue = "%" + svalue + "%";
+		}
+		else if (ssearch == 5) {
+			sql += " and sFixtureName = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+		else if (ssearch == 6) {
+			sql += " and sFixtureNo = ?";
+			sql += " and dApprovalDate > ?";
+			sql += " and dApprovalDate < ?;";
+		}
+
+		for (var idx = 0; idx < appprover_list.length; idx++) {
+			var approval_info = [];
+
+			if (ssearch == 1) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue_def1, svalue_def2, svalue_def2, svalue, svalue, date_end]);
+			}
+			else if (ssearch == 4) {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, svalue, date_end]);
+			}
+			else {
+				approval_info = await directQuery(sql, [appprover_list[idx].nApprIdx, svalue, date_end]);
+			}
+
+			if (approval_info.length != 0) {
+				result.push(approval_info[0]);
+			}
+		}
+	}
+
+	res.send({ result: result });
+});
 
 app.get('/transactions_list_new', session_exists, async function (req, res) {
 	var sql = "SELECT * FROM tblAuthority WHERE sAuthorityNum=?";
@@ -6478,7 +7267,6 @@ app.post('/requestReusable_List', async function (req, res) {
 	}
 	res.send(html);
 });
-
 app.post('/requestReusable_List2', async function (req, res) {
 	var resu_no = req.body.resu_no;
 	var user_email = req.body.email;
@@ -12917,42 +13705,6 @@ app.post('/completeApplicantReceipt', async function (req, res) {
 	res.send(html);
 });
 
-
-// 상제정보 라우트 
-app.post('/getReusableDetail', async function (req, res) {
-	try {
-		const reusableNo = req.body.reusableNo;
-
-		// 재사용/나눔 물품 정보 조회
-		const sql = `
-            SELECT r.*, ri.sImgBin 
-            FROM tblReusable r 
-            LEFT JOIN tblReusableImg ri ON r.nReusableNo = ri.nReusableIdx 
-            WHERE r.nReusableNo = ?
-        `;
-		const result = await directQuery(sql, [reusableNo]);
-
-		if (result.length > 0) {
-			const item = result[0];
-			res.json({
-				imgSrc: item.sImgBin,
-				name: item.sReusableName,
-				content: item.sReusableContent,
-				rank: item.nReusableRank,
-				fixtureName: item.sFixtureName,
-				fixturePrice: item.dFixturePrice,
-				fixtureDate: item.dFixtureDate,
-				fixtureNo: item.sFixtureNo
-			});
-		} else {
-			res.status(404).json({ error: '물품을 찾을 수 없습니다.' });
-		}
-	} catch (error) {
-		console.error('Error in getReusableDetail:', error);
-		res.status(500).json({ error: '서버 오류가 발생했습니다.' });
-	}
-});
-
 app.post('/completeReusableReceipt', async function (req, res) {
 	var resu_no = req.body.resu_no;
 
@@ -13089,6 +13841,40 @@ app.post('/cancelReusable', async function (req, res) {
 
 	var sql_del = "DELETE FROM tblReusableApplicant WHERE nReusableNo=?";
 	var del_res = await directQuery(sql_del, [resu_no]);
+
+	const html = `<!DOCTYPE html>
+	<html><head><meta charset="UTF-8"><title>재사용 물품 등록/신청 조회</title></head>
+	<body><script>alert ('해당 물품의 재사용 등록을 취소하였습니다..');</script></body>
+	</html>`;
+	res.send(html);
+});
+
+app.post('/cancelReusableApplicant', async function (req, res) {
+	var resu_no = req.body.resu_no;
+
+	var sql = "DELETE FROM tblReusable WHERE nReusableNo=?";
+	//var sql = "update tblReusable set nApplicantState = 0 WHERE nReusableNo=? ";
+	var sql_res = await directQuery(sql, [resu_no]);
+
+	var sql_del = "DELETE FROM tblReusableApplicant WHERE nReusableNo=?";
+	var del_res = await directQuery(sql_del, [resu_no]);
+
+	const html = `<!DOCTYPE html>
+	<html><head><meta charset="UTF-8"><title>재사용 물품 등록/신청 조회</title></head>
+	<body><script>alert ('해당 물품의 재사용 등록을 취소하였습니다..');</script></body>
+	</html>`;
+	res.send(html);
+});
+
+app.post('/applicantDone', async function (req, res) {
+	var resu_no = req.body.resu_no;
+
+	//var sql = "DELETE FROM tblReusable WHERE nReusableNo=?";
+	var sql = "update tblReusable set nApplicantState = 3 WHERE nReusableNo=? ";
+	var sql_res = await directQuery(sql, [resu_no]);
+
+	//var sql_del = "DELETE FROM tblReusableApplicant WHERE nReusableNo=?";
+	//var del_res = await directQuery(sql_del, [resu_no]);
 
 	const html = `<!DOCTYPE html>
 	<html><head><meta charset="UTF-8"><title>재사용 물품 등록/신청 조회</title></head>
