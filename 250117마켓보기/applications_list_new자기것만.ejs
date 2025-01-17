@@ -138,9 +138,15 @@
                                 </span>
                                 <span class="grid_item2"><%= item.sFixtureNo %></span>
                                 <span class="grid_item2"><%= item.sReusablePlace %></span>
-                                <span class="grid_item2"><%= item.nReusableRank %></span>
+                                <span class="grid_item2"><%= 
+                                    item.nReusableRank === 1 ? 'A' :
+                                    item.nReusableRank === 2 ? 'B' :
+                                    item.nReusableRank === 3 ? 'C' :
+                                    item.nReusableRank === 4 ? 'D' :
+                                    item.nReusableRank
+                                %></span>
                                 <span class="grid_item2">
-                                    <button class="red_border_btn" onclick="registrar_checkPopup()">등록자 확인</button>
+                                    <button class="red_border_btn" onclick="resuableCheck(<%=rinfos[index].nReusableNo%>)">등록자 확인</button>
                                 </span>
                                 <span class="grid_item2 <%= item.sStatus === '수령완료' ? 'gray_txt transaction_completed' : 
                                                  item.sStatus === '수령대기' ? '' : 'registering' %>">
@@ -241,6 +247,12 @@
             window.open('registrar_checkPopup', 'ApprovalPopup', popupOptions);
         }
         
+        function resuableCheck(resuNo) {
+            window.open('registrar_checkPopup?resuNo='+ resuNo, 'Popup', 'width=1000,height=650');
+        }
 
     </script>
 </html>
+
+
+
