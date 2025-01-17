@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+    </head>
+    <body>
+        <!-- skip 네비게이션 영역 -->
+        <nav id="skipToContent">
+            <ul>
+                <li><a href="#container">본문 바로가기</a></li>
+                <li><a href="#gnb">주메뉴 바로가기</a></li>
+                <li><a href="#header">상위메뉴 바로가기</a></li>
+                <li><a href="#footers">하위메뉴 바로가기</a></li>
+            </ul> 
+        </nav>
+        <!-- skip 네비게이션 영역 -->
+
+        <!-- 물품 / 비품 등록 버튼 -->
+        <div id="plus_btn">
+            <a href="#none"></a>
+        </div>
+        <!-- 물품 / 비품 등록 버튼 -->
+
+        <!-- 물품 / 비품 등록 모달 -->
+        <div id="registration_modal" class="modal_container hidden">
+            <%-/*물품 / 비품 등록*/ include ("./templates/test_modal") %>
+        </div>
+        <!-- 물품 / 비품 등록 모달 -->
+
+        <!-- header -->
+        <header id="header">
+            <%-/*header 불러오기*/ include ("./templates/headers") %>
+        </header>
+        <!-- header -->
+
+        <!-- section -->
+        <section id="sub_section" class="center">
+            <!-- 좌측 서브 메뉴 (aside) -->
+            <aside class="aside">
+                <div class="side_tit fix_flexcenter">
+                    <p>재사용 마켓</p>
+                </div>
+                <div class="side_menu">
+                    <div class="menu_info">
+                        <p>재사용 마켓은 고려대학교 교내 비품의 재사용을 촉진하는 나눔의 공간입니다.</p>
+                    </div>
+                    <ul class="menu_item">
+                        <li>
+                            <a href="reusable_market_new" class="active">마켓 보기</a>
+                        </li>
+                        <li>
+                            <a href="registration_list_new">등록 물품 관리</a>
+                        </li>
+                        <li>
+				<!--<a href="applications_list_new">신청 물품 관리</a>-->
+                            <a href="applications_list_new">신청 물품 관리</a>
+                        </li>
+                        <li>
+                            <a href="return_application_list_new">반납 신청 목록</a>
+                        </li>
+                        <li>
+                            <a href="approval_box_new">반납 신청 관리</a>
+                        </li>
+                        <li>
+                            <a href="transactions_list_new">양도 완료된 물품 목록</a>
+                        </li>
+                    </ul>
+                </div> 
+            </aside>
+            <!-- 좌측 서브 메뉴 (aside) -->
+
+            <!-- 우축 서브 콘텐츠 -->
+            <div class="container">
+                <!-- location -->
+                <ul class="location">
+                    <li>
+                        <a href="index"><img src="/images/home_btn.svg" alt="홈버튼 이미지"></a>
+                    </li>
+                    <li>
+                        <p>재사용 마켓</p>
+                    </li>
+                    <li>
+                        <p>마켓 보기</p>
+                    </li>
+                </ul>
+                <!-- location -->
+
+                <!-- drop_search -->
+                <div>
+                    <form id="searchForm" method="GET" action="/reusable_market_new" class="drop_search">
+                        <div class="dropDown">
+                            <select id="searchType" name="searchType">
+                                <option value="0" <%=searchType==='0'?'selected':''%>>선택</option>
+                                <option value="1" <%=searchType==='1'?'selected':''%>>전체</option>
+                                <option value="2" <%=searchType==='2'?'selected':''%>>제목</option>
+                                <option value="3" <%=searchType==='3'?'selected':''%>>내용</option>
+                            </select>
+                        </div>
+                        <div class="search">
+                            <input id="searchKeyword" name="searchKeyword" value="<%=searchKeyword%>" placeholder="검색어를 입력해주세요.">
+                        </div>
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+                <!-- drop_search -->
+
+                <!-- tab -->
+                <div class="tab_container">
+                    <!-- tab menu -->
+                    <div class="tab_menu_bar">
+                        <div class="tab active" id="allTab" onclick="changeTab('all')">
+                            <a href="#none">전체</a>
+                        </div>
+                        <div class="tab" id="reuseTab" onclick="changeTab('reuse')">
+                            <a href="#none">재사용 비품</a>
+                        </div>
+                        <div class="tab" id="shareTab" onclick="changeTab('share')">
+                            <a href="#none">나눔 물품</a>
+                        </div>
+                    </div>
+                    <!-- tab menu -->
+
+                    <!-- tab contents -->
+                    <div id="tab_content">
+                        <!-- all tab -->
+                        <div class="tab_item" data-category="all">
+                            <% for (var i = 0; i < rinfos.length; i++) { %>
+                                <% if (i % 4 == 0) { %>
+                                    <ul class="product_wrap">
+                                <% } %>
+                                <li class="pro_inner">
+                                    <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" 
+                                       onClick="javascript:openDetailModal(<%=i%>,<%=rinfos[i].nReusableNo%>,'<%=rinfos[i].sReusableEmail%>','<%=rinfos[i].sReusableMobile%>',<%=rinfos[i].nReusableShare%>,'<%=rinfos[i].sReusableName%>','<%=rinfos[i].sReusableType%>','<%=rinfos[i].sReusableContent%>','<%=rinfos[i].sReusablePlace%>','<%=rinfos[i].sFixtureName%>','<%=rinfos[i].sFixtureNo%>','<%=rinfos[i].sFixtureModel%>','<%=rinfos[i].sFixtureType%>','<%=rinfos[i].sFixtureBuildName%>','<%=rinfos[i].sFixtureRoomNo%>','<%=rinfos[i].dFixtureDate%>','<%=rinfos[i].sFixturePrice%>','<%=rinfos[i].sImgPath%>','<%=rinfos[i].sImgBin%>','<%=rinfos[i].nReusableRank%>')">
+                                        <div class="box_img">
+                                            <img data-file="<%=rinfos[i].sImgPath%>" src="<%=rinfos[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" />
+                                            <% if(rinfos[i].nReusableShare == 1) { %>
+                                                <span class="namun"></span>
+                                            <% } %>
+                                        </div>
+                                        <h4><%=rinfos[i].sReusableName%></h4>
+                                        <div class="memo_text"><%=rinfos[i].sReusableMemo%></div>
+                                    </a>
+                                    <div class="pro_btn">
+                                        <button class="btn_none" id="requestCheck" onclick="requestReusable(<%=rinfos[i].nReusableNo%>,'<%=user_email%>','<%=userid%>')">신청</button>
+                                        <button class="btn_none">메일 보내기</button>
+                                    </div>
+                                </li>
+                                <% if (i % 4 == 3 || i == rinfos.length - 1) { %>
+                                    </ul>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <div class="tab_item" data-category="reuse">
+                            <%
+                            for (var i = 0; i < rinfos_reus.length; i++)
+                            {
+                                var str_rank = "";
+                        
+                                if(rinfos_reus[i].nReusableRank == 1)
+                                {
+                                    str_rank = "A";
+                                }
+                                else if(rinfos_reus[i].nReusableRank == 2)
+                                {
+                                    str_rank = "B";
+                                }
+                                else if(rinfos_reus[i].nReusableRank == 3)
+                                {
+                                    str_rank = "C";
+                                }
+                                else if(rinfos_reus[i].nReusableRank == 4)
+                                {
+                                    str_rank = "D";
+                                }
+                                                   
+                                if(i % 4 == 0)
+                                {
+                                    %>
+                                    <ul class="product_wrap">
+                                        <li class="pro_inner" >
+                                            <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_reus[i].nReusableNo%>,'<%=rinfos_reus[i].sReusableEmail%>','<%=rinfos_reus[i].sReusableMobile%>',<%=rinfos_reus[i].nReusableShare%>,'<%=rinfos_reus[i].sReusableName%>','<%=rinfos_reus[i].sReusableType%>','<%=rinfos_reus[i].sReusableContent%>','<%=rinfos_reus[i].sReusablePlace%>','<%=rinfos_reus[i].sFixtureName%>','<%=rinfos_reus[i].sFixtureNo%>','<%=rinfos_reus[i].sFixtureModel%>','<%=rinfos_reus[i].sFixtureType%>','<%=rinfos_reus[i].sFixtureBuildName%>','<%=rinfos_reus[i].sFixtureRoomNo%>','<%=rinfos_reus[i].dFixtureDate%>','<%=rinfos_reus[i].sFixturePrice%>','<%=rinfos_reus[i].sImgPath%>','<%=rinfos_reus[i].sImgBin%>','<%=str_rank%>')">
+                                                <div class="box_img">
+                                                    <img data-file="<%=rinfos_reus[i].sImgPath%>" src="<%=rinfos_reus[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" />
+                                                <%
+                                                if(rinfos_reus[i].nReusableShare == 1)
+                                                {
+                                                    %>
+                                                    <span class="namun"></span>
+                                                    <%
+                                                }
+                                                %>
+                                                </div>
+                                                <h4><%=rinfos_reus[i].sReusableName%></h4>
+                                                <div class="memo_text"><%=rinfos_reus[i].sReusableMemo%></div>
+                                            </a>
+                                        </li>
+                                    <%
+                                }
+                                else
+                                {
+                                    %>
+                                        <li class="pro_inner" >
+                                                <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_reus[i].nReusableNo%>,'<%=rinfos_reus[i].sReusableEmail%>','<%=rinfos_reus[i].sReusableMobile%>',<%=rinfos_reus[i].nReusableShare%>,'<%=rinfos_reus[i].sReusableName%>','<%=rinfos_reus[i].sReusableType%>','<%=rinfos_reus[i].sReusableContent%>','<%=rinfos_reus[i].sReusablePlace%>','<%=rinfos_reus[i].sFixtureName%>','<%=rinfos_reus[i].sFixtureNo%>','<%=rinfos_reus[i].sFixtureModel%>','<%=rinfos_reus[i].sFixtureType%>','<%=rinfos_reus[i].sFixtureBuildName%>','<%=rinfos_reus[i].sFixtureRoomNo%>','<%=rinfos_reus[i].dFixtureDate%>','<%=rinfos_reus[i].sFixturePrice%>','<%=rinfos_reus[i].sImgPath%>','<%=rinfos_reus[i].sImgBin%>','<%=str_rank%>')">
+                                                <div class="box_img">
+                                                    <img data-file="<%=rinfos_reus[i].sImgPath%>" src="<%=rinfos_reus[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" />
+                                                <%
+                                                if(rinfos_reus[i].nReusableShare == 1)
+                                                {
+                                                    %>
+                                                    <span class="namun"></span>
+                                                    <%
+                                                }
+                                                %>
+                                                </div>
+                                                <h4><%=rinfos_reus[i].sReusableName%></h4>
+                                                <div class="memo_text"><%=rinfos_reus[i].sReusableMemo%></div>
+                                            </a>
+                                        </li>
+                                    <%
+                                    if(i == (rinfos_reus.length - 1) || i % 4 == 3)
+                                    {
+                                        %>
+                                    </ul>
+                                        <%
+                                    }
+                                }
+                            }
+                            %>
+                        </div>
+                        <div class="tab_item" data-category="share">
+                            <%
+                            for (var i = 0; i < rinfos_share.length; i++)
+                            {
+                                var str_rank = "";
+                        
+                                if(rinfos_share[i].nReusableRank == 1)
+                                {
+                                    str_rank = "A";
+                                }
+                                else if(rinfos_share[i].nReusableRank == 2)
+                                {
+                                    str_rank = "B";
+                                }
+                                else if(rinfos_share[i].nReusableRank == 3)
+                                {
+                                    str_rank = "C";
+                                }
+                                else if(rinfos_share[i].nReusableRank == 4)
+                                {
+                                    str_rank = "D";
+                                }
+                        
+                                if(i % 4 == 0)
+                                {
+                                    %>
+                                    <ul class="product_wrap">
+                                        <li class="pro_inner" >
+                                                <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_share[i].nReusableNo%>,'<%=rinfos_share[i].sReusableEmail%>','<%=rinfos_share[i].sReusableMobile%>',<%=rinfos_share[i].nReusableShare%>,'<%=rinfos_share[i].sReusableName%>','<%=rinfos_share[i].sReusableType%>','<%=rinfos_share[i].sReusableContent%>','<%=rinfos_share[i].sReusablePlace%>','<%=rinfos_share[i].sFixtureName%>','<%=rinfos_share[i].sFixtureNo%>','<%=rinfos_share[i].sFixtureModel%>','<%=rinfos_share[i].sFixtureType%>','<%=rinfos_share[i].sFixtureBuildName%>','<%=rinfos_share[i].sFixtureRoomNo%>','<%=rinfos_share[i].dFixtureDate%>','<%=rinfos_share[i].sFixturePrice%>','<%=rinfos_share[i].sImgPath%>','<%=rinfos_share[i].sImgBin%>','<%=str_rank%>')">
+                                                <div class="box_img">
+                                                    <img data-file="<%=rinfos_share[i].sImgPath%>" src="<%=rinfos_share[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" />
+                                                <%
+                                                if(rinfos_share[i].nReusableShare == 1)
+                                                {
+                                                    %>
+                                                    <span class="namun"></span>
+                                                    <%
+                                                }
+                                                %>
+                                                </div>
+                                                <h4><%=rinfos_share[i].sReusableName%></h4>
+                                                <div class="memo_text"><%=rinfos_share[i].sReusableMemo%></div>
+                                            </a>
+                                            <div class="pro_btn">
+                                                <button class="btn_none" id="requestCheck"  onclick="requestReusable(<%=rinfos_share[i].nReusableNo%>,'<%=user_email%>','<%=userid%>')">신청</button>
+                                                <button class="btn_none">메일 보내기</button>
+                                            </div>
+                                        </li>
+                                    <%
+                                }
+                                else
+                                {
+                                    %>
+                                        <li class="pro_inner" >
+                                            <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_share[i].nReusableNo%>,'<%=rinfos_share[i].sReusableEmail%>','<%=rinfos_share[i].sReusableMobile%>',<%=rinfos_share[i].nReusableShare%>,'<%=rinfos_share[i].sReusableName%>','<%=rinfos_share[i].sReusableType%>','<%=rinfos_share[i].sReusableContent%>','<%=rinfos_share[i].sReusablePlace%>','<%=rinfos_share[i].sFixtureName%>','<%=rinfos_share[i].sFixtureNo%>','<%=rinfos_share[i].sFixtureModel%>','<%=rinfos_share[i].sFixtureType%>','<%=rinfos_share[i].sFixtureBuildName%>','<%=rinfos_share[i].sFixtureRoomNo%>','<%=rinfos_share[i].dFixtureDate%>','<%=rinfos_share[i].sFixturePrice%>','<%=rinfos_share[i].sImgPath%>','<%=rinfos_share[i].sImgBin%>','<%=str_rank%>')">
+                                                <div class="box_img">
+                                                    <img data-file="<%=rinfos_share[i].sImgPath%>" src="<%=rinfos_share[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" /> 
+                                                <%
+                                                if(rinfos_share[i].nReusableShare == 1)
+                                                {
+                                                    %>
+                                                    <span class="namun"></span>
+                                                    <%
+                                                }
+                                                %>
+                                                </div>
+                                                <h4><%=rinfos_share[i].sReusableName%></h4>
+                                                <div class="memo_text"><%=rinfos_share[i].sReusableMemo%></div>
+                                            </a>
+                                        </li>
+                                    <%
+                                    if(i == (rinfos_share.length - 1) || i % 4 == 3)
+                                    {
+                                        %>
+                                    </ul>
+                                        <%
+                                    }
+                                }
+                            }
+                            %>
+                        </div>                
+                // <!-- tab -->
+                
+                <!-- pagination -->
+                <div id="report_page" class="pagination">
+                    <ul>
+                        <% if (currentPage > 1) { %>
+                            <li>
+                                <a href="?page=1&searchType=<%=searchType%>&searchKeyword=<%=searchKeyword%>" class="first">
+                                    <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
+                                </a>
+                            </li>
+                        <% } %>
+                        
+                        <% 
+                        // 페이지 범위 계산
+                        let startPage = Math.max(currentPage - 4, 1);
+                        let endPage = Math.min(startPage + 9, totalPages);
+                        
+                        // 페이지 번호가 10개 미만일 경우 시작 페이지 조정
+                        if (endPage - startPage < 9) {
+                            startPage = Math.max(endPage - 9, 1);
+                        }
+                        
+                        // 페이지 번호 출력
+                        for (let i = startPage; i <= endPage; i++) { %>
+                            <li>
+                                <a href="?page=<%=i%>&searchType=<%=searchType%>&searchKeyword=<%=searchKeyword%>" 
+                                   class="num <%= i === currentPage ? 'active' : '' %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                        <% } %>
+                        
+                        <% if (currentPage < totalPages) { %>
+                            <li>
+                                <a href="?page=<%=totalPages%>&searchType=<%=searchType%>&searchKeyword=<%=searchKeyword%>" class="last">
+                                    <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+                <!-- pagination -->
+            </div>
+
+            <!-- (니눔)물품 정보 상세 보기 모달 -->
+            <div id="shareitemDetail_modal" class="modal_container hidden">
+                <%-/*물품 정보 상세 보기 모달*/ include ("./templates/shareitemDetail_modal") %>
+            </div>
+            <!-- (니눔)물품 정보 상세 보기 모달 -->
+
+            <!-- (재사용)물품 정보 상세 보기 모달 -->
+            <div id="reuseitemDetail_modal" class="modal_container hidden">
+                <%-/*물품 정보 상세 보기 모달*/ include ("./templates/reuseitemDetail_modal") %>
+            </div>
+            <!-- (재사용)물품 정보 상세 보기 모달 -->
+
+            <!-- 우축 서브 콘텐츠 -->
+            <div id="side_list">
+                <ul>
+                    <li id="side_list01">
+                        <div class="sl_header fix_flexcenter">
+                            <p class="sh_p01">등록한 물품</p>
+                            <p class="sh_p02"><%=rinfos.length%></p>
+                        </div>
+                        <div class="sl_contents">
+                            <ol class="sl_ol01">
+                                <% for(let i = 0; i < Math.min(2, rinfos.length); i++) { %>
+                                    <li class="sl_con01 <%= rinfos[i].hasApplicants ? 'sc_active02' : 'sc_active01' %>">
+                                        <a href="registration_list_new" class="<%= rinfos[i].nReusableShare === 1 ? 'sc_imgshare' : '' %>">
+                                            <% if(rinfos[i].nReusableShare === 1) { %>
+                                                <p class="sc_pshare">나눔</p>
+                                            <% } %>
+                                            <img src="<%=rinfos[i].sImgBin%>" alt="등록 물품 이미지<%=i+1%>">
+                                        </a>
+                                        <p class="<%= 
+                                            rinfos[i].nReusableState === 2 && rinfos[i].nApplicantState === 2 ? 'sc_p03' : 
+                                            rinfos[i].hasApplicants ? 'sc_p02' : 'sc_p01' 
+                                        %>">
+                                            <%= 
+                                            rinfos[i].nReusableState === 2 && rinfos[i].nApplicantState === 2 ? '수령대기 중' : 
+                                            rinfos[i].hasApplicants ? '승인처리 중' : '등록 중' 
+                                            %>
+                                        </p>
+                                    </li>
+                                <% } %>
+                            </ol>
+                            <div class="slide_down01 fix_flexcenter">
+                                <a href="#none">
+                                    <span class="blind">하향 슬라이드 버튼</span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li id="side_list02">
+                        <div class="sl_header fix_flexcenter">
+                            <p class="sh_p01">신청한 물품</p>
+                            <p class="sh_p02">4</p>
+                        </div>
+                        <div class="sl_contents">
+                            <ol class="sl_ol02">
+                                <li class="sl_con02">
+                                    <a href="applications_list" class="sc_imgshare">
+                                        <p class="sc_pshare">나눔</p>
+                                        <img src="/images/item03.png" alt="신청 물품 이미지03">
+                                    </a>
+                                    <p class="sc_p03">수령대기 중</p>
+                                </li>
+                                <li class="sl_con02">
+                                    <a href="applications_list">
+                                        <img src="/images/item04.png" alt="신청 물품 이미지04">
+                                    </a>
+                                    <p class="sc_p01">신청 중</p>
+                                </li>
+                                <li class="sl_con02" style="display:none;">
+                                    <a href="applications_list" class="sc_imgshare">
+                                        <p class="sc_pshare">나눔</p>
+                                        <img src="/images/item01.png" alt="신청 물품 이미지01">
+                                    </a>
+                                    <p class="sc_p03">수령대기 중</p>
+                                </li>
+                                <li class="sl_con02" style="display:none;">
+                                    <a href="applications_list">
+                                        <img src="/images/item02.png" alt="신청 물품 이미지02">
+                                    </a>
+                                    <p class="sc_p01">신청 중</p>
+                                </li>
+                            </ol>
+                            <div class="slide_down02 fix_flexcenter">
+                                <a href="#none">
+                                    <span class="blind">하향 슬라이드 버튼</span>
+                                </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <!-- section -->
+        
+        
+        <!-- footer -->
+        <footer id="footer">
+            <%-/*footer 불러오기*/ include ("./templates/footers") %>
+        </footer>
+        <!-- footer -->
+
+    </body>
+    <script>
+        const user_email = '<%=user_email%>';
+        const userid = '<%=userid%>';
+
+        //플러스 버튼 모달
+        const plusBtn = document.querySelector('#plus_btn a');
+        const registrationModal = document.getElementById('registration_modal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn?.addEventListener('click', closeModal);
+        modalCancelBtn?.addEventListener('click', closeModal);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            registrationModal.style.display = 'flex';
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === registrationModal) {
+                closeModal();
+            }
+        });
+        
+        // 모달 닫기 함수
+        function closeModal() {
+            registrationModal.style.display = 'none';
+        }
+                
+        //(나눔)물품 정보 상세 보기 모달
+        const shareitemDetailBtn = document.getElementById('shareItemDetail_btn')
+        const shareitemDetailModal = document.getElementById('shareitemDetail_modal');
+        const modalCloseBtn02 = document.getElementById('modalCloseBtn02');
+        const modalCancelBtn02 = document.getElementById('modalCancelBtn02');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn02?.addEventListener('click', closeModal02);
+        modalCancelBtn02?.addEventListener('click', closeModal02);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        shareitemDetailBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            shareitemDetailModal.style.display = 'flex';
+        });
+
+        // URL에서 쿼리스트링 파라미터 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const itemId = urlParams.get('itemId');
+
+        // category가 share이고 itemId가 있으면 모달 표시
+        if(category === 'share' && itemId==1) {
+            shareitemDetailModal.style.display = 'flex';
+        }
+
+        function closeModal02() {
+            shareitemDetailModal.style.display = 'none';
+        }
+
+        //(재사용)물품 정보 상세 보기 모달
+        const reuseitemDetailBtn = document.getElementById('reuseItemDetail_btn')
+        const reuseitemDetailModal = document.getElementById('reuseitemDetail_modal');
+        const modalCloseBtn03 = document.getElementById('modalCloseBtn03');
+        const modalCancelBtn03 = document.getElementById('modalCancelBtn03');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn03?.addEventListener('click', closeModal03);
+        modalCancelBtn03?.addEventListener('click', closeModal03);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        reuseitemDetailBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            reuseitemDetailModal.style.display = 'flex';
+        });
+
+        if(category === 'share' && itemId==2) {
+            reuseitemDetailModal.style.display = 'flex';
+        }
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === reuseitemDetailModal) {
+                closeModal03();
+            }
+        });
+
+        function closeModal03() {
+            reuseitemDetailModal.style.display = 'none';
+        }
+
+        /*
+        //플러스 버튼 모달 (test)
+        const plusBtn02 = document.querySelector('#plus_btn02 a');
+        const testModal = document.getElementById('test_modal');
+        const testmodalCloseBtn = document.getElementById('testmodalCloseBtn');
+        const testmodalCancelBtn = document.getElementById('testmodalCancelBtn');
+
+        // 각 닫기 버튼에 이벤트 추가
+        testmodalCloseBtn?.addEventListener('click', closeModal04);
+        testmodalCancelBtn?.addEventListener('click', closeModal04);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        plusBtn02.addEventListener('click', (e) => {
+            e.preventDefault();
+            testModal.style.display = 'flex';
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === testModal) {
+                closeModal04();
+            }
+        });
+
+        function closeModal04() {
+            testModal.style.display = 'none';
+        }
+        */
+
+        // 페이지 로드 시 URL에서 쿼리스트링 제거
+        window.onload = function() {
+            if(window.location.search) {
+                let newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({path: newUrl}, '', newUrl);
+            }
+        };
+            // 모달 클릭 
+        <!-- let currentReusableNo = null; -->
+
+        function openDetailModal(idx, reusNo, userEmail, userPhone, share, title, type, content, place, item_name, item_no, model, kind, build, room, date, price, img_path, img_bin, item_rank) {
+            // Store the reusable number for later use
+            currentReusableNo = reusNo;
+            
+            console.log('Opening modal with share value:', share);
+            
+            // 모달 요소 가져오기
+            const shareModal = document.getElementById('shareitemDetail_modal');
+            const reuseModal = document.getElementById('reuseitemDetail_modal');
+            
+            // 모달 상태 초기화 및 스타일 직접 설정
+            shareModal.style.cssText = 'display: none !important';
+            reuseModal.style.cssText = 'display: none !important';
+            
+            // share 값에 따라 적절한 모달 선택
+            const modal = share === 1 ? shareModal : reuseModal;
+            
+            if (!modal) {
+                console.error('Modal not found for share value:', share);
+                return;
+            }
+
+            // 모달 내용 설정
+            try {
+                // 이미지 설정
+                const modalImg = modal.querySelector(".pro_detail img");
+                if (modalImg) {
+                    modalImg.src = img_bin && img_bin !== "null" ? img_bin : "/images/pro_detail_img.png";
+                    if (img_path && img_path !== "null") {
+                        modalImg.setAttribute('data-file', img_path);
+                    }
+                    modalImg.onerror = () => modalImg.src = "/images/pro_detail_img.png";
+                }
+
+                // 제목과 내용 설정
+                const titleElement = modal.querySelector(".form_request h2");
+                const contentElement = modal.querySelector(".form_request p");
+                if (titleElement) titleElement.textContent = title || '제목 없음';
+                if (contentElement) contentElement.textContent = content || '내용 없음';
+
+                // 등급 설정
+                const rankInput = modal.querySelector(".form_request .Auto_input");
+                if (rankInput) rankInput.value = item_rank || '';
+
+                // 재사용 비품 정보 설정
+                if (share === 0) {
+                    const inputs = modal.querySelectorAll(".fix_flexbetween .Auto_input");
+                    if (inputs.length >= 4) {
+                        inputs[0].value = item_name || "데이터가 없음";
+                        inputs[1].value = price ? price.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "데이터가 없음";
+                        inputs[2].value = date ? `${date.substring(0, 4)}년 ${date.substring(5, 7)}월 ${date.substring(8, 10)}일` : "데이터가 없음";
+                        inputs[3].value = item_no || "데이터가 없음";
+                    }
+                }
+
+                // 모달 표시 (important 플래그 추가)
+                console.log('Showing modal for share value:', share);
+                modal.style.cssText = 'display: flex !important';
+                
+                // 모달이 실제로 표시되었는지 확인
+                console.log('Modal display style:', modal.style.display);
+                console.log('Modal visibility:', window.getComputedStyle(modal).display);
+
+                // z-index 설정 추가
+                modal.style.zIndex = '9999';
+
+            } catch (error) {
+                console.error('Error setting up modal:', error);
+            }
+
+            // 닫기 버튼 이벤트 설정
+            const closeBtn = modal.querySelector(share === 1 ? "#modalCloseBtn02" : "#modalCloseBtn03");
+            const cancelBtn = modal.querySelector(share === 1 ? "#modalCancelBtn02" : "#modalCancelBtn03");
+            
+            const closeModal = () => {
+                modal.style.cssText = 'display: none !important';
+            };
+
+            if (closeBtn) closeBtn.onclick = closeModal;
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+
+            // 모달 외부 클릭 시 닫기
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            };
+        } 
+
+        // 페이지 로드 시 모달 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            const shareModal = document.getElementById('shareitemDetail_modal');
+            const reuseModal = document.getElementById('reuseitemDetail_modal');
+            
+            if (shareModal) shareModal.style.cssText = 'display: none !important';
+            if (reuseModal) reuseModal.style.cssText = 'display: none !important';
+        });
+
+        // 탭 전환 함수 추가
+        function changeTab(category) {
+            // 모든 탭의 active 클래스 제거
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 선택된 탭에 active 클래스 추가
+            document.getElementById(category + 'Tab').classList.add('active');
+            
+            // 모든 탭 콘텐츠 숨기기
+            document.querySelectorAll('.tab_item').forEach(item => {
+                item.style.display = 'none';
+            });
+            
+            // 선택된 탭의 콘텐츠만 표시
+            document.querySelector(`.tab_item[data-category="${category}"]`).style.display = 'block';
+        }
+
+        // 초기 탭 설정
+        document.addEventListener('DOMContentLoaded', () => {
+            changeTab('all');
+        });
+
+        // 검색탭 가능
+
+        function performSearch() {
+            const searchType = document.getElementById('searchType').value;
+            const searchKeyword = document.getElementById('searchKeyword').value;
+            
+            if (searchType === '0') {
+                alert('검색 유형을 선택해주세요.');
+                return;
+            }
+            
+            if (!searchKeyword.trim()) {
+                alert('검색어를 입력해주세요.');
+                return;
+            }
+            
+            // 현재 URL의 기본 경로 가져오기
+            const baseUrl = window.location.pathname;
+            
+            // 새로운 URL 생성
+            const searchParams = new URLSearchParams();
+            searchParams.set('searchType', searchType);
+            searchParams.set('searchKeyword', searchKeyword);
+            
+            // 페이지 이동
+            window.location.href = `${baseUrl}?${searchParams.toString()}`;
+        }
+        
+        // Enter 키 이벤트 추가
+        document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function handleRequestClick() {
+            if (currentReusableNo) {
+                requestReusable(currentReusableNo, user_email, userid);
+                closeModal02(); // Close the modal after request
+            } else {
+                console.error('No reusable number found');
+            }
+        }
+
+        function requestReusable(resu_no, email, userid) {
+            var requestCheck = confirm('신청하시겠습니까?');
+
+            if (requestCheck) {
+                let obj = {
+                    resu_no: resu_no,
+                    email: email,
+                    userno: userid
+                };
+
+                $.ajax({
+                    url: '/requestReusable_List2',
+                    type: "post",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function(result) {
+                        if (result) {
+                            alert(result.result || '신청이 완료되었습니다!');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('신청 처리 중 오류가 발생했습니다.');
+                    },
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                alert('신청이 취소되었습니다.');
+            }
+        }
+
+    </script>
+</html>
