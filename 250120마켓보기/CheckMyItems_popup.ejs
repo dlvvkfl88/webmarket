@@ -91,7 +91,10 @@
                                 <span class="grid-item2"><%=pinfos[i].sFixturePrice%></span>
                                 <span class="grid-item2"><%=pinfos[i].dFixtureDate%></span>
                                 <span class="grid_item2">
-                                    <button class="btn_none green_btn popupCloseBtn">선택</button>
+                                    <button class="btn_none green_btn popupCloseBtn" 
+                                        onclick="selectItem('<%=pinfos[i].sFixtureName%>', '<%=pinfos[i].sFixturePrice%>', '<%=pinfos[i].dFixtureDate%>', '<%=pinfos[i].sFixtureNo%>')">
+                                        선택
+                                    </button>
                                 </span>
                             </div>
                         <% } %>
@@ -142,12 +145,6 @@
                 </div>
                 <!-- pagination -->
             </div>
-            <!-- popup under btn -->
-            <div class="popup_under_btn">
-                <button class="btn_none green_btn popupCloseBtn" onclick="selectAndClose()">물품 선택</button>
-                <button class="btn_none green_border_btn popupCloseBtn" onclick="closePopup()">취소</button>
-            </div>
-            <!-- popup under btn -->
         </section>
     </body>
     <script>
@@ -160,35 +157,9 @@
         let selectedItem = null;
 
         // 체크박스 클릭 시 다른 체크박스 해제하고 선택된 항목 저장
-        function uncheckOthers(checkbox) {
-            // 다른 모든 체크박스 해제
-            const checkboxes = document.getElementsByName('itemCheckbox');
-            checkboxes.forEach(box => {
-                if (box !== checkbox) {
-                    box.checked = false;
-                }
-            });
 
-            if (checkbox.checked) {
-                // 선택된 항목의 부모 요소에서 데이터 가져오기
-                const container = checkbox.closest('.grid-container_CheckMyItemsList');
-                selectedItem = {
-                    name: container.querySelector('.grid-item2:nth-child(3)').textContent,    // 물품명
-                    number: container.querySelector('.grid-item2:nth-child(4)').textContent,  // 물품번호
-                    price: container.querySelector('.grid-item2:nth-child(5)').textContent,   // 취득금액
-                    date: container.querySelector('.grid-item2:nth-child(6)').textContent     // 취득일자
-                };
-            } else {
-                selectedItem = null;
-            }
-        }
-
-        // 물품선택 버튼 클릭 시 실행될 함수
+        // 버튼 클릭 시 실행될 함수
         function selectAndClose() {
-            if (!selectedItem) {
-                alert('물품을 선택해주세요.');
-                return;
-            }
 
             // 부모 창(test_modal)의 입력 필드에 선택된 물품 정보 설정
             window.opener.document.querySelector('input.Auto_input[disabled]').value = selectedItem.name;      // 물품명
@@ -198,15 +169,6 @@
 
             // 팝업창 닫기
             window.close();
-        }
-
-        // 헤더의 체크박스 클릭시 모든 체크박스 해제
-        function uncheckAll(headerCheckbox) {
-            headerCheckbox.checked = false;
-            const checkboxes = document.getElementsByName('itemCheckbox');
-            checkboxes.forEach((item) => {
-                item.checked = false;
-            });
         }
 
         // 검색 함수
@@ -223,5 +185,16 @@
                 search();
             }
         });
+
+        // 물품 선택 함수 추가
+        function selectItem(name, price, date, number) {
+            selectedItem = {
+                name: name,
+                price: price,
+                date: date,
+                number: number
+            };
+            selectAndClose();
+        }
     </script>
 </html>
