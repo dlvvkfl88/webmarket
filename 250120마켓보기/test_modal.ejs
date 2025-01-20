@@ -467,7 +467,6 @@
                     data: {data: jdata},
                     success: function(result) {
                         if (result.sucess) {
-                            // 메인 데이터 저장 성공 후 이미지 저장
                             if (reusableImg.length >= 1) {
                                 const img_data = {
                                     idx: result.reus_id,
@@ -571,6 +570,32 @@
             // 체크박스 초기화
             const checkboxes = document.querySelectorAll('.checkbox_input');
             checkboxes.forEach(checkbox => checkbox.checked = false);
+        }
+
+        function cleanupAndCloseModal() {
+            // 이벤트 리스너 제거
+            const realShareUpload = document.querySelector('.real-share-upload');
+            if (realShareUpload) {
+                realShareUpload.removeEventListener('change', getShareImageFiles);
+            }
+            
+            // 모달 초기화
+            resetAllInputs();
+            
+            // 모달 닫기
+            const modal = document.querySelector('.modal_con');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            
+            // 모달 배경 닫기 (있는 경우)
+            const modalBackground = document.querySelector('.modal_bg');
+            if (modalBackground) {
+                modalBackground.style.display = 'none';
+            }
+            
+            // 필요한 경우 페이지 새로고침
+            window.location.reload();
         }
 
 </script>
