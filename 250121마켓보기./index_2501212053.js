@@ -7158,17 +7158,20 @@ app.post('/getCompApprInfo', async function (req, res) {
 
 // 양도된 물품목록 페이지 
 app.get('/transactions_list_new', session_exists, async function (req, res) {
-	var tsql = "SELECT count(*) as tot FROM tblReusable; ";
+	var tsql = `SELECT count(*) as tot 
+	FROM tblReusable 
+	WHERE nReusableState = 3 AND nApplicantState = 3;`;
 	var res_total = await directQuery(tsql);
 	var total = res_total[0].tot;
 
 	// 페이지 파라미터 가져오기
 	var nStart = parseInt(req.query.page) || 0;
 
-	// ORDER BY dFixtureDate DESC 추가하여 최신순 정렬
-	var sql = "SELECT * FROM tblReusable ORDER BY dFixtureDate DESC";
-	sql += " LIMIT 10 OFFSET ?;";
-
+	// 완료된 항목만 조회하도록 수정
+	var sql = `SELECT * FROM tblReusable 
+			   WHERE nReusableState = 3 AND nApplicantState = 3 
+			   ORDER BY dReusableDoneDate DESC 
+			   LIMIT 10 OFFSET ?;`;
 	var rinfos = await directQuery(sql, [Number(nStart * 10)]);
 
 	var start_page = nStart - (nStart % 10);
