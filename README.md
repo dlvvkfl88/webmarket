@@ -41,3 +41,7 @@
 
 0121 드디어 사진 수정 성공 0121마켓보기에 올려놓을예정
 ![image](https://github.com/user-attachments/assets/35eeefa6-c7d7-4ff9-b63b-983e1013ee56)
+
+reusable_market_new 
+sql 선정자 된것들 안보이게 신청까지는 보임 
+![스크린샷 2025-01-21 19-48-44](https://github.com/user-attachments/assets/02ddcedb-068f-4816-8470-06f2302dfac3)
