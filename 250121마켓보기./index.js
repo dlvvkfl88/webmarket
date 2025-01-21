@@ -5228,6 +5228,7 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 	var authority_list = await directQuery(sql, [req.session.user.userid]);
 
 	sql = "SELECT * FROM tblUser WHERE sNumber=?";
+	var User_list = await directQuery(sql, [req.session.user.userid]);
 
 	for (var idx = 0; idx < authority_list.length; idx++) {
 		if (authority_list[idx].sStdId == "210597") {
@@ -5253,7 +5254,7 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 	}
 
 	//res.render("reusable_market", { idx: req.session.user.name, userid: req.session.user.userid, rinfos: rinfos, rinfos_img: rinfos_img, rinfos_reus: rinfos_reus, rinfos_reus_img: rinfos_reus_img, rinfos_share: rinfos_share, rinfos_share_img: rinfos_share_img, nIndex: nIndex,user_email: user_email,user_phone: user_phone, permission: req.session.user.permission });
-	res.render("reusable_market_new", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, rinfos: rinfos, rinfos_reus: rinfos_reus, rinfos_share: rinfos_share, nIndex: nIndex, user_email: user_email, user_phone: user_phone, searchType: searchType, searchKeyword: searchKeyword, permission_reusable: req.session.user.permission_reusable, authority_list: authority_list, sel_authority: req.session.user.selectAuithority, currentPage: page, totalPages: totalPages, searchType: searchType, searchKeyword: searchKeyword, slideGroups: slideGroups, progressItems: progressItems, userName: req.session.user.name });
+	res.render("reusable_market_new", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, rinfos: rinfos, rinfos_reus: rinfos_reus, rinfos_share: rinfos_share, nIndex: nIndex, user_email: user_email, user_phone: user_phone, searchType: searchType, searchKeyword: searchKeyword, permission_reusable: req.session.user.permission_reusable, authority_list: authority_list, sel_authority: req.session.user.selectAuithority, currentPage: page, totalPages: totalPages, searchType: searchType, searchKeyword: searchKeyword, slideGroups: slideGroups, progressItems: progressItems, userName: req.session.user.name, User_list: User_list });
 });
 
 // 바뀌지좀 마라 
