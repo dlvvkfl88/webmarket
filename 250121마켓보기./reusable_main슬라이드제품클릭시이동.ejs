@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- skip 네비게이션 영역 -->
+            <nav id="skipToContent">
+                <ul>
+                    <li><a href="#container">본문 바로가기</a></li>
+                    <li><a href="#gnb">주메뉴 바로가기</a></li>
+                    <li><a href="#header">상위메뉴 바로가기</a></li>
+                    <li><a href="#footers">하위메뉴 바로가기</a></li>
+                </ul> 
+            </nav>
+            <!-- skip 네비게이션 영역 -->
+
+            <!-- header -->
+            <header id="header">
+                <%-/*header 불러오기*/ include ("./templates/headers") %>
+            </header>
+            <!-- header -->
+
+            <!-- main -->
+            <main id="main_contents" class="center">
+                <ul class="main_contents_wrap">
+                    <li class="con_box">
+                        <a href="reusable_market_new">
+                            <div class="con_text">
+                                <h2>재사용 마켓</h2>
+                                <p>마켓에 등록된 물품을 골라 사용 신청할 수 있으며, 내가 사용하지 않는 물품을 마켓 등록할 수 있습니다.</p>
+                                <button>바로가기</button>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="con_box">
+                        <a href="fixtures">
+                            <div class="con_text">
+                                <h2>비품 조회</h2>
+                                <p>내가 보유한 비품 정보를 확인하고 필요한 데이터는 선택 후 엑셀 파일 형태로 다운로드할 수 있습니다.</p>
+                                <button>바로가기</button>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="con_box">
+                        <a href="fixtures?modex=8">
+                            <div class="con_text">
+                                <h2>비품 실사</h2>
+                                <p>비품 별 확인 정보를 시스템에 바로 입력해 비품 실사를 간편하게 처리할 수 있습니다.</p>
+                                <button>바로가기</button>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </main>
+            <!-- main -->
+
+            <!-- section -->
+            <section id="section" class="center">
+                <div class="top">
+                    <div class="title">
+                        <h2>최근 등록된 물품</h2>
+                    </div>
+                    <div class="arrow_btn">
+                        <button class="prev <%= recentItems.length <= 3 ? 'disabled' : '' %>"></button>
+                        <button class="next <%= recentItems.length <= 3 ? 'disabled' : '' %>"></button>
+                    </div>
+                </div>
+                <div class="slider_container">
+                    <div class="slider_wrap">
+                        <% if (recentItems && recentItems.length > 0) { %>
+                            <% recentItems.forEach((item, index) => { %>
+                                <div class="slide <%= ['slide_left', 'slide_center', 'slide_right'][index % 3] %>">
+                                    <a href="reusable_market_new?autoOpen=<%= item.nReusableNo %>" class="slide_inner">
+                                        <img src="<%= item.sImgBin || '/images/default-image.png' %>" 
+                                             alt="<%= item.sReusableName %>"
+                                             onerror="this.src='/images/default-image.png'"
+                                             height="250px" width="250px">
+                                        <% if(item.nReusableShare == 1) { %>
+                                            <span><%= item.shareType %></span>
+                                        <% } %>
+                                        <div class="text_wrap">
+                                            <div class="text">
+                                                <h2><%= item.sReusableName %></h2>
+                                            </div>
+                                            <p><%= item.sReusableContent %></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="no-items">
+                                <p>등록된 물품이 없습니다.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </section>
+            <!-- section -->
+        </div>
+        
+        <!-- footer -->
+        <footer id="footer">
+            <%-/*footer 불러오기*/ include ("./templates/footers") %>
+        </footer>
+        <!-- footer -->
+
+        <!-- 모바일 하단 메뉴 -->
+        <div class="m_bottom">
+            <ul class="fix_flexcenter">
+                <li class="m_home">
+                    <a href="index"></a>
+                </li>
+                <li class="m_inquiry">
+                    <a href="equipment_inquiry"></a>
+                </li>
+                <li class="m_plus">
+                    <a href="reusable_market?category=register">
+                        <div></div>
+                    </a>
+                </li>
+                <li class="m_search">
+                    <a href="equipment_idiligence"></a>
+                </li>
+                <li class="m_reuse m_active">
+                    <a href="reusable_market"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 모바일 하단 메뉴 -->
+    </body>
+</html>
