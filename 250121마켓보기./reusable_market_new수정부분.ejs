@@ -248,8 +248,9 @@
                                             <div class="memo_text"><%=rinfos[i].sReusableMemo%></div>
                                         </a>
                                         <div class="pro_btn">
-                                            <button class="btn_none" id="requestCheck" onclick="requestReusable(<%=rinfos[i].nReusableNo%>,'<%=user_email%>','<%=userid%>')">신청</button>
-                                            <button class="btn_none">메일 보내기</button>
+                                            <% if (rinfos[i].sReusableEmail === user_email) { %>
+                                                <button class="btn_none" disabled>본인 등록 물품</button>
+                                            <% } %>
                                         </div>
                                     </li>
                                     <% if (i % 4 == 3 || i == rinfos.length - 1) { %>
@@ -322,6 +323,11 @@
                                                     <h4><%=rinfos_reus[i].sReusableName%></h4>
                                                     <div class="memo_text"><%=rinfos_reus[i].sReusableMemo%></div>
                                                 </a>
+                                                <div class="pro_btn">
+                                                    <% if (rinfos_reus[i].sReusableEmail === user_email) { %>
+                                                        <button class="btn_none" disabled>본인 등록 물품</button>
+                                                    <% } %>
+                                                </div>
                                             </li>
                                         <%
                                         if(i == (rinfos_reus.length - 1) || i % 4 == 3)
@@ -379,8 +385,9 @@
                                                     <div class="memo_text"><%=rinfos_share[i].sReusableMemo%></div>
                                                 </a>
                                                 <div class="pro_btn">
-                                                    <button class="btn_none" id="requestCheck"  onclick="requestReusable(<%=rinfos_share[i].nReusableNo%>,'<%=user_email%>','<%=userid%>')">신청</button>
-                                                    <button class="btn_none">메일 보내기</button>
+                                                    <% if (rinfos_share[i].sReusableEmail === user_email) { %>
+                                                        <button class="btn_none" disabled>본인 등록 물품</button>
+                                                    <% } %>
                                                 </div>
                                             </li>
                                         <%
@@ -416,7 +423,7 @@
                                 }
                                 %>
                             </div>                
-                    // <!-- tab -->
+                     <!-- tab -->
                     
                     <!-- pagination -->
                     <div id="report_page" class="pagination">
@@ -1054,64 +1061,77 @@
             e.preventDefault();
             
             try {
-                const formData = new FormData();
-                
-                // 필수 필드 값 검증
+                // 폼 데이터 수집
                 const reusableNo = document.getElementById('reusableNo').value;
                 const title = document.getElementById('title').value;
                 const content = document.getElementById('content').value;
                 
-                if (!reusableNo) {
-                    throw new Error('Reusable number is required');
+                // 데이터 유효성 검사
+                if (!reusableNo || !title || !content) {
+                    alert('모든 필수 필드를 입력해주세요.');
+                    return;
                 }
-                
-                // 기본 데이터 추가
-                formData.append('reusableNo', reusableNo);
-                formData.append('title', title);
-                formData.append('content', content);
-                
-                // 파일 처리
+
+                // 이미지 처리
                 const fileInput = document.getElementById('file');
+                let reusableImg = null;
+                let reusableImgBin = null;
+
                 if (fileInput.files && fileInput.files[0]) {
                     const file = fileInput.files[0];
-                    formData.append('file', file);
                     
-                    // 파일 이름 처리
-                    const mainFileName = 'main ' + file.name;
-                    formData.append('mainFileName', mainFileName);
-                    
-                    // Base64 변환
-                    const base64Data = await new Promise((resolve) => {
+                    // 파일 크기 체크 (5MB 제한)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('파일 크기는 5MB를 초과할 수 없습니다.');
+                        return;
+                    }
+
+                    reusableImg = file.name;
+                    reusableImgBin = await new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = () => resolve(reader.result);
                         reader.readAsDataURL(file);
                     });
-                    
-                    formData.append('base64Data', base64Data);
                 }
-                
-                // API 호출
+
+                // 요청 데이터 구성
+                const requestData = {
+                    reusableNo,
+                    title,
+                    content,
+                    reusableImg,
+                    reusableImgBin
+                };
+
+                console.log('Sending data:', { ...requestData, reusableImgBin: reusableImgBin ? 'BASE64_STRING' : null });
+
+                // API 요청
                 const response = await fetch('/reusable/update-progress', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
                 });
-                
+
+                // 응답 처리
+                const responseData = await response.json();
+                console.log('Server response:', responseData);
+
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(responseData.message || '서버 오류가 발생했습니다.');
                 }
-                
-                const result = await response.json();
-                
-                if (result.success) {
+
+                if (responseData.success) {
                     alert('수정이 완료되었습니다.');
-                    location.reload();
+                    window.location.reload();
                 } else {
-                    throw new Error(result.error || '알 수 없는 오류가 발생했습니다.');
+                    throw new Error(responseData.message || '알 수 없는 오류가 발생했습니다.');
                 }
-                
+
             } catch (error) {
-                console.error('Error:', error);
-                alert('수정 중 오류가 발생했습니다: ' + error.message);
+                console.error('Error details:', error);
+                alert(`수정 중 오류가 발생했습니다: ${error.message}`);
             }
         };
 
@@ -1131,6 +1151,44 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        // URL에서 autoOpen 파라미터 확인하여 모달 자동 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoOpenItemId = urlParams.get('autoOpen');
+            
+            if (autoOpenItemId) {
+                // 해당 아이템 찾기
+                const items = <%- JSON.stringify(rinfos) %>;
+                const item = items.find(item => item.nReusableNo == autoOpenItemId);
+                
+                if (item) {
+                    // 아이템 찾으면 모달 열기
+                    openDetailModal(
+                        0, // index
+                        item.nReusableNo,
+                        item.sReusableEmail,
+                        item.sReusableMobile,
+                        item.nReusableShare,
+                        item.sReusableName,
+                        item.sReusableType,
+                        item.sReusableContent,
+                        item.sReusablePlace,
+                        item.sFixtureName,
+                        item.sFixtureNo,
+                        item.sFixtureModel,
+                        item.sFixtureType,
+                        item.sFixtureBuildName,
+                        item.sFixtureRoomNo,
+                        item.dFixtureDate,
+                        item.sFixturePrice,
+                        item.sImgPath,
+                        item.sImgBin,
+                        item.nReusableRank
+                    );
+                }
+            }
+        });
 
     </script>
 </html>
