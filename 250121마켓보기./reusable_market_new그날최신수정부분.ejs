@@ -248,7 +248,7 @@
                                             <div class="memo_text"><%=rinfos[i].sReusableMemo%></div>
                                         </a>
                                         <div class="pro_btn">
-                                            <% if (rinfos[i].sReusableEmail === user_email) { %>
+                                            <% if (rinfos[i].sReusableUserNo === userid) { %>
                                                 <button class="btn_none" disabled>본인 등록 물품</button>
                                             <% } %>
                                         </div>
@@ -324,7 +324,7 @@
                                                     <div class="memo_text"><%=rinfos_reus[i].sReusableMemo%></div>
                                                 </a>
                                                 <div class="pro_btn">
-                                                    <% if (rinfos_reus[i].sReusableEmail === user_email) { %>
+                                                    <% if (rinfos_reus[i].sReusableUserNo === userid) { %>
                                                         <button class="btn_none" disabled>본인 등록 물품</button>
                                                     <% } %>
                                                 </div>
@@ -341,87 +341,32 @@
                                 %>
                             </div>
                             <div class="tab_item" data-category="share">
-                                <%
-                                for (var i = 0; i < rinfos_share.length; i++)
-                                {
-                                    var str_rank = "";
-                            
-                                    if(rinfos_share[i].nReusableRank == 1)
-                                    {
-                                        str_rank = "A";
-                                    }
-                                    else if(rinfos_share[i].nReusableRank == 2)
-                                    {
-                                        str_rank = "B";
-                                    }
-                                    else if(rinfos_share[i].nReusableRank == 3)
-                                    {
-                                        str_rank = "C";
-                                    }
-                                    else if(rinfos_share[i].nReusableRank == 4)
-                                    {
-                                        str_rank = "D";
-                                    }
-                            
-                                    if(i % 4 == 0)
-                                    {
-                                        %>
+                                <% for (var i = 0; i < rinfos_share.length; i++) { %>
+                                    <% if(i % 4 == 0) { %>
                                         <ul class="product_wrap fix_flexbetween2">
-                                            <li class="pro_inner item_card" >
-                                                    <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_share[i].nReusableNo%>,'<%=rinfos_share[i].sReusableEmail%>','<%=rinfos_share[i].sReusableMobile%>',<%=rinfos_share[i].nReusableShare%>,'<%=rinfos_share[i].sReusableName%>','<%=rinfos_share[i].sReusableType%>','<%=rinfos_share[i].sReusableContent%>','<%=rinfos_share[i].sReusablePlace%>','<%=rinfos_share[i].sFixtureName%>','<%=rinfos_share[i].sFixtureNo%>','<%=rinfos_share[i].sFixtureModel%>','<%=rinfos_share[i].sFixtureType%>','<%=rinfos_share[i].sFixtureBuildName%>','<%=rinfos_share[i].sFixtureRoomNo%>','<%=rinfos_share[i].dFixtureDate%>','<%=rinfos_share[i].sFixturePrice%>','<%=rinfos_share[i].sImgPath%>','<%=rinfos_share[i].sImgBin%>','<%=str_rank%>')">
-                                                    <div class="box_img">
-                                                        <img data-file="<%=rinfos_share[i].sImgPath%>" src="<%=rinfos_share[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" /> 
-                                                    <%
-                                                    if(rinfos_share[i].nReusableShare == 1)
-                                                    {
-                                                        %>
-                                                        <span class="namun"></span>
-                                                        <div class="badge">나눔</div>
-                                                        <%
-                                                    }
-                                                    %>
-                                                    </div>
-                                                    <h4><%=rinfos_share[i].sReusableName%></h4>
-                                                    <div class="memo_text"><%=rinfos_share[i].sReusableMemo%></div>
-                                                </a>
-                                                <div class="pro_btn">
-                                                    <% if (rinfos_share[i].sReusableEmail === user_email) { %>
-                                                        <button class="btn_none" disabled>본인 등록 물품</button>
-                                                    <% } %>
-                                                </div>
-                                            </li>
-                                        <%
-                                    }
-                                    else
-                                    {
-                                        %>
-                                            <li class="pro_inner item_card" >
-                                                <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_share[i].nReusableNo%>,'<%=rinfos_share[i].sReusableEmail%>','<%=rinfos_share[i].sReusableMobile%>',<%=rinfos_share[i].nReusableShare%>,'<%=rinfos_share[i].sReusableName%>','<%=rinfos_share[i].sReusableType%>','<%=rinfos_share[i].sReusableContent%>','<%=rinfos_share[i].sReusablePlace%>','<%=rinfos_share[i].sFixtureName%>','<%=rinfos_share[i].sFixtureNo%>','<%=rinfos_share[i].sFixtureModel%>','<%=rinfos_share[i].sFixtureType%>','<%=rinfos_share[i].sFixtureBuildName%>','<%=rinfos_share[i].sFixtureRoomNo%>','<%=rinfos_share[i].dFixtureDate%>','<%=rinfos_share[i].sFixturePrice%>','<%=rinfos_share[i].sImgPath%>','<%=rinfos_share[i].sImgBin%>','<%=str_rank%>')">
-                                                    <div class="box_img">
-                                                        <img data-file="<%=rinfos_share[i].sImgPath%>" src="<%=rinfos_share[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" /> 
-                                                    <%
-                                                    if(rinfos_share[i].nReusableShare == 1)
-                                                    {
-                                                        %>
-                                                        <span class="namun"></span>
-                                                        <%
-                                                    }
-                                                    %>
-                                                    </div>
-                                                    <h4><%=rinfos_share[i].sReusableName%></h4>
-                                                    <div class="memo_text"><%=rinfos_share[i].sReusableMemo%></div>
-                                                </a>
-                                            </li>
-                                        <%
-                                        if(i == (rinfos_share.length - 1) || i % 4 == 3)
-                                        {
-                                            %>
+                                    <% } %>
+                                    <li class="pro_inner item_card">
+                                        <a href="javascript:void(0)" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_share[i].nReusableNo%>,'<%=rinfos_share[i].sReusableEmail%>','<%=rinfos_share[i].sReusableMobile%>',<%=rinfos_share[i].nReusableShare%>,'<%=rinfos_share[i].sReusableName%>','<%=rinfos_share[i].sReusableType%>','<%=rinfos_share[i].sReusableContent%>','<%=rinfos_share[i].sReusablePlace%>','<%=rinfos_share[i].sFixtureName%>','<%=rinfos_share[i].sFixtureNo%>','<%=rinfos_share[i].sFixtureModel%>','<%=rinfos_share[i].sFixtureType%>','<%=rinfos_share[i].sFixtureBuildName%>','<%=rinfos_share[i].sFixtureRoomNo%>','<%=rinfos_share[i].dFixtureDate%>','<%=rinfos_share[i].sFixturePrice%>','<%=rinfos_share[i].sImgPath%>','<%=rinfos_share[i].sImgBin%>','<%=str_rank%>')">
+                                            <div class="box_img">
+                                                <img data-file="<%=rinfos_share[i].sImgPath%>" src="<%=rinfos_share[i].sImgBin%>" alt="제품 이미지" height="250px" width="250px" />
+                                                <% if(rinfos_share[i].nReusableShare == 1) { %>
+                                                    <span class="namun"></span>
+                                                    <div class="badge">나눔</div>
+                                                <% } %>
+                                            </div>
+                                            <h4><%=rinfos_share[i].sReusableName%></h4>
+                                            <div class="memo_text"><%=rinfos_share[i].sReusableMemo%></div>
+                                        </a>
+                                        <div class="pro_btn">
+                                            <% if (rinfos_share[i].sReusableUserNo === userid) { %>
+                                                <button class="btn_none" disabled>본인 등록 물품</button>
+                                            <% } %>
+                                        </div>
+                                    </li>
+                                    <% if(i == (rinfos_share.length - 1) || i % 4 == 3) { %>
                                         </ul>
-                                            <%
-                                        }
-                                    }
-                                }
-                                %>
+                                    <% } %>
+                                <% } %>
                             </div>                
                      <!-- tab -->
                     
