@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/sub.js"></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- skip 네비게이션 영역 -->
+            <nav id="skipToContent">
+                <ul>
+                    <li><a href="#container">본문 바로가기</a></li>
+                    <li><a href="#gnb">주메뉴 바로가기</a></li>
+                    <li><a href="#header">상위메뉴 바로가기</a></li>
+                    <li><a href="#footers">하위메뉴 바로가기</a></li>
+                </ul> 
+            </nav>
+            <!-- skip 네비게이션 영역 -->
+
+            <!-- 물품 / 비품 등록 버튼 -->
+            <div id="plus_btn">
+                <a href="#none"></a>
+            </div>
+            <!-- 물품 / 비품 등록 버튼 -->
+
+            <!-- 물품 / 비품 등록 모달 -->
+            <div id="registration_modal" class="modal_container hidden">
+                <%-/*물품 / 비품 등록*/ include ("./templates/registration_modal") %>
+            </div>
+            <!-- 물품 / 비품 등록 모달 -->
+
+            <!-- header -->
+            <header id="header">
+                <%-/*header 불러오기*/ include ("./templates/headers") %>
+            </header>
+            <!-- header -->
+
+            <!-- section -->
+            <section id="sub_section" class="center">
+                <!-- 좌측 서브 메뉴 (aside) -->
+                <aside class="aside">
+                    <div class="side_tit fix_flexcenter">
+                        <p>양도 완료된 물품 목록</p>
+                    </div>
+                    <div class="side_menu">
+                        <div class="menu_info">
+                            <p>재사용 마켓에서 양도 완료된 물품의 목록을 확인합니다.</p>
+                        </div>
+                        <ul class="menu_item">
+                            <li>
+                                <a href="reusable_market_new">마켓 보기</a>
+                            </li>
+                            <li>
+                                <a href="registration_list_new">등록 물품 관리</a>
+                            </li>
+                            <li>
+                                <!--<a href="applications_list_new">신청 물품 관리</a>-->
+                                <a href="applications_list_new2">신청 물품 관리</a>
+                            </li>
+                            <li>
+                                <a href="return_application_list_new">반납 신청 목록</a>
+                            </li>
+                            <li>
+                                <a href="approval_box_new">반납 신청 관리</a>
+                            </li>
+                            <li>
+                                <a href="transactions_list_new" class="active">양도 완료된 물품 목록</a>
+                            </li>
+                        </ul>
+                    </div> 
+                </aside>
+                <!-- 좌측 서브 메뉴 (aside) -->
+
+                <!-- 우축 서브 콘텐츠 -->
+                <div class="container">
+                    <!-- 모바일 location -->
+                    <div class="m_location">
+                        <ul class="fix_flexbetween">
+                            <li class="ml_home">
+                                <a href="index">
+                                    <span class="blind">홈버튼</span>
+                                    <div class="ml_home_icon"></div>
+                                </a>
+                            </li>
+                            <li id="ml_top">
+                                <a href="#none" class="fix_flexbetween">
+                                    재사용 마켓
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list1">
+                                    <li><a href="intro_greeting">소개 </a>
+                                    <li><a href="equipment_inquiry">비품 조회</a></li>
+                                    <li><a href="equipment_idiligence">비품 실사</a></li>
+                                    <li><a href="reusable_market">재사용 마켓</a></li>
+                                    <li><a href="#none">공간 정보</a></li>
+                                </ol>
+                            </li>
+                            <li id="ml_current">
+                                <a href="#none" class="fix_flexbetween">
+                                    양도 완료된 물품 목록
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list2">
+                                    <li><a href="reusable_market">마켓 보기 </a>
+                                    <li><a href="registration_list">등록 물품 관리</a></li>
+                                    <li><a href="applications_list">신청 물품 관리</a></li>
+                                    <li><a href="return_application_list">반납 신청 목록</a></li>
+                                    <li><a href="approval_box">반납 신청 관리</a></li>
+                                    <li><a href="transactions_list">양도 완료된 물품 목록</a></li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 모바일 location -->
+
+                    <!-- location -->
+                    <ul class="location">
+                        <li>
+                            <a href="index"><img src="/images/home_btn.svg" alt="홈버튼 이미지"></a>
+                        </li>
+                        <li>
+                            <p>재사용 마켓</p>
+                        </li>
+                        <li>
+                            <p>양도 완료된 물품 목록</p>
+                        </li>
+                    </ul>
+                    <!-- location -->
+
+                    <!-- grid -->
+                    <form name="check_list" method="POST">
+                    <div id="grid_wrap" class="grid">
+                        <!-- grid title -->
+                        <div class="grid-container_transactionsList grid_item_bg">
+                            <span class="grid_item">No</span>
+                            <span class="grid_item">
+                                <input type="checkbox" name="all_chk_btn" value="selectall" onclick="select_all(this);">
+                                선택
+                            </span>
+                            <span class="grid_item">물품번호</span>
+                            <span class="grid_item">취득금액</span>
+                            <span class="grid_item">취득일자</span>
+                            <span class="grid_item">기존 사용자</span>
+                            <span class="grid_item">신규 사용자</span>
+                            <span class="grid_item">양도 완료 일자</span>
+                        </div>
+
+                        <!-- grid inner -->
+                        <% for (var i = 0; i < rinfos.length; i++) { %>
+                            <% if (rinfos[i].nReusableState === 3 && rinfos[i].nApplicantState === 3) { %>
+                                <div class="grid-container_transactionsList grid_item2_bg">
+                                    <span class="grid_item"><%=(page_data.count * 10 + i + 1)%></span>
+                                    <span class="grid_item">
+                                        <input type="checkbox" name="chk_btn[]" value="<%=rinfos[i].nReusableNo%>">
+                                    </span>
+                                    <span class="grid_item"><%=rinfos[i].sFixtureNo%></span>
+                                    <span class="grid_item"><%=rinfos[i].sFixturePrice%></span>
+                                    <span class="grid_item"><%=new Date(rinfos[i].dFixtureDate).toISOString().split('T')[0]%></span>
+                                    <span class="grid_item"><%=rinfos[i].sReusablePrevUser%></span>
+                                    <span class="grid_item"><%=rinfos[i].sReusableNowUser%></span>
+                                    <span class="grid_item"><%=new Date(rinfos[i].dReusableDoneDate).toISOString().split('T')[0]%></span>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                    </form>
+
+                    <!-- pagination -->
+                    <div id="report_page" class="pagination">
+                        <ul>
+                            <% if (page_data.start > 1) { 
+                                var new_start = page_data.start - 1; %>
+                            <li>
+                                <a href="javascript:void(0)" onClick="changePage(<%=new_start%>)" class="first">
+                                    <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
+                                </a>
+                            </li>
+                            <% } %>
+
+                            <% 
+                            const getPageLimit = (start, total, plimit) => {
+                                let pageNum = 1;
+                                const paginationLimit = start + 10 < Math.ceil(total / plimit) ? start + 10 : Math.ceil(total / plimit);
+                                if(pageNum < paginationLimit) {
+                                    pageNum = paginationLimit
+                                }
+                                return pageNum
+                            }
+                            
+                            let paginationLimit = getPageLimit(page_data.start, page_data.total, 10)
+                            if(paginationLimit <= 0) paginationLimit = 1
+
+                            for (var i = page_data.start; i < paginationLimit; i++) { 
+                                if (i == page_data.count) { %>
+                                <li><a href="#" class="num active"><%=(i + 1)%></a></li>
+                            <% } else { %>
+                                <li><a href="javascript:void(0)" onClick="changePage(<%=i%>)" class="num"><%=(i + 1)%></a></li>
+                            <% } 
+                            } %>
+
+                            <% if((page_data.end - page_data.start) > 10) { 
+                                var new_end = page_data.start + 10; %>
+                            <li>
+                                <a href="javascript:void(0)" onClick="changePage(<%=new_end%>)" class="last">
+                                    <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
+                                </a>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+
+                    <!-- under_btn -->
+                    <div class="under_btn">
+                        <button type="button" class="btn_none green_border_btn" onClick="javascript:check_submit()">엑셀 다운받기</button>
+                    </div>
+
+                </div>
+                <!-- 우축 서브 콘텐츠 -->
+            </section>
+            <!-- section -->
+        </div>
+        
+        <!-- footer -->
+        <footer id="footer">
+            <%-/*footer 불러오기*/ include ("./templates/footers") %>
+        </footer>
+        <!-- footer -->
+
+        <!-- 모바일 하단 메뉴 -->
+        <div class="m_bottom">
+            <ul class="fix_flexcenter">
+                <li class="m_home">
+                    <a href="index"></a>
+                </li>
+                <li class="m_inquiry">
+                    <a href="equipment_inquiry"></a>
+                </li>
+                <li class="m_plus">
+                    <a href="reusable_market?category=register">
+                        <div></div>
+                    </a>
+                </li>
+                <li class="m_search">
+                    <a href="equipment_idiligence"></a>
+                </li>
+                <li class="m_reuse m_active">
+                    <a href="reusable_market_new"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 모바일 하단 메뉴 -->
+    </body>
+    <script>
+        //플러스 버튼 모달
+        const plusBtn = document.querySelector('#plus_btn a');
+        const registrationModal = document.getElementById('registration_modal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn?.addEventListener('click', closeModal);
+        modalCancelBtn?.addEventListener('click', closeModal);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            registrationModal.style.display = 'flex';
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === registrationModal) {
+                closeModal();
+            }
+        });
+        
+        // 모달 닫기 함수
+        function closeModal() {
+            registrationModal.style.display = 'none';
+        }
+
+        function select_all (sel_all)
+        {
+            const chk_btn = document.getElementsByName ("chk_btn[]");
+
+            chk_btn.forEach ((checkbox) => {
+                checkbox.checked = sel_all.checked;
+            });
+        }
+
+        function check_submit ()
+        {
+            
+            var frm = document.check_list;
+            var check = false;
+
+            const chk_btn = document.getElementsByName ("chk_btn[]");
+            chk_btn.forEach ((checkbox) => {
+                if (checkbox.checked) {
+                    check = true;
+                }
+            });
+            if (!check)
+            {
+                alert ("비품을 1개이상 선택해 주세요.");
+            }
+            else
+            {
+                var new_win = window.open ("about: _blank", "reusableExecl");
+
+                frm.target = "reusableExecl";
+                frm.action = "reusableExecl";
+                frm.submit ();
+            }
+        }
+
+        function m_chageAuthoritySelect() {
+            var sel_authority = document.getElementById ("m_authorityDropdown").value;
+
+            if(sel_authority == 0)
+            {
+                return;
+            }
+
+            let obj = new Object();
+            obj['sel_authority'] = sel_authority;
+
+            $.ajax ({
+                url: '/selectAuthority',
+                type: 'POST',
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function (result) {
+                    if (result) {
+                        window.location.href = "/home";
+                    }
+                }
+            });
+        }
+
+        function chageAuthoritySelect() {
+            var sel_authority = document.getElementById ("authorityDropdown").value;
+
+            console.log("sel_authority",sel_authority);
+
+            if(sel_authority == 0)
+            {
+                return;
+            }
+
+            let obj = new Object();
+            obj['sel_authority'] = sel_authority;
+
+            $.ajax ({
+                url: '/selectAuthority',
+                type: 'POST',
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function (result) {
+                    if (result) {
+                        window.location.href = "/home";
+                    }
+                }
+            });
+        }
+
+        // 페이지 이동 함수 추가
+        function changePage(page) {
+            window.location.href = `/transactions_list_new?page=${page}`;
+        }
+    </script>
+</html>
