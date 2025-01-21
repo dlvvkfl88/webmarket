@@ -5120,6 +5120,25 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 	const searchType = req.query.searchType || '0';
 	const searchKeyword = req.query.searchKeyword || '';
 
+
+	// 현재 사용자가 등록한 모든 진행 중인 물품 조회 (제한 없음)
+	const userProgressQuery = `
+	 SELECT a.*, b.sImgPath, b.sImgBin 
+	 FROM tblReusable a 
+	 LEFT JOIN tblReusableImg b ON a.nReusableNo = b.nReusableIdx 
+	 WHERE a.sReusableUserNo = ? 
+	 AND a.nReusableState = 1 
+	 ORDER BY a.nReusableNo DESC`;
+
+	const progressItems = await directQuery(userProgressQuery, [req.session.user.userid]);
+
+	// 슬라이드 그룹으로 나누기
+	const itemsPerSlide = 7;
+	const slideGroups = [];
+	for (let i = 0; i < progressItems.length; i += itemsPerSlide) {
+		slideGroups.push(progressItems.slice(i, i + itemsPerSlide));
+	}
+
 	// 기본 쿼리문
 	let baseQuery = 'SELECT a.*,b.sImgPath,b.sImgBin FROM tblReusable a, tblReusableImg b WHERE a.nReusableNo=b.nReusableIdx';
 
@@ -5151,7 +5170,7 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 
 	// 페이지네이션을 위한 LIMIT과 OFFSET 추가
 	baseQuery = baseQuery.split('ORDER BY')[0]; // 기존 ORDER BY 제거
-	baseQuery += ' ORDER BY nReusableNo LIMIT ? OFFSET ?';
+	baseQuery += ' ORDER BY a.nReusableNo DESC LIMIT ? OFFSET ?'; // DESC 추가하여 최신순 정렬
 
 	//var sql = 'SELECT * FROM tblReusable WHERE nReusableState = 1 AND nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;';
 	//var sql = 'SELECT a.*,b.sImgPath,b.sImgBin FROM tblReusable a JOIN tblReusableImg b ON a.nReusableNo=b.nReusableIdx WHERE a.nReusableState = 1 AND a.nApplicantState = 0 ORDER BY nReusableNo LIMIT 20 OFFSET ?;'
@@ -5234,7 +5253,7 @@ app.get('/reusable_market_new', session_exists, async function (req, res) {
 	}
 
 	//res.render("reusable_market", { idx: req.session.user.name, userid: req.session.user.userid, rinfos: rinfos, rinfos_img: rinfos_img, rinfos_reus: rinfos_reus, rinfos_reus_img: rinfos_reus_img, rinfos_share: rinfos_share, rinfos_share_img: rinfos_share_img, nIndex: nIndex,user_email: user_email,user_phone: user_phone, permission: req.session.user.permission });
-	res.render("reusable_market_new", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, rinfos: rinfos, rinfos_reus: rinfos_reus, rinfos_share: rinfos_share, nIndex: nIndex, user_email: user_email, user_phone: user_phone, searchType: searchType, searchKeyword: searchKeyword, permission_reusable: req.session.user.permission_reusable, authority_list: authority_list, sel_authority: req.session.user.selectAuithority, currentPage: page, totalPages: totalPages, searchType: searchType, searchKeyword: searchKeyword });
+	res.render("reusable_market_new", { idx: req.session.user.name, uname: req.session.user.name, userid: req.session.user.userid, permission: req.session.user.permission, stdtype: req.session.user.stdtype, rinfos: rinfos, rinfos_reus: rinfos_reus, rinfos_share: rinfos_share, nIndex: nIndex, user_email: user_email, user_phone: user_phone, searchType: searchType, searchKeyword: searchKeyword, permission_reusable: req.session.user.permission_reusable, authority_list: authority_list, sel_authority: req.session.user.selectAuithority, currentPage: page, totalPages: totalPages, searchType: searchType, searchKeyword: searchKeyword, slideGroups: slideGroups, progressItems: progressItems, userName: req.session.user.name });
 });
 
 // 바뀌지좀 마라 
