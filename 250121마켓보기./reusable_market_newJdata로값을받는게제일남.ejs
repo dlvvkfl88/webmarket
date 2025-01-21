@@ -416,7 +416,7 @@
                                 }
                                 %>
                             </div>                
-                    // <!-- tab -->
+                     <!-- tab -->
                     
                     <!-- pagination -->
                     <div id="report_page" class="pagination">
@@ -1144,6 +1144,44 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        // URL에서 autoOpen 파라미터 확인하여 모달 자동 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoOpenItemId = urlParams.get('autoOpen');
+            
+            if (autoOpenItemId) {
+                // 해당 아이템 찾기
+                const items = <%- JSON.stringify(rinfos) %>;
+                const item = items.find(item => item.nReusableNo == autoOpenItemId);
+                
+                if (item) {
+                    // 아이템 찾으면 모달 열기
+                    openDetailModal(
+                        0, // index
+                        item.nReusableNo,
+                        item.sReusableEmail,
+                        item.sReusableMobile,
+                        item.nReusableShare,
+                        item.sReusableName,
+                        item.sReusableType,
+                        item.sReusableContent,
+                        item.sReusablePlace,
+                        item.sFixtureName,
+                        item.sFixtureNo,
+                        item.sFixtureModel,
+                        item.sFixtureType,
+                        item.sFixtureBuildName,
+                        item.sFixtureRoomNo,
+                        item.dFixtureDate,
+                        item.sFixturePrice,
+                        item.sImgPath,
+                        item.sImgBin,
+                        item.nReusableRank
+                    );
+                }
+            }
+        });
 
     </script>
 </html>
