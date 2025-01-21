@@ -36,3 +36,8 @@
 
 등록물품관리 0116완성
 ![image](https://github.com/user-attachments/assets/6579cbd4-64d7-46f9-88b9-d98789d94b72)
+
+
+
+0121 드디어 사진 수정 성공 0121마켓보기에 올려놓을예정
+![image](https://github.com/user-attachments/assets/35eeefa6-c7d7-4ff9-b63b-983e1013ee56)
