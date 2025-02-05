@@ -1,0 +1,501 @@
+<div class="modal_con">
+    <div class="modal_header">
+        <h2>직원 조회</h2>
+        <button id="modalCloseBtn" class="btn_none green_borderBtn" onclick="closeModal()">
+            <img src="/images/X_icon.png">
+        </button>
+    </div>
+    <div class="modal_body">
+        <div class="form_wrap">
+            <div class="drop_search">
+                <div class="dropDown">
+                    <select id="ssearch">
+                        <option value="0" selected>선택</option>
+                        <option value="1">교직원 번호</option>
+                        <option value="2">이름</option>
+                        <option value="3">소속부서</option>
+                    </select>
+                </div>
+                <div class="search">
+                    <input id="svalue" placeholder="검색어를 입력해주세요.">
+                </div>
+                <button onclick="search_submit()">검색</button>
+            </div>
+
+            <div class="modal_grid_wrap fix_flexbetween">
+                <div class="modal_grid_con">
+                    <p class="title_txt">조회 목록</p>
+                    <div id="grid_wrap_request" class="grid G_grid">
+                        <!-- grid title -->
+                        <div class="grid-container_staffList02 G_grid_item_bg">
+                            <span class="G_grid_item">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item">교직원 번호</span>
+                            <span class="G_grid_item">이름</span>
+                            <span class="G_grid_item">소속부서</span>
+                        </div>
+                        <!-- grid title -->
+    
+                        <!-- grid inner -->
+                         <!--
+                        <div class="grid-container_staffList02 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                        </div>
+                        <div class="grid-container_staffList02 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                        </div>
+                        <div class="grid-container_staffList02 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                        </div>
+                        <div class="grid-container_staffList02 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                        </div>
+                        <div class="grid-container_staffList02 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                        </div>
+                        <div class="grid-container_staffList02 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                        </div>
+                    -->
+                        <!-- grid inner -->
+                    </div>
+
+                    <!-- under btn -->
+                    <div class="under_btn02">
+                        <button class="btn_none green_border_btn popupCloseBtn" onclick="addRequest()">추가</button>
+                    </div>
+                    <!-- under btn -->
+                </div>
+
+                <div class="modal_grid_con">
+                    <p class="title_txt">결재 라인</p>
+                    <div id="grid_wrap_charge" class="grid G_grid">
+                        <!-- grid title -->
+                        <div class="grid-container_staffList03 G_grid_item_bg">
+                            <span class="G_grid_item">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item">교직원 번호</span>
+                            <span class="G_grid_item">이름</span>
+                            <span class="G_grid_item">소속부서</span>
+                            <span class="G_grid_item">삭제</span>
+                        </div>
+                        <!-- grid title -->
+    
+                        <!-- grid inner -->
+                         <!--
+                        <div class="grid-container_staffList03 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                            <span class="G_grid_item2">
+                                <img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                            </span>
+                        </div>
+                        <div class="grid-container_staffList03 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                            <span class="G_grid_item2">
+                                <img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                            </span>
+                        </div>
+                        <div class="grid-container_staffList03 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                            <span class="G_grid_item2">
+                                <img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                            </span>
+                        </div>
+                        <div class="grid-container_staffList03 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                            <span class="G_grid_item2">
+                                <img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                            </span>
+                        </div>
+                        <div class="grid-container_staffList03 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                            <span class="G_grid_item2">
+                                <img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                            </span>
+                        </div>
+                        <div class="grid-container_staffList03 grid_item2_bg">
+                            <span class="G_grid_item2">
+                                <input type="checkbox">
+                            </span>
+                            <span class="G_grid_item2">12345</span>
+                            <span class="G_grid_item2">김OO</span>
+                            <span class="G_grid_item2">고려대학교</span>
+                            <span class="G_grid_item2">
+                                <img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                            </span>
+                        </div>
+                    -->
+                        <!-- grid inner -->
+                    </div>
+                    <!-- under btn -->
+                    <div class="under_btn02">
+                        <button class="btn_none green_btn popupCloseBtn" onclick="confirmRequest()">확인</button>
+                        <button class="btn_none green_border_btn popupCloseBtn" onclick="closeModal()">취소</button>
+                    </div>
+                    <!-- under btn -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var staff_list = [];
+    var request_list = [];
+
+    function search_submit ()
+    {
+        var ssearch = document.getElementById('ssearch').value;
+        var svalue = document.getElementById('svalue').value;
+
+        if(ssearch == 0)
+        {
+            alert("검색 주체를 선택해 주세요.");
+            return;
+        }
+
+        if(svalue == "")
+        {
+            alert("검색어를 입력해 주세요.");
+            return;
+        }
+
+        var obj = new Object();
+        obj['ssearch'] = ssearch;
+        obj['svalue'] = svalue;
+
+        $.ajax ({
+            url: '/searchStaffQuiry',
+            type: "post",
+            dataType: "json",
+            contentType : 'application/json',
+            data: JSON.stringify(obj),
+            success: function (result) {
+                staff_list = result.result;
+                
+                $( '#grid_wrap_request').empty();
+                var table = document.getElementById ("grid_wrap_request");
+                table.className = "grid G_grid";
+
+                let header = document.createElement("div");
+                header.className = "grid-container_staffList02 G_grid_item_bg";
+
+                let header_item1 = document.createElement("span");
+                header_item1.className = "G_grid_item";
+                let all_check_input = document.createElement("input");
+                all_check_input.type = "checkbox";
+                all_check_input.name = "all_chk_staff";
+                all_check_input.value = "selectall";
+                all_check_input.onclick = "select_all_appr(this);";
+                header_item1.appendChild(all_check_input);
+
+                let header_item2 = document.createElement("span");
+                header_item2.className = "G_grid_item";
+                header_item2.appendChild(document.createTextNode("교직원 번호"));
+
+                let header_item3 = document.createElement("span");
+                header_item3.className = "G_grid_item";
+                header_item3.appendChild(document.createTextNode("이름"));
+
+                let header_item4 = document.createElement("span");
+                header_item4.className = "G_grid_item";
+                header_item4.appendChild(document.createTextNode("소속부서"));
+
+                header.appendChild(header_item1);
+                header.appendChild(header_item2);
+                header.appendChild(header_item3);
+                header.appendChild(header_item4);
+
+                table.appendChild(header);
+
+                for(var i=0; i< staff_list.length; i++) {
+                    let body = document.createElement("div");
+                    body.className = "grid-container_staffList02 grid_item2_bg";
+
+                    let body_item1 = document.createElement("span");
+                    body_item1.className = "G_grid_item2";
+                    let item_check_input = document.createElement("input");
+                    item_check_input.type = "checkbox";
+                    item_check_input.name = "chk_btn_staff[]";
+                    item_check_input.value = i;
+                    body_item1.appendChild(item_check_input);
+
+                    let body_item2 = document.createElement("span");
+                    body_item2.className = "G_grid_item2";
+                    body_item2.appendChild(document.createTextNode(staff_list[i].employeeNum));
+
+                    let body_item3 = document.createElement("span");
+                    body_item3.className = "G_grid_item2";
+                    body_item3.appendChild(document.createTextNode(staff_list[i].name));
+
+                    let body_item4 = document.createElement("span");
+                    body_item4.className = "G_grid_item2";
+                    body_item4.appendChild(document.createTextNode(staff_list[i].org));
+
+                    body.appendChild(body_item1);
+                    body.appendChild(body_item2);
+                    body.appendChild(body_item3);
+                    body.appendChild(body_item4);
+
+                    table.appendChild(body);
+                }
+            }
+        });
+    }
+
+    function deleteCheck (idx)
+    {
+        request_list.splice(idx,1);
+
+        localStorage.setItem('request_list', JSON.stringify(request_list));
+
+        $( '#grid_wrap_charge').empty();
+            var table = document.getElementById ("grid_wrap_charge");
+            table.className = "grid G_grid";
+
+            let header = document.createElement("div");
+            header.className = "grid-container_staffList03 G_grid_item_bg";
+
+            let header_item1 = document.createElement("span");
+            header_item1.className = "G_grid_item";
+            let all_check_input = document.createElement("input");
+            all_check_input.type = "checkbox";
+            all_check_input.name = "all_chk_req";
+            all_check_input.value = "selectall";
+            all_check_input.onclick = "select_all_req(this);";
+            header_item1.appendChild(all_check_input);
+
+            let header_item2 = document.createElement("span");
+            header_item2.className = "G_grid_item";
+            header_item2.appendChild(document.createTextNode("교직원 번호"));
+
+            let header_item3 = document.createElement("span");
+            header_item3.className = "G_grid_item";
+            header_item3.appendChild(document.createTextNode("이름"));
+
+            let header_item4 = document.createElement("span");
+            header_item4.className = "G_grid_item";
+            header_item4.appendChild(document.createTextNode("소속부서"));
+
+            let header_item5 = document.createElement("span");
+            header_item5.className = "G_grid_item";
+            header_item5.appendChild(document.createTextNode("삭제"));
+
+            header.appendChild(header_item1);
+            header.appendChild(header_item2);
+            header.appendChild(header_item3);
+            header.appendChild(header_item4);
+            header.appendChild(header_item5);
+
+            table.appendChild(header);
+
+            for(var i=0; i< request_list.length; i++) {
+                let body = document.createElement("div");
+                body.className = "grid-container_staffList03 grid_item2_bg";
+
+                let body_item1 = document.createElement("span");
+                body_item1.className = "G_grid_item2";
+                let item_check_input = document.createElement("input");
+                item_check_input.type = "checkbox";
+                item_check_input.name = "chk_btn_request[]";
+                item_check_input.value = i;
+                body_item1.appendChild(item_check_input);
+
+                let body_item2 = document.createElement("span");
+                body_item2.className = "G_grid_item2";
+                body_item2.appendChild(document.createTextNode(request_list[i].employeeNum));
+
+                let body_item3 = document.createElement("span");
+                body_item3.className = "G_grid_item2";
+                body_item3.appendChild(document.createTextNode(request_list[i].name));
+
+                let body_item4 = document.createElement("span");
+                body_item4.className = "G_grid_item2";
+                body_item4.appendChild(document.createTextNode(request_list[i].org));
+
+                let body_item5 = document.createElement("span");
+                body_item5.className = "G_grid_item2";
+                let body_item_cancle = document.createElement("span");
+                body_item_cancle.className = "grid-item2";
+                //<img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                let item_cancle_image = document.createElement("img");
+                item_cancle_image.src = "/images/list_X_icon.svg";
+                item_cancle_image.alt = "리스트 삭제 버튼";
+                item_cancle_image.setAttribute('onClick',"deleteCheck(" + i + ")");
+                body_item_cancle.appendChild(item_cancle_image);
+                body_item5.appendChild(body_item_cancle);
+
+                body.appendChild(body_item1);
+                body.appendChild(body_item2);
+                body.appendChild(body_item3);
+                body.appendChild(body_item4);
+                body.appendChild(body_item5);
+
+                table.appendChild(body);
+            }
+    }
+
+    function addRequest()
+    {
+        var check = false;
+
+        const chk_btn = document.getElementsByName ("chk_btn_staff[]");
+        chk_btn.forEach ((checkbox) => {
+            if (checkbox.checked) {
+                    check = true;
+                    request_list.push(staff_list[checkbox.value]);
+            }
+        });
+
+        localStorage.setItem('request_list', JSON.stringify(request_list));
+
+        if (!check)
+        {
+            alert ("직원을 선택해 주세요.");
+        }
+        else
+        {
+            $( '#grid_wrap_charge').empty();
+            var table = document.getElementById ("grid_wrap_charge");
+            table.className = "grid G_grid";
+
+            let header = document.createElement("div");
+            header.className = "grid-container_staffList03 G_grid_item_bg";
+
+            let header_item1 = document.createElement("span");
+            header_item1.className = "G_grid_item";
+            let all_check_input = document.createElement("input");
+            all_check_input.type = "checkbox";
+            all_check_input.name = "all_chk_req";
+            all_check_input.value = "selectall";
+            all_check_input.onclick = "select_all_req(this);";
+            header_item1.appendChild(all_check_input);
+
+            let header_item2 = document.createElement("span");
+            header_item2.className = "G_grid_item";
+            header_item2.appendChild(document.createTextNode("교직원 번호"));
+
+            let header_item3 = document.createElement("span");
+            header_item3.className = "G_grid_item";
+            header_item3.appendChild(document.createTextNode("이름"));
+
+            let header_item4 = document.createElement("span");
+            header_item4.className = "G_grid_item";
+            header_item4.appendChild(document.createTextNode("소속부서"));
+
+            let header_item5 = document.createElement("span");
+            header_item5.className = "G_grid_item";
+            header_item5.appendChild(document.createTextNode("삭제"));
+
+            header.appendChild(header_item1);
+            header.appendChild(header_item2);
+            header.appendChild(header_item3);
+            header.appendChild(header_item4);
+            header.appendChild(header_item5);
+
+            table.appendChild(header);
+
+            for(var i=0; i< request_list.length; i++) {
+                let body = document.createElement("div");
+                body.className = "grid-container_staffList03 grid_item2_bg";
+
+                let body_item1 = document.createElement("span");
+                body_item1.className = "G_grid_item2";
+                let item_check_input = document.createElement("input");
+                item_check_input.type = "checkbox";
+                item_check_input.name = "chk_btn_request[]";
+                item_check_input.value = i;
+                body_item1.appendChild(item_check_input);
+
+                let body_item2 = document.createElement("span");
+                body_item2.className = "G_grid_item2";
+                body_item2.appendChild(document.createTextNode(request_list[i].employeeNum));
+
+                let body_item3 = document.createElement("span");
+                body_item3.className = "G_grid_item2";
+                body_item3.appendChild(document.createTextNode(request_list[i].name));
+
+                let body_item4 = document.createElement("span");
+                body_item4.className = "G_grid_item2";
+                body_item4.appendChild(document.createTextNode(request_list[i].org));
+
+                let body_item5 = document.createElement("span");
+                body_item5.className = "G_grid_item2";
+                let body_item_cancle = document.createElement("span");
+                body_item_cancle.className = "grid-item2";
+                //<img src="/images/list_X_icon.svg" alt="리스트 삭제 버튼">
+                let item_cancle_image = document.createElement("img");
+                item_cancle_image.src = "/images/list_X_icon.svg";
+                item_cancle_image.alt = "리스트 삭제 버튼";
+                item_cancle_image.setAttribute('onClick',"deleteCheck(" + i + ")");
+                body_item_cancle.appendChild(item_cancle_image);
+                body_item5.appendChild(body_item_cancle);
+
+                body.appendChild(body_item1);
+                body.appendChild(body_item2);
+                body.appendChild(body_item3);
+                body.appendChild(body_item4);
+                body.appendChild(body_item5);
+
+                table.appendChild(body);
+            }
+        }
+    }
+</script>
