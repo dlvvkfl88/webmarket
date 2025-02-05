@@ -6301,13 +6301,16 @@ app.post('/return_request', async function (req, res) {
 	var sql = "SELECT sPortal FROM tblUser WHERE sNumber=?";
 	var user_info = await directQuery(sql, [user_no]);
 
+	// 이메일 내 불용 리스트(반납 물품 리스트)를 누적할 변수
+	let aggregatedList = "";
+
 	// 각 반납 물품에 대한 처리
 	for (var fix_id = 0; fix_id < fix_list.length; fix_id++) {
 		// 결재 정보 삽입 SQL 쿼리 구성
 		sql = 'INSERT INTO tblApproval(nReusableNo,sFixtureNo,sApprovalTitle,dApprovalDate,sApprovalReason,sFixtureName,sBuild,sRoomNo,sFixturePrice,nReusableRank,sUserName,sUserOrg,sUserPortal,nApprovalType) ';
 		sql += 'VALUES(?,?,?,NOW(),?,?,?,?,?,?,?, ?,?,2);';
 
-		// 결재 정보 데이터베이스에 삽입
+		// 데이터베이스에 결재 정보 삽입
 		var approval_ret = await directQuery(sql, [
 			fix_list[fix_id].nReusableNo,
 			fix_list[fix_id].sFixtureNo,
@@ -6326,9 +6329,9 @@ app.post('/return_request', async function (req, res) {
 		// 삽입된 결재 정보의 ID 저장
 		var approvalIdx = approval_ret.insertId;
 
-		// 각 결재자에 대한 처리
+		// 결재자 정보 삽입 처리 (각 물품마다 데이터베이스에 삽입됨)
 		for (var approver_idx = 0; approver_idx < approver_list.length; approver_idx++) {
-			// 하드코딩으로 sNumber 값 설정 (첫번째: 210597, 두번째: 597210, 세번째: 210597)
+			// 하드코딩으로 sNumber 값 설정
 			let customSNumber = "";
 			if (approver_idx === 0) {
 				customSNumber = "210597";
@@ -6340,12 +6343,10 @@ app.post('/return_request', async function (req, res) {
 				customSNumber = approver_list[approver_idx].employeeNum;
 			}
 
-			// 결재자 정보 삽입 SQL 쿼리 구성
 			sql = 'INSERT INTO tblApprover(sName,sNumber,sPortal,sOrg,sEMail,sTel,nApprIdx,nApprOrder) ';
 			sql += 'VALUES(?,?,?,?,?,?,?,?);';
 
-			// 결재자 정보 데이터베이스에 삽입 (sEMail 등은 원본 데이터를 사용하지만 추후 변경 가능)
-			var approver_ret = await directQuery(sql, [
+			await directQuery(sql, [
 				approver_list[approver_idx].name,
 				customSNumber,
 				approver_list[approver_idx].portal,
@@ -6355,25 +6356,32 @@ app.post('/return_request', async function (req, res) {
 				approvalIdx,
 				(approver_idx + 1)
 			]);
-
-			// 이메일 내용 구성 (모든 결재자에게 발송)
-			var html_data = user_name + " (" + user_email + ")님으로부터 불용 신청 결재가 요청되었습니다.<br><br>";
-			html_data += "결재 링크<br><a href='http://192.168.100.136:33000/approval_box_new'>http://192.168.100.136:33000/approval_box_new</a><br><br>";
-			html_data += "불용 리스트<br>" + fix_list[fix_id].sFixtureNo + " " + fix_list[fix_id].sFixtureName + " " +
-				fix_list[fix_id].sFixtureBuildName + " " + fix_list[fix_id].sFixtureRoomNo + " " +
-				fix_list[fix_id].sFixturePrice;
-
-			// 이메일 옵션 설정 (하드코딩된 이메일 주소 사용)
-			let mailOptions = {
-				from: 'kbw3672@naver.com', // 보내는 메일의 주소
-				to: "xhdlsql12@kounosoft.com", // 수신 이메일 (추후 tblApprover의 sEMail로 변경)
-				subject: "탄소중립 자산관리 시스템 반납 신청", // 메일 제목
-				html: html_data, // 메일 내용
-			};
-
-			// 이메일 발송
-			transporter.sendMail(mailOptions);
 		}
+
+		// 불용 리스트에 현재 물품 정보를 누적해서 추가
+		aggregatedList += fix_list[fix_id].sFixtureNo + " " +
+			fix_list[fix_id].sFixtureName + " " +
+			fix_list[fix_id].sFixtureBuildName + " " +
+			fix_list[fix_id].sFixtureRoomNo + " " +
+			fix_list[fix_id].sFixturePrice + "<br>";
+	}
+
+	// 이메일 내용 구성
+	let html_data = user_name + " (" + user_email + ")님으로부터 불용 신청 결재가 요청되었습니다.<br><br>";
+	html_data += "결재 링크<br><a href='http://192.168.100.136:33000/approval_box_new'>http://192.168.100.136:33000/approval_box_new</a><br><br>";
+	html_data += "불용 리스트<br>" + aggregatedList;
+
+	// 결재자에게 각각 한 통씩 이메일 발송 (총 3개)
+	for (var approver_idx = 0; approver_idx < approver_list.length; approver_idx++) {
+		// 현재 결재자의 이메일 주소 사용 (현재는 예시로 사용중)
+		let mailOptions = {
+			from: 'kbw3672@naver.com',
+			to: 'xhdlsql12@kounosoft.com', // 각 결재자의 이메일
+			subject: "탄소중립 자산관리 시스템 반납 신청",
+			html: html_data,
+		};
+
+		transporter.sendMail(mailOptions);
 	}
 
 	// 처리 완료 응답 전송
