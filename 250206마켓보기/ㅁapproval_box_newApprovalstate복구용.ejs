@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/sub.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- skip 네비게이션 영역 -->
+            <nav id="skipToContent">
+                <ul>
+                    <li><a href="#container">본문 바로가기</a></li>
+                    <li><a href="#gnb">주메뉴 바로가기</a></li>
+                    <li><a href="#header">상위메뉴 바로가기</a></li>
+                    <li><a href="#footers">하위메뉴 바로가기</a></li>
+                </ul> 
+            </nav>
+            <!-- skip 네비게이션 영역 -->
+
+            <!-- 물품 / 비품 등록 버튼 -->
+            <div id="plus_btn">
+                <a href="#none"></a>
+            </div>
+            <!-- 물품 / 비품 등록 버튼 -->
+
+            <!-- 물품 / 비품 등록 모달 -->
+            <div id="registration_modal" class="modal_container hidden">
+                <%-/*물품 / 비품 등록*/ include ("./templates/registration_modal") %>
+            </div>
+            <!-- 물품 / 비품 등록 모달 -->
+            
+            <!-- header -->
+            <header id="header">
+                <%-/*header 불러오기*/ include ("./templates/headers") %>
+            </header>
+            <!-- header -->
+
+            <!-- section -->
+            <section id="sub_section" class="center">
+                <!-- 좌측 서브 메뉴 (aside) -->
+                 
+                <aside class="aside">
+                    <div class="side_tit fix_flexcenter">
+                        <p>반납 신청서 관리</p>
+                    </div>
+                    <div class="side_menu">
+                        <div class="menu_info">
+                            <p>반납신청관리에서는 결재가 필요한 반납신청서와 해당 신청서의 물품 목록을 확인하고 결재를 진행할 수 있습니다.</p>
+                        </div>
+                        <ul class="menu_item">
+                            <li>
+                                <a href="reusable_market_new">마켓 보기</a>
+                            </li>
+                            <li>
+                                <a href="registration_list_new">등록 물품 관리</a>
+                            </li>
+                            <li>
+                                <!--<a href="applications_list_new">신청 물품 관리</a>-->
+                                <a href="applications_list_new">신청 물품 관리</a>
+                            </li>
+                            <li>
+                                <a href="return_application_list_new">반납 신청 목록</a>
+                            </li>
+                            <li>
+                                <a href="approval_box_new" class="active">반납 신청서 관리</a>
+                            </li>
+                            <li>
+                                <a href="transactions_list_new">양도 완료된 물품 목록</a>
+                            </li>
+                        </ul>
+                    </div> 
+                </aside>
+                <!-- 좌측 서브 메뉴 (aside) -->
+
+                <!-- 우축 서브 콘텐츠 -->
+                <div class="container">
+                    <!-- 모바일 location -->
+                    <div class="m_location">
+                        <ul class="fix_flexbetween">
+                            <li class="ml_home">
+                                <a href="home">
+                                    <span class="blind">홈버튼</span>
+                                    <div class="ml_home_icon"></div>
+                                </a>
+                            </li>
+                            <li id="ml_top">
+                                <a href="#none" class="fix_flexbetween">
+                                    재사용 마켓
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list1">
+                                    <li><a href="intro_greeting">소개 </a>
+                                    <li><a href="equipment_inquiry">비품 조회</a></li>
+                                    <li><a href="equipment_idiligence">비품 실사</a></li>
+                                    <li><a href="reusable_market_new">재사용 마켓</a></li>
+                                    <li><a href="#none">공간 정보</a></li>
+                                </ol>
+                            </li>
+                            <li id="ml_current">
+                                <a href="#none" class="fix_flexbetween">
+                                    반납 신청서 관리
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list2">
+                                    <li><a href="reusable_market_new">마켓 보기 </a>
+                                    <li><a href="registration_list_new">등록 물품 관리</a></li>
+                                    <li><a href="applications_list_new">신청 물품 관리</a></li>
+                                    <li><a href="return_application_list_new">반납 신청 목록</a></li>
+                                    <li><a href="approval_box_new">반납 신청서 관리</a></li>
+                                    <li><a href="transactions_list_new">양도 완료된 물품 목록</a></li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 모바일 location -->
+
+                    <!-- location -->
+                    <ul class="location">
+                        <li>
+                            <a href="home">
+                                <span class="blind">홈버튼</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="reusable_market_new">재사용 마켓</a>
+                        </li>
+                        <li>
+                            <a href="approval_box_new">반납 신청서 관리</a>
+                        </li>
+                    </ul>
+                    <!-- location -->
+
+                    <div class="tab_container02">
+                        <!-- tab menu -->
+                        <div class="tab_menu_bar">
+                            <div class="tab active" id="progressTav" onclick="changeTab('progress_document')">
+                                <a href="#none" class="active">진행 중인 문서</a>
+                            </div>
+                            <div class="tab" id="completedTab" onclick="changeTab('completed_document')">
+                                <a href="#none">완료 문서</a>
+                            </div>
+                        </div>
+                        <!-- tab menu -->
+
+                        <!-- tab contents -->
+                        <!-- 진행 중인 문서함 -->
+                        <div id="progress_document" class="tab_content active">
+                            <div class="title">
+                                <p>진행 중인 문서함</p>
+                            </div>
+                            <div class="con_wrap">
+                                <div class="date_wrap">
+                                    <p>신청일자</p>
+                                    <div class="date">
+                                        <input id="date_process_start" type="date">
+                                        <input id="date_process_end" type="date">
+                                    </div>
+                                </div>
+                                <div class="drop_search">
+                                    <div class="dropDown">
+                                        <select id="ssearch_process">
+                                            <option value="0" selected="">선택</option>
+                                            <option value="1">전체</option>
+                                            <option value="2">제목</option>
+                                            <option value="3">카테고리</option>
+                                            <option value="4">수령위치</option>
+                                            <option value="5">물품명(재사용)</option>
+                                            <option value="6">물품번호(재사용)</option>
+                                        </select>
+                                    </div>
+                                    <div class="search">
+                                        <input id="svalue_process" placeholder="검색어를 입력해주세요.">
+                                    </div>
+                                    <button onclick="search_process_submit()">검색</button>
+                                </div>
+                            </div>
+                            <div class="con_wrap02 fix_flexbetween">
+                                <div class="con_inner">
+                                    <div class="title fix_flexbetween">
+                                        <div class="">
+                                            <p class="title_txt">반납신청서</p>
+                                            <p>[총 <span id="process_count"><%=approval_list_process.length%></span>건]</p>
+                                        </div>
+                                        <button class="excel_btn" onclick="execlProcess_submit()">엑셀 저장</button>
+                                    </div>
+                                    <div id="grid_wrap_process" class="grid G_grid">
+                                        <!-- grid title -->
+                                        <div class="grid-container_applicationReturnList G_grid_item_bg">
+                                            <span class="G_grid_item">
+                                                <input type="checkbox" onclick="select_all_appr_process(this);">
+                                            </span>
+                                            <span class="G_grid_item">신청일자</span>
+                                            <span class="G_grid_item">결재상태</span>
+                                            <span class="G_grid_item">신청자</span>
+                                            <span class="G_grid_item">상세보기</span>
+                                        </div>
+                                        <!-- grid title -->
+                                        <%
+                                        for (var idx = 0; idx < approval_list_process.length; idx++)
+                                        {
+                                        %>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input name="chk_btn_process[]" type="checkbox" value="<%=approval_list_process[idx].nIndex%>">
+                                            </span>
+                                            <span class="G_grid_item2"><%= new Date(approval_list_process[idx].dApprovalDate).toISOString().split('T')[0] %></span>
+                                            <%
+                                            if(approval_list_process[idx].sNumber == userid)
+                                            {
+                                                %>
+                                                <span class="G_grid_item2">결재 요청<br>(신청자)</span>
+                                                <span class="G_grid_item2"><%=approval_list_process[idx].sUserName%></span>
+                                                <span class="G_grid_item2">
+                                                    <button class="green_btn03" onclick="applicationOpenPopup02(<%=approval_list_process[idx].nIndex%>)">상세보기</button>
+                                                </span>
+                                                <%
+                                            }
+                                            else if(approval_list_process[idx].nApprovalState == 1)
+                                            {
+                                                %>
+                                                <span class="G_grid_item2">결재 요청<br>(신청자)</span>
+                                                <span class="G_grid_item2"><%=approval_list_process[idx].sUserName%></span>
+                                                <span class="G_grid_item2">
+                                                    <button class="green_btn03" onclick="applicationOpenPopup03(<%=approval_list_process[idx].nIndex%>)">상세보기</button>
+                                                </span>
+                                                <%
+                                            }
+                                            else if(approval_list_process[idx].nApprovalState == 2)
+                                            {
+                                                %>
+                                                <span class="G_grid_item2">승인 대기<br>(중간 결재자)</span>
+                                                <span class="G_grid_item2"><%=approval_list_process[idx].sUserName%></span>
+                                                <span class="G_grid_item2">
+                                                    <button class="green_btn03" onclick="applicationOpenPopup03(<%=approval_list_process[idx].nIndex%>)">상세보기</button>
+                                                </span>
+                                                <%
+                                            }
+                                            else if(approval_list_process[idx].nApprovalState == 3)
+                                            {
+                                                %>
+                                                <span class="G_grid_item2">승인 대기<br>(최종 결재자)</span>
+                                                <span class="G_grid_item2"><%=approval_list_process[idx].sUserName%></span>
+                                                <span class="G_grid_item2">
+                                                    <button class="green_btn03" onclick="applicationOpenPopup04(<%=approval_list_process[idx].nIndex%>)">상세보기</button>
+                                                </span>
+                                                <%
+                                            }
+                                            %>
+                                        </div>
+                                        <%
+                                        }
+                                        %>
+                    
+                                        <!-- grid inner -->
+                                        <!--
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">결재 요청<br>(신청자)</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03" onclick="applicationOpenPopup02()">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">승인 대기<br>(중간 결재자)</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03" onclick="applicationOpenPopup03()">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">승인 대기<br>(최종 결재자)</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03" onclick="applicationOpenPopup04()">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">반려</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03">상세보기</button>
+                                            </span>
+                                        </div>
+                                        -->
+                                        <!-- grid inner -->
+                                    </div>
+                                </div>
+                                <div class="con_inner">
+                                    <div class="title fix_flexbetween">
+                                        <div class="">
+                                            <p class="title_txt">선택한 신청서의 물품 목록</p>
+                                            <p>[총 <span id="process_fix_count">0</span>건]</p>
+                                        </div>
+                                        <button class="excel_btn" onclick="execlComp_submit()">엑셀 저장</button>
+                                    </div>
+                                    <div id="grid_wrap_process_fix" class="grid G_grid">
+                                        <!-- grid title -->
+                                        <div class="grid-container_applicationReturnList G_grid_item_bg">
+                                            <span class="G_grid_item">
+                                                <input type="checkbox" onclick="select_all_appr_comp(this);">
+                                            </span>
+                                            <span class="G_grid_item">물품번호</span>
+                                            <span class="G_grid_item">취득일자</span>
+                                            <span class="G_grid_item">취득가액</span>
+                                            <span class="G_grid_item">물품등급</span>
+                                        </div>
+                                        <!-- grid title -->
+
+                                        <!-- grid inner -->
+                                        <!--
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        -->
+                                        <!-- grid inner -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 진행 중인 문서함 -->
+
+                        <!-- 완료 문서함 -->
+                        <div id="completed_document" class="tab_content active">
+                            <div class="title">
+                                <p>완료 문서함</p>
+                            </div>
+                            <div class="con_wrap">
+                                <div class="date_wrap">
+                                    <p>신청일자</p>
+                                    <div class="date">
+                                        <input id="date_comp_start" type="date">
+                                        <input id="date_comp_end" type="date">
+                                    </div>
+                                </div>
+                                <div class="drop_search">
+                                    <div class="dropDown">
+                                        <select id="ssearch_comp">
+                                            <option value="0" selected="">선택</option>
+                                            <option value="1">전체</option>
+                                            <option value="2">제목</option>
+                                            <option value="3">카테고리</option>
+                                            <option value="4">수령위치</option>
+                                            <option value="5">물품명(재사용)</option>
+                                            <option value="6">물품번호(재사용)</option>
+                                        </select>
+                                    </div>
+                                    <div class="search">
+                                        <input id="svalue_comp" placeholder="검색어를 입력해주세요.">
+                                    </div>
+                                    <button onclick="search_comp_submit()">검색</button>
+                                </div>
+                            </div>
+                            <div class="con_wrap02 fix_flexbetween">
+                                <div class="con_inner">
+                                    <div class="title fix_flexbetween">
+                                        <div>
+                                            <p class="title_txt">완료된 반납 신청서</p>
+                                            <p>[총 <span id="comp_count"><%=approval_list_comp.length%></span>건]</p>
+                                        </div>
+                                        <button class="excel_btn">엑셀 저장</button>
+                                    </div>
+                                    <div id="grid_wrap_comp" class="grid G_grid">
+                                        <!-- grid title -->
+                                        <div class="grid-container_applicationReturnList G_grid_item_bg">
+                                            <span class="G_grid_item">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item">신청일자</span>
+                                            <span class="G_grid_item">신청부서</span>
+                                            <span class="G_grid_item">신청자</span>
+                                            <span class="G_grid_item">상세보기</span>
+                                        </div>
+                                        <!-- grid title -->
+
+                                        <%
+                                        for (var idx = 0; idx < approval_list_comp.length; idx++)
+                                        {
+                                        %>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input name="chk_btn_comp[]" type="checkbox" value="<%=approval_list_comp[idx].nIndex%>">
+                                            </span>
+                                            <span class="G_grid_item2"><%=approval_list_comp[idx].dApprovalDate%></span>
+                                            <span class="G_grid_item2"><%=approval_list_comp[idx].sUserOrg%></span>
+                                            <span class="G_grid_item2"><%=approval_list_comp[idx].sUserName%></span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03" onclick="completedDocumentModalOpen(<%=approval_list_comp[idx].nIndex%>)">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <%
+                                        }
+                                        %>
+
+                                        <!-- grid inner -->
+                                        <!--
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">생명과학대학 행정팀</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03" onclick="completedDocumentModalOpen()">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">생명과학대학 행정팀</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">생명과학대학 행정팀</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03">상세보기</button>
+                                            </span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">2024-01-31</span>
+                                            <span class="G_grid_item2">생명과학대학 행정팀</span>
+                                            <span class="G_grid_item2">김OO</span>
+                                            <span class="G_grid_item2">
+                                                <button class="green_btn03">상세보기</button>
+                                            </span>
+                                        </div>
+                                    -->
+                                        <!-- grid inner -->
+                                    </div>
+                                </div>
+                                <div class="con_inner">
+                                    <div class="title fix_flexbetween">
+                                        <div class="">
+                                            <p class="title_txt">선택한 신청서의 물품 목록</p>
+                                            <p>[총 <span id="comp_fix_count">0</span>건]</p>
+                                        </div>
+                                        <button class="excel_btn">엑셀 저장</button>
+                                    </div>
+                                    <div id="grid_wrap_comp_fix" class="grid G_grid">
+                                        <!-- grid title -->
+                                        <div class="grid-container_applicationReturnList G_grid_item_bg">
+                                            <span class="G_grid_item">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item">물품번호</span>
+                                            <span class="G_grid_item">취득일자</span>
+                                            <span class="G_grid_item">취득가액</span>
+                                            <span class="G_grid_item">물품등급</span>
+                                        </div>
+                                        <!-- grid title -->
+                    
+                                        <!-- grid inner -->
+                                        <!--
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        <div class="grid-container_applicationReturnList grid_item2_bg">
+                                            <span class="G_grid_item2">
+                                                <input type="checkbox">
+                                            </span>
+                                            <span class="G_grid_item2">1120030011470001</span>
+                                            <span class="G_grid_item2">2024-12-25</span>
+                                            <span class="G_grid_item2">9,980,000</span>
+                                            <span class="G_grid_item2">C</span>
+                                        </div>
+                                        -->
+                                        <!-- grid inner -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 완료 문서함 -->
+                        <!-- tab contents -->
+                    </div>
+                </div>
+
+                <!-- 완료 문서 모달 -->
+                <div id="completedDocument_modal" class="modal_container hidden">
+                    <%-/*교수님 행정 직원 선택 모달*/ include ("./templates/completedDocument_modal") %>
+                </div>
+                <!-- 완료 문서 모달 -->
+
+                <!-- 우축 서브 콘텐츠 -->
+            </section>
+            <!-- section -->
+        </div>
+        
+        <!-- footer -->
+        <footer id="footer">
+            <%-/*footer 불러오기*/ include ("./templates/footers") %>
+        </footer>
+        <!-- footer -->
+
+        <!-- 모바일 하단 메뉴 -->
+        <div class="m_bottom">
+            <ul class="fix_flexcenter">
+                <li class="m_home">
+                    <a href="home"></a>
+                </li>
+                <li class="m_inquiry">
+                    <a href="equipment_inquiry"></a>
+                </li>
+                <li class="m_plus">
+                    <a href="reusable_market_new?category=register">
+                        <div></div>
+                    </a>
+                </li>
+                <li class="m_search">
+                    <a href="equipment_idiligence"></a>
+                </li>
+                <li class="m_reuse m_active">
+                    <a href="reusable_market_new"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 모바일 하단 메뉴 -->
+
+        <script>
+            console.log("Portal ID:", "<%= portalid %>");
+            console.log("Portal ID:", "<%= idx %>");
+            console.log("Portal ID:", "<%= uname %>");
+            console.log("Portal ID:", "<%= userid %>");
+            console.log("Portal ID:", "<%= portalid %>");
+            console.log("Portal ID:", "<%= permission %>");
+            console.log("Portal ID:", "<%= stdtype %>");
+            console.log("Portal ID:", "<%= authority_list %>");
+            console.log("Portal ID:", "<%= sel_authority %>");
+            console.log("Portal ID:", "<%= approval_list_process %>");
+            console.log("Portal ID:", "<%= approval_list_comp %>");
+        </script>
+    </body>
+    <script>
+        // 초기 로드 시 첫 번째 탭만 활성화
+        window.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab_content');
+
+            // 모든 탭과 콘텐츠 초기화
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            // 첫 번째 탭과 콘텐츠 활성화
+            tabs[0].classList.add('active');
+            contents[0].classList.add('active');
+        });
+
+        function changeTab(tabId) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab_content');
+
+            // 모든 탭과 콘텐츠 초기화
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            // 선택된 탭과 콘텐츠 활성화
+            document.getElementById(tabId).classList.add('active');
+            const clickedTab = Array.from(tabs).find(tab => tab.onclick.toString().includes(tabId));
+            if (clickedTab) clickedTab.classList.add('active');
+        }
+
+        function select_all_appr_process (sel_all)
+        {
+            const chk_btn = document.getElementsByName ("chk_btn_process[]");
+                chk_btn.forEach ((checkbox) => {
+                    checkbox.checked = sel_all.checked;
+            });
+        }
+
+        function select_all_appr_comp (sel_all)
+        {
+            const chk_btn = document.getElementsByName ("chk_btn_comp[]");
+                chk_btn.forEach ((checkbox) => {
+                    checkbox.checked = sel_all.checked;
+            });
+        }
+
+        function execlProcess_submit ()
+        {
+            const chk_btn = document.getElementsByName ("chk_btn_process[]");
+            chk_btn.forEach ((checkbox) => {
+                if (checkbox.checked) {
+                    check = true;
+                }
+            });
+            if (!check)
+            {
+                alert ("비품을 1개이상 선택해 주세요.");
+            }
+            else
+            {
+                var obj = new Object();
+                obj['appr_list'] = chk_btn;
+                obj['mode'] = 1;
+
+                $.ajax ({
+                    url: '/returnApprovalExecl',
+                    type: "post",
+                    dataType: "json",
+                    contentType : 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function (result) {
+                    }
+                });
+            }
+        }
+
+        function execlComp_submit ()
+        {
+            const chk_btn = document.getElementsByName ("chk_btn_comp[]");
+            chk_btn.forEach ((checkbox) => {
+                if (checkbox.checked) {
+                    check = true;
+                }
+            });
+            if (!check)
+            {
+                alert ("비품을 1개이상 선택해 주세요.");
+            }
+            else
+            {
+                var obj = new Object();
+                obj['appr_list'] = chk_btn;
+                obj['mode'] = 1;
+
+                $.ajax ({
+                    url: '/returnApprovalExecl',
+                    type: "post",
+                    dataType: "json",
+                    contentType : 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function (result) {
+                    }
+                });
+            }
+        }
+
+        function search_process_submit ()
+        {
+            var date_start = document.getElementById('date_process_start').value;
+            var date_end = document.getElementById('date_process_end').value;
+            var ssearch = document.getElementById('ssearch_process').value;
+            var svalue = document.getElementById('svalue_process').value;
+
+            console.log("date_start",date_start);
+
+            if(ssearch == 0 && date_start == "" && date_end == "")
+            {
+                alert("검색 주체를 선택해 주세요.");
+                return;
+            } else if(svalue == "" && date_start == "" && date_end == "")
+            {
+                alert("검색어를 입력해 주세요.");
+                return;
+            }
+
+            var obj = new Object();
+            obj['ssearch'] = ssearch;
+            obj['svalue'] = svalue;
+            obj['startDate'] = date_start;
+            obj['endDate'] = date_end;
+
+            $.ajax ({
+                url: '/searchApprovalProcess',
+                type: "post",
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function (result) {
+                        var appr_info = result.result;
+
+                        $( '#grid_wrap_process').empty();
+                        var table_process = document.getElementById ("grid_wrap_process");
+
+                        let header_process = document.createElement("div");
+                        header_process.className = "grid-container_applicationReturnList G_grid_item_bg";
+
+                        let header_process_item1 = document.createElement("span");
+                        header_process_item1.className = "G_grid_item";
+                        let all_check_input = document.createElement("input");
+                        all_check_input.type = "checkbox";
+                        all_check_input.name = "all_chk_process";
+                        all_check_input.value = "selectall";
+                        all_check_input.setAttribute('onClick',"select_all_appr_process(this);");
+                        header_process_item1.appendChild(all_check_input);
+
+                        let header_process_item2 = document.createElement("span");
+                        header_process_item2.className = "G_grid_item";
+                        header_process_item2.appendChild(document.createTextNode("신청일자"));
+
+                        let header_process_item3 = document.createElement("span");
+                        header_process_item3.className = "G_grid_item";
+                        header_process_item3.appendChild(document.createTextNode("결재상태"));
+
+                        let header_process_item4 = document.createElement("span");
+                        header_process_item4.className = "G_grid_item";
+                        header_process_item4.appendChild(document.createTextNode("신청자"));
+
+                        let header_process_item5 = document.createElement("span");
+                        header_process_item5.className = "G_grid_item";
+                        header_process_item5.appendChild(document.createTextNode("상세보기"));
+
+                        header_process.appendChild(header_process_item1);
+                        header_process.appendChild(header_process_item2);
+                        header_process.appendChild(header_process_item3);
+                        header_process.appendChild(header_process_item4);
+                        header_process.appendChild(header_process_item5);
+
+                        table_process.appendChild(header_process);
+
+                        for(var idx=0; idx< appr_info.length; idx++) {
+                            let body_process = document.createElement("div");
+                            body_process.className = "grid-container_applicationReturnList grid_item2_bg";
+
+                            let body_process_item1 = document.createElement("span");
+                            body_process_item1.className = "G_grid_item2";
+                            let body_check_input = document.createElement("input");
+                            body_check_input.type = "checkbox";
+                            body_check_input.name = "chk_btn_process[]";
+                            body_check_input.value = appr_info[idx].nIndex;
+                            //all_check_input.onclick = "select_all_appr(this);";
+                            body_process_item1.appendChild(body_check_input);
+
+                            let body_process_item2 = document.createElement("span");
+                            body_process_item2.className = "G_grid_item2";
+                            body_process_item2.appendChild(document.createTextNode(new Date(appr_info[idx].dApprovalDate).toISOString().split('T')[0]));
+
+                            let body_process_item3 = document.createElement("span");
+                            body_process_item3.className = "G_grid_item2";
+
+                            let body_process_item4 = document.createElement("span");
+                            body_process_item4.className = "G_grid_item2";
+                            body_process_item4.appendChild(document.createTextNode(appr_info[idx].sUserName));
+
+                            let body_process_item5 = document.createElement("span");
+                            body_process_item5.className = "G_grid_item2";
+
+                            if(appr_info[idx].nApprovalState == 1)
+                            {
+                                body_process_item3.appendChild(document.createTextNode("결재 요청<br>(신청자)"));
+
+                                let item_btn = document.createElement("button");
+                                item_btn.className = "green_btn03";
+                                item_btn.innerHTML = "상세보기";
+                                item_btn.setAttribute('onClick',"applicationOpenPopup02("+ appr_info[idx].nIndex +")");
+                                body_process_item5.appendChild(item_btn);
+                            }
+                            else if(appr_info[idx].nApprovalState == 2)
+                            {
+                                body_process_item3.appendChild(document.createTextNode("승인 대기<br>(중간 결재자)"));
+
+                                let item_btn = document.createElement("button");
+                                item_btn.className = "green_btn03";
+                                item_btn.innerHTML = "상세보기";
+                                item_btn.setAttribute('onClick',"applicationOpenPopup03("+ appr_info[idx].nIndex +")");
+                                body_process_item5.appendChild(item_btn);
+                            }
+                            else if(appr_info[idx].nApprovalState == 3)
+                            {
+                                body_process_item3.appendChild(document.createTextNode("승인 대기<br>(최종 결재자)"));
+
+                                let item_btn = document.createElement("button");
+                                item_btn.className = "green_btn03";
+                                item_btn.innerHTML = "상세보기";
+                                item_btn.setAttribute('onClick',"applicationOpenPopup04("+ appr_info[idx].nIndex +")");
+                                body_process_item5.appendChild(item_btn);
+                            }
+
+                            body_process.appendChild(body_process_item1);
+                            body_process.appendChild(body_process_item2);
+                            body_process.appendChild(body_process_item3);
+                            body_process.appendChild(body_process_item4);
+                            body_process.appendChild(body_process_item5);
+
+                            table_process.appendChild(body_process);
+                        }
+
+                        $( '#grid_wrap_process_fix').empty();
+                        var table_process_fix = document.getElementById ("grid_wrap_process_fix");
+
+                        let header_process_fix = document.createElement("div");
+                        header_process_fix.className = "grid-container_applicationReturnList G_grid_item_bg";
+
+                        let header_process_fix_item1 = document.createElement("span");
+                        header_process_fix_item1.className = "G_grid_item";
+                        let all_check_fix_input = document.createElement("input");
+                        all_check_fix_input.type = "checkbox";
+                        all_check_fix_input.name = "all_chk_process";
+                        all_check_fix_input.value = "selectall";
+                        all_check_fix_input.onclick = "select_all_appr_process(this);";
+                        header_process_fix_item1.appendChild(all_check_fix_input);
+
+                        let header_process_fix_item2 = document.createElement("span");
+                        header_process_fix_item2.className = "G_grid_item";
+                        header_process_fix_item2.appendChild(document.createTextNode("물품번호"));
+
+                        let header_process_fix_item3 = document.createElement("span");
+                        header_process_fix_item3.className = "G_grid_item";
+                        header_process_fix_item3.appendChild(document.createTextNode("취득일자"));
+
+                        let header_process_fix_item4 = document.createElement("span");
+                        header_process_fix_item4.className = "G_grid_item";
+                        header_process_fix_item4.appendChild(document.createTextNode("취득가액"));
+
+                        let header_process_fix_item5 = document.createElement("span");
+                        header_process_fix_item5.className = "G_grid_item";
+                        header_process_fix_item5.appendChild(document.createTextNode("물품등급"));
+
+                        header_process_fix.appendChild(header_process_fix_item1);
+                        header_process_fix.appendChild(header_process_fix_item2);
+                        header_process_fix.appendChild(header_process_fix_item3);
+                        header_process_fix.appendChild(header_process_fix_item4);
+                        header_process_fix.appendChild(header_process_fix_item5);
+
+                        table_process_fix.appendChild(header_process_fix);
+                }
+            });
+        }
+
+        function search_comp_submit ()
+        {
+            var date_start = document.getElementById('date_comp_start').value;
+            var date_end = document.getElementById('date_comp_end').value;
+            var ssearch = document.getElementById('ssearch_comp').value;
+            var svalue = document.getElementById('svalue_comp').value;
+
+            console.log("date_start",date_start);
+
+            if(ssearch == 0 && date_start == "" && date_end == "")
+            {
+                alert("검색 주체를 선택해 주세요.");
+                return;
+            } else if(svalue == "" && date_start == "" && date_end == "")
+            {
+                alert("검색어를 입력해 주세요.");
+                return;
+            }
+
+            var obj = new Object();
+            obj['ssearch'] = ssearch;
+            obj['svalue'] = svalue;
+            obj['startDate'] = date_start;
+            obj['endDate'] = date_end;
+
+            $.ajax ({
+                url: '/searchApprovalComplete',
+                type: "post",
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function (result) {
+                    var appr_info = result.result;
+
+                    $( '#grid_wrap_comp').empty();
+                    var table_comp = document.getElementById ("grid_wrap_comp");
+
+                    let header_comp = document.createElement("div");
+                    header_comp.className = "grid-container_applicationReturnList G_grid_item_bg";
+
+                    let header_comp_item1 = document.createElement("span");
+                    header_comp_item1.className = "G_grid_item";
+                    let all_check_input = document.createElement("input");
+                    all_check_input.type = "checkbox";
+                    all_check_input.name = "all_chk_comp";
+                    all_check_input.value = "selectall";
+                    all_check_input.setAttribute('onClick',"select_all_appr_comp(this);");
+                    header_comp_item1.appendChild(all_check_input);
+
+                    let header_comp_item2 = document.createElement("span");
+                    header_comp_item2.className = "G_grid_item";
+                    header_comp_item2.appendChild(document.createTextNode("신청일자"));
+
+                    let header_comp_item3 = document.createElement("span");
+                    header_comp_item3.className = "G_grid_item";
+                    header_comp_item3.appendChild(document.createTextNode("결재상태"));
+
+                    let header_comp_item4 = document.createElement("span");
+                    header_comp_item4.className = "G_grid_item";
+                    header_comp_item4.appendChild(document.createTextNode("신청자"));
+
+                    let header_comp_item5 = document.createElement("span");
+                    header_comp_item5.className = "G_grid_item";
+                    header_comp_item5.appendChild(document.createTextNode("상세보기"));
+
+                    header_comp.appendChild(header_comp_item1);
+                    header_comp.appendChild(header_comp_item2);
+                    header_comp.appendChild(header_comp_item3);
+                    header_comp.appendChild(header_comp_item4);
+                    header_comp.appendChild(header_comp_item5);
+
+                    table_comp.appendChild(header_comp);
+
+                    for(var idx=0; idx< appr_info.length; idx++) {
+                        let body_comp = document.createElement("div");
+                        body_comp.className = "grid-container_applicationReturnList grid_item2_bg";
+
+                        let body_comp_item1 = document.createElement("span");
+                        body_comp_item1.className = "G_grid_item2";
+                        let body_check_input = document.createElement("input");
+                        body_check_input.type = "checkbox";
+                        body_check_input.name = "chk_btn_comp[]";
+                        body_check_input.value = appr_info[idx].nIndex;
+                        //all_check_input.onclick = "select_all_appr(this);";
+                        body_comp_item1.appendChild(body_check_input);
+
+                        let body_comp_item2 = document.createElement("span");
+                        body_comp_item2.className = "G_grid_item2";
+                        body_comp_item2.appendChild(document.createTextNode(new Date(appr_info[idx].dApprovalDate).toISOString().split('T')[0]));
+
+                        let body_comp_item3 = document.createElement("span");
+                        body_comp_item3.className = "G_grid_item2";
+                        body_comp_item3.appendChild(document.createTextNode(appr_info[idx].sUserOrg));
+
+                        let body_comp_item4 = document.createElement("span");
+                        body_comp_item4.className = "G_grid_item2";
+                        body_comp_item4.appendChild(document.createTextNode(appr_info[idx].sUserName));
+
+                        let body_comp_item5 = document.createElement("span");
+                        body_comp_item5.className = "G_grid_item2";
+
+                        let item_btn = document.createElement("button");
+                        item_btn.className = "green_btn03";
+                        item_btn.innerHTML = "상세보기";
+                        item_btn.setAttribute('onClick',"completedDocumentModalOpen("+ appr_info[idx].nIndex +")");
+                        body_comp_item5.appendChild(item_btn);
+
+                        body_comp.appendChild(body_comp_item1);
+                        body_comp.appendChild(body_comp_item2);
+                        body_comp.appendChild(body_comp_item3);
+                        body_comp.appendChild(body_comp_item4);
+                        body_comp.appendChild(body_comp_item5);
+
+                        table_comp.appendChild(body_comp);
+                    }
+
+                    $( '#grid_wrap_comp_fix').empty();
+                    var table_comp_fix = document.getElementById ("grid_wrap_comp_fix");
+
+                    let header_comp_fix = document.createElement("div");
+                    header_comp_fix.className = "grid-container_applicationReturnList G_grid_item_bg";
+
+                    let header_comp_fix_item1 = document.createElement("span");
+                    header_comp_fix_item1.className = "G_grid_item";
+                    let all_check_fix_input = document.createElement("input");
+                    all_check_fix_input.type = "checkbox";
+                    all_check_fix_input.name = "all_chk_comp";
+                    all_check_fix_input.value = "selectall";
+                    //all_check_fix_input.onclick = "select_all_appr(this);";
+                    header_comp_fix_item1.appendChild(all_check_fix_input);
+
+                    let header_comp_fix_item2 = document.createElement("span");
+                    header_comp_fix_item2.className = "G_grid_item";
+                    header_comp_fix_item2.appendChild(document.createTextNode("물품번호"));
+
+                    let header_comp_fix_item3 = document.createElement("span");
+                    header_comp_fix_item3.className = "G_grid_item";
+                    header_comp_fix_item3.appendChild(document.createTextNode("취득일자"));
+
+                    let header_comp_fix_item4 = document.createElement("span");
+                    header_comp_fix_item4.className = "G_grid_item";
+                    header_comp_fix_item4.appendChild(document.createTextNode("취득가액"));
+
+                    let header_comp_fix_item5 = document.createElement("span");
+                    header_comp_fix_item5.className = "G_grid_item";
+                    header_comp_fix_item5.appendChild(document.createTextNode("물품등급"));
+
+                    header_comp_fix.appendChild(header_comp_fix_item1);
+                    header_comp_fix.appendChild(header_comp_fix_item2);
+                    header_comp_fix.appendChild(header_comp_fix_item3);
+                    header_comp_fix.appendChild(header_comp_fix_item4);
+                    header_comp_fix.appendChild(header_comp_fix_item5);
+
+                    table_comp_fix.appendChild(header_comp_fix);
+                }
+            });
+        }
+
+        // 팝업 열기 함수
+        function applicationReturnPopup() {
+            const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+            window.open('return_applicationPopup', 'ReturnPopup', popupOptions);
+        }
+
+        // 팝업 열기 함수
+        function applicationOpenPopup02(appr_no) {
+            const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+            window.open('approval_applicationPopup02?apprNo=' + appr_no, 'ApprovalPopup02', popupOptions);
+        }
+
+        // 팝업 열기 함수
+        function applicationOpenPopup03(appr_no) {
+            const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+            window.open('approval_applicationPopup03?apprNo=' + appr_no, 'ApprovalPopup02', popupOptions);
+        }
+
+        // 팝업 열기 함수
+        function applicationOpenPopup04(appr_no) {
+            const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+            window.open('approval_applicationPopup04?apprNo=' + appr_no, 'ApprovalPopup02', popupOptions);
+        }
+
+        // 모달 열기 함수
+        function completedDocumentModalOpen(appr_no) {
+            var obj = new Object();
+            obj['apprIdx'] = appr_no;
+
+            $.ajax ({
+                url: '/getCompApprInfo',
+                type: "post",
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function (result) {
+                    var approval_info = result.approval_info[0];
+                    var appprover_list = result.appprover_list;
+                    var fix_list = result.fix_list;
+                    var user_tel = result.user_tel[0];
+
+                    document.getElementById('comp_doc_no').innerHTML = appr_no;
+
+                    $( '#comp_approver').empty();
+                    var table_comp_fix = document.getElementById ("comp_approver");
+
+                    for(var idx = 0; idx < appprover_list.length; idx++)
+                    {
+                        let data_comp = document.createElement("ul");
+
+                        let data_comp_item1 = document.createElement("li");
+                        data_comp_item1.className = "tit_txt";
+
+                        let data_comp_item1_p = document.createElement("p");
+                        data_comp_item1_p.innerHTML = "직원";
+                        data_comp_item1.appendChild(data_comp_item1_p);
+
+                        let data_comp_item2 = document.createElement("li");
+
+                        let data_comp_item2_p = document.createElement("p");
+                        data_comp_item2_p.innerHTML = appprover_list[idx].dApprovalDoneDate;
+                        data_comp_item2.appendChild(data_comp_item2_p);
+
+                        let data_comp_item3 = document.createElement("li");
+
+                        let data_comp_item3_p = document.createElement("p");
+                        data_comp_item3_p.innerHTML = appprover_list[idx].sName;
+                        data_comp_item3.appendChild(data_comp_item3_p);
+
+                        data_comp.appendChild(data_comp_item1);
+                        data_comp.appendChild(data_comp_item2);
+                        data_comp.appendChild(data_comp_item3);
+
+                        table_comp_fix.appendChild(data_comp);
+                    }
+
+                    document.getElementById('comp_resu_title').innerHTML = approval_info.sApprovalTitle;
+                    document.getElementById('comp_fix_count').innerHTML = "[총 " + fix_list.length + "건]";
+                    document.getElementById('comp_resu_memo').innerHTML = approval_info.sApprovalReason;
+                    document.getElementById('comp_user_name').innerHTML = approval_info.sUserName;
+                    document.getElementById('comp_user_tel').innerHTML = user_tel.sTel;
+
+                    $( '#comp_fix').empty();
+                    var table_comp_fix = document.getElementById ("comp_fix");
+
+                    var fix_name = "";
+                    var fix_no = "";
+                    var fix_build = "";
+                    var fix_room = "";
+                    var fix_price = "";
+                    var fix_date = "";
+
+                    for(var idx = 0; idx < fix_list.length; idx++)
+                    {
+                        if(idx == (fix_list.length - 1))
+                        {
+                            fix_name += fix_list[idx].sFixtureName;
+                            fix_no += fix_list[idx].sFixtureNo;
+                            fix_build += fix_list[idx].sBuild;
+                            fix_room += fix_list[idx].sRoom + "(" + fix_list[idx].sRoomNo + ")";
+                            fix_price += fix_list[idx].sFixturePrice;
+                            fix_price += fix_list[idx].dFixtureDate;
+                        }
+                        else
+                        {
+                            fix_name += fix_list[idx].sFixtureName + " , ";
+                            fix_no += fix_list[idx].sFixtureNo + " , ";
+                            fix_build += fix_list[idx].sBuild + " , ";
+                            fix_room += fix_list[idx].sRoom + "(" + fix_list[idx].sRoomNo + ")"+ " , ";
+                            fix_price += fix_list[idx].sFixturePrice + " , ";
+                            fix_price += fix_list[idx].dFixtureDate + " , ";
+                        }
+                    }
+
+                    let data_comp_1 = document.createElement("ul");
+
+                    let data_comp_item1_1 = document.createElement("li");
+                    data_comp_item1_1.className = "tit_txt";
+
+                    let data_comp_item1_1_p = document.createElement("p");
+                    data_comp_item1_1_p.innerHTML = "물품명";
+                    data_comp_item1_1.appendChild(data_comp_item1_1_p);
+
+                    let data_comp_item1_2 = document.createElement("li");
+
+                    let data_comp_item1_2_p = document.createElement("p");
+                    data_comp_item1_2_p.innerHTML = fix_name;
+                    data_comp_item1_2.appendChild(data_comp_item1_2_p);
+
+                    data_comp_1.appendChild(data_comp_item1_1);
+                    data_comp_1.appendChild(data_comp_item1_2);
+
+                    let data_comp_2 = document.createElement("ul");
+
+                    let data_comp_item2_1 = document.createElement("li");
+                    data_comp_item2_1.className = "tit_txt";
+
+                    let data_comp_item2_1_p = document.createElement("p");
+                    data_comp_item2_1_p.innerHTML = "물품명";
+                    data_comp_item2_1.appendChild(data_comp_item2_1_p);
+
+                    let data_comp_item2_2 = document.createElement("li");
+
+                    let data_comp_item2_2_p = document.createElement("p");
+                    data_comp_item2_2_p.innerHTML = fix_name;
+                    data_comp_item2_2.appendChild(data_comp_item2_2_p);
+
+                    data_comp_2.appendChild(data_comp_item2_1);
+                    data_comp_2.appendChild(data_comp_item2_2);
+
+                    let data_comp_3 = document.createElement("ul");
+
+                    let data_comp_item3_1 = document.createElement("li");
+                    data_comp_item3_1.className = "tit_txt";
+
+                    let data_comp_item3_1_p = document.createElement("p");
+                    data_comp_item3_1_p.innerHTML = "물품명";
+                    data_comp_item3_1.appendChild(data_comp_item3_1_p);
+
+                    let data_comp_item3_2 = document.createElement("li");
+
+                    let data_comp_item3_2_p = document.createElement("p");
+                    data_comp_item3_2_p.innerHTML = fix_name;
+                    data_comp_item3_2.appendChild(data_comp_item3_2_p);
+
+                    data_comp_3.appendChild(data_comp_item3_1);
+                    data_comp_3.appendChild(data_comp_item3_2);
+
+                    let data_comp_4 = document.createElement("ul");
+
+                    let data_comp_item4_1 = document.createElement("li");
+                    data_comp_item4_1.className = "tit_txt";
+
+                    let data_comp_item4_1_p = document.createElement("p");
+                    data_comp_item4_1_p.innerHTML = "물품명";
+                    data_comp_item4_1.appendChild(data_comp_item4_1_p);
+
+                    let data_comp_item4_2 = document.createElement("li");
+
+                    let data_comp_item4_2_p = document.createElement("p");
+                    data_comp_item4_2_p.innerHTML = fix_name;
+                    data_comp_item4_2.appendChild(data_comp_item4_2_p);
+
+                    data_comp_4.appendChild(data_comp_item4_1);
+                    data_comp_4.appendChild(data_comp_item4_2);
+
+                    let data_comp_5 = document.createElement("ul");
+
+                    let data_comp_item5_1 = document.createElement("li");
+                    data_comp_item5_1.className = "tit_txt";
+
+                    let data_comp_item5_1_p = document.createElement("p");
+                    data_comp_item5_1_p.innerHTML = "물품명";
+                    data_comp_item5_1.appendChild(data_comp_item5_1_p);
+
+                    let data_comp_item5_2 = document.createElement("li");
+
+                    let data_comp_item5_2_p = document.createElement("p");
+                    data_comp_item5_2_p.innerHTML = fix_name;
+                    data_comp_item5_2.appendChild(data_comp_item5_2_p);
+
+                    data_comp_5.appendChild(data_comp_item5_1);
+                    data_comp_5.appendChild(data_comp_item5_2);
+
+                    let data_comp_6 = document.createElement("ul");
+
+                    let data_comp_item6_1 = document.createElement("li");
+                    data_comp_item6_1.className = "tit_txt";
+
+                    let data_comp_item6_1_p = document.createElement("p");
+                    data_comp_item6_1_p.innerHTML = "물품명";
+                    data_comp_item6_1.appendChild(data_comp_item6_1_p);
+
+                    let data_comp_item6_2 = document.createElement("li");
+
+                    let data_comp_item6_2_p = document.createElement("p");
+                    data_comp_item6_2_p.innerHTML = fix_name;
+                    data_comp_item6_2.appendChild(data_comp_item6_2_p);
+
+                    data_comp_6.appendChild(data_comp_item6_1);
+                    data_comp_6.appendChild(data_comp_item6_2);
+
+                    table_comp_fix.appendChild(data_comp_1);
+                    table_comp_fix.appendChild(data_comp_2);
+                    table_comp_fix.appendChild(data_comp_3);
+                    table_comp_fix.appendChild(data_comp_4);
+                    table_comp_fix.appendChild(data_comp_5);
+                    table_comp_fix.appendChild(data_comp_6);
+
+                    const modal = document.getElementById('completedDocument_modal');
+                    modal.classList.remove('hidden'); // 'hidden' 클래스를 제거하여 모달을 표시
+                }
+            });
+        }
+
+        // 모달 열기 함수
+        function completedDocumentModalClose() {
+            const modal = document.getElementById('completedDocument_modal');
+            modal.classList.add('hidden'); // 'hidden' 클래스를 제거하여 모달을 표시
+        }
+
+    </script>
+</html>
