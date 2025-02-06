@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+    </head>
+    <body>
+        <!-- skip 네비게이션 영역 -->
+        <nav id="skipToContent">
+            <ul>
+                <li><a href="#container">본문 바로가기</a></li>
+                <li><a href="#gnb">주메뉴 바로가기</a></li>
+                <li><a href="#header">상위메뉴 바로가기</a></li>
+                <li><a href="#footers">하위메뉴 바로가기</a></li>
+            </ul> 
+        </nav>
+        <!-- skip 네비게이션 영역 -->
+
+        <section id="popup_container">
+            <div class="popup_header">
+                <h2 class="title_txt">반납 신청서</h2>
+                <div class="popup_body">
+                    <div class="form_wrap">
+                        <!-- 제목 -->
+                        <div class="form_request">
+                            <label for="제목">제목</label>
+                            <input id="appr_title" class="Auto_input" placeholder="제목을 입력해주세요." disabled>
+                        </div>
+                        <!-- 제목 -->
+
+                        <!-- 요청일자 -->
+                        <div class="form_request">
+                            <label for="요청일자">요청일자</label>
+                            <input id="appr_date" class="Auto_input" placeholder="2024-12-25 (자동입력)" disabled>
+                        </div>
+                        <!-- 요청일자 -->
+
+                        <!-- 물품 목록 -->
+                        <div class="form_request">
+                            <label for="물품 목록">물품 목록</label>
+                            <div id="grid_wrap_fix" class="G_grid form_grid">
+                                <!-- grid title -->
+                                <div class="grid-container_productList G_grid_item_bg">
+                                    <span class="G_grid_item">물품명</span>
+                                    <span class="G_grid_item">물품번호</span>
+                                    <span class="G_grid_item">건물명</span>
+                                    <span class="G_grid_item">호실(번호)</span>
+                                    <span class="G_grid_item">취득일자</span>
+                                    <span class="G_grid_item">취득금액</span>
+                                    <span class="G_grid_item">물품등급</span>
+                                </div>
+                                <div class="grid-container_productList G_grid_item2_bg">
+                                    <span class="G_grid_item2">PIANO</span>
+                                    <span class="G_grid_item2">1120030011470001</span>
+                                    <span class="G_grid_item2">과학도서관</span>
+                                    <span class="G_grid_item2">대강당(508)</span>
+                                    <span class="G_grid_item2">2003-08-19</span>
+                                    <span class="G_grid_item2">9,980,000</span>
+                                    <span class="G_grid_item2">A</span>
+                                </div>
+                                <div class="grid-container_productList G_grid_item2_bg">
+                                    <span class="G_grid_item2">PIANO</span>
+                                    <span class="G_grid_item2">1120030011470001</span>
+                                    <span class="G_grid_item2">과학도서관</span>
+                                    <span class="G_grid_item2">대강당(508)</span>
+                                    <span class="G_grid_item2">2003-08-19</span>
+                                    <span class="G_grid_item2">9,980,000</span>
+                                    <span class="G_grid_item2">A</span>
+                                </div>
+                                <div class="grid-container_productList G_grid_item2_bg">
+                                    <span class="G_grid_item2">PIANO</span>
+                                    <span class="G_grid_item2">1120030011470001</span>
+                                    <span class="G_grid_item2">과학도서관</span>
+                                    <span class="G_grid_item2">대강당(508)</span>
+                                    <span class="G_grid_item2">2003-08-19</span>
+                                    <span class="G_grid_item2">9,980,000</span>
+                                    <span class="G_grid_item2">A</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 물품 목록 -->
+
+                        <!-- 내용 -->
+                        <div class="form_request">
+                            <label for="내용">내용</label>
+                            <textarea id="appr_memo" class="Auto_input" placeholder="내용을 입력해주세요." disabled></textarea>
+                        </div>
+                        <!-- 내용 -->
+
+                        <!-- 결재자 -->
+                        <div class="form_request">
+                            <div class="staff_inquiry">
+                                <label for="결재자">결재자</label>
+                            </div>
+                            <div class="staff_inquiry_list form_grid">
+                                <div class="staff_inquiry_title">
+                                    <button id="modalOpenBtn" class="btn_none staff_inquiry_btn">직원조회</button>
+                                    <div class="change_btn">
+                                        <button class="btn_none employeeLlist_green"></button>
+                                        <button class="btn_none employeeLlist_green"></button>
+                                    </div>
+                                </div>
+                                <div id="grid_wrap_appr" class="G_grid ">
+                                    <!-- grid title -->
+                                    <div class="grid-container_staffList04 G_grid_item_bg notCompleted">
+                                        <span class="G_grid_item">No</span>
+                                        <span class="G_grid_item">결재자</span>
+                                        <span class="G_grid_item">직급</span>
+                                        <span class="G_grid_item">부서</span>
+                                    </div>
+                                    <div class="grid-container_staffList04 G_grid_item2_bg notCompleted">
+                                        <span class="G_grid_item2">1</span>
+                                        <span class="G_grid_item2">김OO</span>
+                                        <span class="G_grid_item2">차장</span>
+                                        <span class="G_grid_item2">안전관리팀</span>
+                                    </div>
+                                    <div class="grid-container_staffList04 G_grid_item2_bg notCompleted">
+                                        <span class="G_grid_item2">2</span>
+                                        <span class="G_grid_item2">아OO</span>
+                                        <span class="G_grid_item2">부장</span>
+                                        <span class="G_grid_item2">안전관리팀</span>
+                                    </div>
+                                    <div class="grid-container_staffList04 G_grid_item2_bg notCompleted">
+                                        <span class="G_grid_item2">3</span>
+                                        <span class="G_grid_item2">박OO</span>
+                                        <span class="G_grid_item2">학장</span>
+                                        <span class="G_grid_item2">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 담당 행정 직원 -->
+
+                        <!-- popup under btn -->
+                        <div class="popup_under_btn">
+                            <button class="btn_none green_btn approval-button popupCloseBtn" onclick="approvalOne()">확인</button>
+                            <button class="btn_none green_border_btn" onclick="rejectionReasons_modal()">반송</button>
+                            <button class="btn_none green_border_btn popupCloseBtn" onclick="closePopup()">취소</button>
+                        </div>
+                        <!-- popup under btn -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결재 직원 조회 모달 -->
+            <div id="staffInquiryList_modal02" class="modal_container hidden">
+                <%-/*교수님 행정 직원 선택 모달*/ include ("./templates/staffInquiryList_modal02") %>
+            </div>
+            <!-- 결재 직원 조회 모달 -->
+
+            <!-- 반송 사유 작성 모달 -->
+            <div id="rejectionReasons_modal" class="modal_container hidden">
+                <%-/*교수님 행정 직원 선택 모달*/ include ("./templates/rejectionReasons_modal") %>
+            </div>
+            <!-- 반송 사유 작성 모달 -->
+        </section>
+    </body>
+    <script>
+        // 서버에서 userid가 전달되지 않는 경우 기본값 ''를 사용합니다.
+        var currentUserId = "<%= (typeof userid !== 'undefined' ? userid : '') %>";
+        var currentUserApprOrder = null;
+        var isApproved = false;  // 전역 승인 플래그 (기존 코드와 동일)
+        var appr_no = -1;        // 승인 문서 번호 (후에 할당됨)
+        
+        $(document).ready(function() {
+            var parameters = getUrlParams();
+            appr_no = parameters.apprNo;  // URL 파라미터에서 문서 번호 추출
+            fetchApproval(parameters.apprNo);
+        });
+        
+        function getUrlParams() {     
+            var params = {};  
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+                function(str, key, value) { 
+                    params[key] = value; 
+                }
+            );     
+            return params; 
+        }
+        
+        function fetchApproval(val_id) {
+            let obj = {};
+            obj['apprIdx'] = val_id;
+        
+            $.ajax({
+                url: '/approvalDetail',
+                type: "post",
+                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function(data) {
+                    var approval_info = data.approval_info[0];
+                    var approver_list = data.approver_list;
+                    var fix_info = data.fix_info[0];
+        
+                    // 기본 정보 채우기
+                    document.getElementById('appr_title').value = approval_info.sApprovalTitle;
+                    document.getElementById('appr_memo').value = approval_info.sApprovalReason;
+                    if (approval_info.dApprovalDate != null) {
+                        document.getElementById('appr_date').value = approval_info.dApprovalDate;
+                    }
+        
+                    // 물품 목록 갱신
+                    $('#grid_wrap_fix').empty();
+                    var table_fix = document.getElementById("grid_wrap_fix");
+        
+                    let header_fix = document.createElement("div");
+                    header_fix.className = "grid-container_productList G_grid_item_bg";
+                    ["물품명", "물품번호", "건물명", "호실(번호)", "취득일자", "취득금액", "물품등급"].forEach(function(text) {
+                        let span = document.createElement("span");
+                        span.className = "G_grid_item";
+                        span.appendChild(document.createTextNode(text));
+                        header_fix.appendChild(span);
+                    });
+                    table_fix.appendChild(header_fix);
+        
+                    let body_fix = document.createElement("div");
+                    body_fix.className = "grid-container_productList G_grid_item2_bg";
+                    let formattedDate = fix_info.dFixtureDate ? fix_info.dFixtureDate.substring(0, 10) : "";
+                    let rankMapping = { 1: "A", 2: "B", 3: "C", 4: "D" };
+                    let formattedRank = rankMapping[fix_info.nReusableRank] || fix_info.nReusableRank;
+                    let values = [
+                        fix_info.sFixtureName,
+                        fix_info.sFixtureNo,
+                        fix_info.sReusablePlace,
+                        fix_info.sReusableEmail,
+                        formattedDate,
+                        fix_info.sFixturePrice,
+                        formattedRank
+                    ];
+                    values.forEach(function(val) {
+                        let span = document.createElement("span");
+                        span.className = "G_grid_item2";
+                        span.appendChild(document.createTextNode(val));
+                        body_fix.appendChild(span);
+                    });
+                    table_fix.appendChild(body_fix);
+        
+                    // 결재자 리스트 영역 갱신
+                    $('#grid_wrap_appr').empty();
+                    var table_appr = document.getElementById("grid_wrap_appr");
+        
+                    // 테이블 헤더 생성 (예: No, 결재자, 직급, 부서 등)
+                    let header_appr = document.createElement("div");
+                    header_appr.className = "grid-container_staffList04 G_grid_item_bg";
+                    ["No", "결재자", "직급", "부서"].forEach(function(text) {
+                        let span = document.createElement("span");
+                        span.className = "G_grid_item";
+                        span.appendChild(document.createTextNode(text));
+                        header_appr.appendChild(span);
+                    });
+                    table_appr.appendChild(header_appr);
+        
+                    // 현재 사용자 결재 순서 찾기
+                    const currentApprover = approver_list.find(approver => 
+                        String(approver.sNumber) === String(currentUserId)
+                    );
+                    if (currentApprover) {
+                        currentUserApprOrder = parseInt(currentApprover.nApprOrder, 10);
+                        console.log("현재 로그인한 사용자의 결재 순서:", currentUserApprOrder);
+                    }
+        
+                    // 결재자 각각의 row 생성 (nApprOrder가 0이면 skip)
+                    let alreadyApproved = false;
+                    for (var i = 0; i < approver_list.length; i++) {
+                        if (approver_list[i].nApprOrder == 0) continue;
+        
+                        let body_appr = document.createElement("div");
+                        body_appr.className = "grid-container_staffList04 G_grid_item2_bg";
+        
+                        // 만약 해당 결재자의 nApprState가 1이면 회색 음영 처리 및 flag 설정
+                        if (approver_list[i].nApprState == 1) {
+                            body_appr.style.color = "gray";
+                            body_appr.style.opacity = "0.5";
+                            alreadyApproved = true;
+                        }
+        
+                        // 생성될 각 컬럼 (순번, 이름, 직급, 부서)
+                        let orderSpan = document.createElement("span");
+                        orderSpan.className = "G_grid_item2";
+                        orderSpan.appendChild(document.createTextNode(approver_list[i].nApprOrder));
+                        body_appr.appendChild(orderSpan);
+        
+                        let nameSpan = document.createElement("span");
+                        nameSpan.className = "G_grid_item2";
+                        nameSpan.appendChild(document.createTextNode(approver_list[i].sName));
+                        body_appr.appendChild(nameSpan);
+        
+                        let rankSpan = document.createElement("span");
+                        rankSpan.className = "G_grid_item2";
+                        // 모든 직급을 "직원"으로 표시
+                        rankSpan.appendChild(document.createTextNode("직원"));
+                        body_appr.appendChild(rankSpan);
+        
+                        let orgSpan = document.createElement("span");
+                        orgSpan.className = "G_grid_item2";
+                        orgSpan.appendChild(document.createTextNode(approver_list[i].sOrg));
+                        body_appr.appendChild(orgSpan);
+        
+                        table_appr.appendChild(body_appr);
+                    }
+        
+                    // 결재자 목록 처리 후
+                    if (alreadyApproved && currentUserApprOrder != 3) {
+                        isApproved = true;
+                        $(".popup_under_btn .green_btn, .popup_under_btn .green_border_btn")
+                            .not(".popupCloseBtn")
+                            .prop("disabled", true);
+                    }
+        
+                    // 최종 결재자일 경우, 버튼 텍스트를 '승인'으로 변경
+                    if (currentUserApprOrder === 3) {
+                        document.querySelector(".popup_under_btn .approval-button").innerText = "승인";
+                    }
+        
+                    console.log("User ID:", currentUserId, " / Approver Order:", currentUserApprOrder);
+                }
+            });
+        }
+        
+        // 승인 버튼 클릭 시 호출되는 함수
+        function approvalOne() {
+            // 최종 결재자(nApprOrder===3)는 isApproved 체크 없이 승인 처리 진행
+            if (currentUserApprOrder != 3 && isApproved) {
+                alert("이미 승인처리를 완료하였습니다");
+                return;
+            }
+            if (!confirm("승인하시겠습니까?")) {
+                return;
+            }
+            var obj = { apprNo: appr_no };
+        
+            $.ajax({
+                url: '/returnApprovalOne',  // 승인 요청 처리 서버 라우트
+                type: "post",
+                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function(data) {
+                    isApproved = true;
+                    // 결재자 리스트의 row들을 회색(뿌옇게) 처리
+                    $("#grid_wrap_appr .grid-container_staffList04.G_grid_item2_bg").css({
+                        'color': 'gray',
+                        'opacity': '0.5'
+                    });
+                    closePopup();
+                },
+                error: function(err) {
+                    console.error("승인 요청 중 에러 발생: ", err);
+                }
+            });
+        }
+        
+        // 팝업 닫기 함수
+        function closePopup() {
+            window.close(); // 현재 팝업 창 닫기
+        }
+        
+        function rejectionReasons_modal() {
+            // 이미 승인처리된 경우 반송 버튼 클릭 시 처리하지 않습니다.
+            if (isApproved) {
+                alert("이미 승인처리를 완료하였습니다");
+                return;
+            }
+            const modal = document.getElementById('rejectionReasons_modal');
+            modal.classList.remove('hidden'); // 모달 보이기
+        }
+        
+        // 모달 열기 함수
+        function staffInquiryList_modal() {
+            const modal = document.getElementById('staffInquiryList_modal02');
+            modal.classList.remove('hidden');
+        }
+        // 모달 닫기 함수
+        function closeModal() {
+            const modal = document.getElementById('staffInquiryList_modal02');
+            modal.classList.add('hidden');
+        }
+        function closeModal02() {
+            const modal = document.getElementById('rejectionReasons_modal');
+            modal.classList.add('hidden');
+        }
+    </script>
+</html>
