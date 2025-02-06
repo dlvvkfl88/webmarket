@@ -178,11 +178,12 @@
         </section>
     </body>
     <script>
-        // 서버에서 userid가 전달되지 않는 경우 기본값 ''를 사용합니다.
+        // 전역 변수 선언 - 스크립트 상단에 위치시키세요.
         var currentUserId = "<%= (typeof userid !== 'undefined' ? userid : '') %>";
         var currentUserApprOrder = null;
-        var isApproved = false;  // 전역 승인 플래그 (기존 코드와 동일)
-        var appr_no = -1;        // 승인 문서 번호 (후에 할당됨)
+        var isApproved = false;  // 전역 승인 플래그
+        var appr_no = -1;        // 승인 문서 번호
+        var approver_list = [];  // 모든 결재자 목록을 저장할 전역 변수
         
         $(document).ready(function() {
             var parameters = getUrlParams();
@@ -212,7 +213,7 @@
                 data: JSON.stringify(obj),
                 success: function(data) {
                     var approval_info = data.approval_info[0];
-                    var approver_list = data.approver_list;
+                    approver_list = data.approver_list;
                     var fix_info = data.fix_info[0];
         
                     // 기본 정보 채우기
@@ -283,18 +284,16 @@
                     }
         
                     // 결재자 각각의 row 생성 (nApprOrder가 0이면 skip)
-                    let alreadyApproved = false;
                     for (var i = 0; i < approver_list.length; i++) {
                         if (approver_list[i].nApprOrder == 0) continue;
         
                         let body_appr = document.createElement("div");
                         body_appr.className = "grid-container_staffList04 G_grid_item2_bg";
         
-                        // 만약 해당 결재자의 nApprState가 1이면 회색 음영 처리 및 flag 설정
+                        // 만약 해당 결재자의 nApprState가 1이면 회색 음영 처리
                         if (approver_list[i].nApprState == 1) {
                             body_appr.style.color = "gray";
                             body_appr.style.opacity = "0.5";
-                            alreadyApproved = true;
                         }
         
                         // 생성될 각 컬럼 (순번, 이름, 직급, 부서)
@@ -322,12 +321,23 @@
                         table_appr.appendChild(body_appr);
                     }
         
-                    // 결재자 목록 처리 후
-                    if (alreadyApproved && currentUserApprOrder != 3) {
-                        isApproved = true;
-                        $(".popup_under_btn .green_btn, .popup_under_btn .green_border_btn")
-                            .not(".popupCloseBtn")
-                            .prop("disabled", true);
+                    // 승인 대기 중인 결재자의 순서를 계산합니다.
+                    var pendingApprovers = approver_list.filter(function(approver) {
+                        return approver.nApprState != 1 && approver.nApprOrder != 0;
+                    });
+        
+                    // 만약 대기자가 있다면 그중 가장 낮은 결재 순서(다음 결재자)를 구합니다.
+                    if (pendingApprovers.length > 0) {
+                        var nextApproverOrder = Math.min.apply(null, pendingApprovers.map(function(item) {
+                            return parseInt(item.nApprOrder, 10);
+                        }));
+                        
+                        // 현재 사용자의 결재 순서와 다음 결재 순서가 일치하지 않으면 버튼 비활성화
+                        if (currentUserApprOrder !== nextApproverOrder) {
+                            $(".popup_under_btn .green_btn, .popup_under_btn .green_border_btn")
+                                .not(".popupCloseBtn")
+                                .prop("disabled", true);
+                        }
                     }
         
                     // 최종 결재자일 경우, 버튼 텍스트를 '승인'으로 변경
@@ -342,11 +352,21 @@
         
         // 승인 버튼 클릭 시 호출되는 함수
         function approvalOne() {
-            // 최종 결재자(nApprOrder===3)는 isApproved 체크 없이 승인 처리 진행
-            if (currentUserApprOrder != 3 && isApproved) {
-                alert("이미 승인처리를 완료하였습니다");
+            // 승인 대기 중인 결재자의 순서를 계산합니다.
+            var pendingApprovers = approver_list.filter(function(approver) {
+                return approver.nApprState != 1 && approver.nApprOrder != 0;
+            });
+            if (pendingApprovers.length > 0) {
+                var nextApproverOrder = Math.min.apply(null, pendingApprovers.map(function(item) {
+                    return parseInt(item.nApprOrder, 10);
+                }));
+            }
+            // 현재 사용자 순서와 다음 승인 순서가 일치하지 않으면 경고
+            if (currentUserApprOrder !== nextApproverOrder && currentUserApprOrder !== 3) {
+                alert("아직 승인 차례가 아닙니다.");
                 return;
             }
+        
             if (!confirm("승인하시겠습니까?")) {
                 return;
             }
@@ -359,7 +379,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify(obj),
                 success: function(data) {
-                    isApproved = true;
+                    // 승인 버튼 클릭 후 처리
                     // 결재자 리스트의 row들을 회색(뿌옇게) 처리
                     $("#grid_wrap_appr .grid-container_staffList04.G_grid_item2_bg").css({
                         'color': 'gray',
