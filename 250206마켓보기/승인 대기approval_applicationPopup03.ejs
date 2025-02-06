@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+    </head>
+    <body>
+        <!-- skip 네비게이션 영역 -->
+        <nav id="skipToContent">
+            <ul>
+                <li><a href="#container">본문 바로가기</a></li>
+                <li><a href="#gnb">주메뉴 바로가기</a></li>
+                <li><a href="#header">상위메뉴 바로가기</a></li>
+                <li><a href="#footers">하위메뉴 바로가기</a></li>
+            </ul> 
+        </nav>
+        <!-- skip 네비게이션 영역 -->
+
+        <section id="popup_container">
+            <div class="popup_header">
+                <h2 class="title_txt">반납 신청서</h2>
+                <div class="popup_body">
+                    <div class="form_wrap">
+                        <!-- 제목 -->
+                        <div class="form_request">
+                            <label for="제목">제목</label>
+                            <input id="appr_title" class="Auto_input" placeholder="제목을 입력해주세요." disabled>
+                        </div>
+                        <!-- 제목 -->
+
+                        <!-- 요청일자 -->
+                        <div class="form_request">
+                            <label for="요청일자">요청일자</label>
+                            <input id="appr_date" class="Auto_input" placeholder="2024-12-25 (자동입력)" disabled>
+                        </div>
+                        <!-- 요청일자 -->
+
+                        <!-- 물품 목록 -->
+                        <div class="form_request">
+                            <label for="물품 목록">물품 목록</label>
+                            <div id="grid_wrap_fix" class="G_grid form_grid">
+                                <!-- grid title -->
+                                <div class="grid-container_productList G_grid_item_bg">
+                                    <span class="G_grid_item">물품명</span>
+                                    <span class="G_grid_item">물품번호</span>
+                                    <span class="G_grid_item">건물명</span>
+                                    <span class="G_grid_item">호실(번호)</span>
+                                    <span class="G_grid_item">취득일자</span>
+                                    <span class="G_grid_item">취득금액</span>
+                                    <span class="G_grid_item">물품등급</span>
+                                </div>
+                                <div class="grid-container_productList G_grid_item2_bg">
+                                    <span class="G_grid_item2">PIANO</span>
+                                    <span class="G_grid_item2">1120030011470001</span>
+                                    <span class="G_grid_item2">과학도서관</span>
+                                    <span class="G_grid_item2">대강당(508)</span>
+                                    <span class="G_grid_item2">2003-08-19</span>
+                                    <span class="G_grid_item2">9,980,000</span>
+                                    <span class="G_grid_item2">A</span>
+                                </div>
+                                <div class="grid-container_productList G_grid_item2_bg">
+                                    <span class="G_grid_item2">PIANO</span>
+                                    <span class="G_grid_item2">1120030011470001</span>
+                                    <span class="G_grid_item2">과학도서관</span>
+                                    <span class="G_grid_item2">대강당(508)</span>
+                                    <span class="G_grid_item2">2003-08-19</span>
+                                    <span class="G_grid_item2">9,980,000</span>
+                                    <span class="G_grid_item2">A</span>
+                                </div>
+                                <div class="grid-container_productList G_grid_item2_bg">
+                                    <span class="G_grid_item2">PIANO</span>
+                                    <span class="G_grid_item2">1120030011470001</span>
+                                    <span class="G_grid_item2">과학도서관</span>
+                                    <span class="G_grid_item2">대강당(508)</span>
+                                    <span class="G_grid_item2">2003-08-19</span>
+                                    <span class="G_grid_item2">9,980,000</span>
+                                    <span class="G_grid_item2">A</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 물품 목록 -->
+
+                        <!-- 내용 -->
+                        <div class="form_request">
+                            <label for="내용">내용</label>
+                            <textarea id="appr_memo" class="Auto_input" placeholder="내용을 입력해주세요." disabled></textarea>
+                        </div>
+                        <!-- 내용 -->
+
+                        <!-- 결재자 -->
+                        <div class="form_request">
+                            <div class="staff_inquiry">
+                                <label for="결재자">결재자</label>
+                            </div>
+                            <div class="staff_inquiry_list form_grid">
+                                <div class="staff_inquiry_title">
+                                    <button id="modalOpenBtn" class="btn_none staff_inquiry_btn">직원조회</button>
+                                    <div class="change_btn">
+                                        <button class="btn_none employeeLlist_green"></button>
+                                        <button class="btn_none employeeLlist_green"></button>
+                                    </div>
+                                </div>
+                                <div id="grid_wrap_appr" class="G_grid ">
+                                    <!-- grid title -->
+                                    <div class="grid-container_staffList04 G_grid_item_bg notCompleted">
+                                        <span class="G_grid_item">No</span>
+                                        <span class="G_grid_item">결재자</span>
+                                        <span class="G_grid_item">직급</span>
+                                        <span class="G_grid_item">부서</span>
+                                    </div>
+                                    <div class="grid-container_staffList04 G_grid_item2_bg notCompleted">
+                                        <span class="G_grid_item2">1</span>
+                                        <span class="G_grid_item2">김OO</span>
+                                        <span class="G_grid_item2">차장</span>
+                                        <span class="G_grid_item2">안전관리팀</span>
+                                    </div>
+                                    <div class="grid-container_staffList04 G_grid_item2_bg notCompleted">
+                                        <span class="G_grid_item2">2</span>
+                                        <span class="G_grid_item2">아OO</span>
+                                        <span class="G_grid_item2">부장</span>
+                                        <span class="G_grid_item2">안전관리팀</span>
+                                    </div>
+                                    <div class="grid-container_staffList04 G_grid_item2_bg notCompleted">
+                                        <span class="G_grid_item2">3</span>
+                                        <span class="G_grid_item2">박OO</span>
+                                        <span class="G_grid_item2">학장</span>
+                                        <span class="G_grid_item2">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 담당 행정 직원 -->
+
+                        <!-- popup under btn -->
+                        <div class="popup_under_btn">
+                            <button class="btn_none green_btn popupCloseBtn" onclick="approvalOne()">확인</button>
+                            <button class="btn_none green_border_btn" onclick="rejectionReasons_modal()">반송</button>
+                            <button class="btn_none green_border_btn popupCloseBtn" onclick="closePopup()">취소</button>
+                        </div>
+                        <!-- popup under btn -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결재 직원 조회 모달 -->
+            <div id="staffInquiryList_modal02" class="modal_container hidden">
+                <%-/*교수님 행정 직원 선택 모달*/ include ("./templates/staffInquiryList_modal02") %>
+            </div>
+            <!-- 결재 직원 조회 모달 -->
+
+            <!-- 반송 사유 작성 모달 -->
+            <div id="rejectionReasons_modal" class="modal_container hidden">
+                <%-/*교수님 행정 직원 선택 모달*/ include ("./templates/rejectionReasons_modal") %>
+            </div>
+            <!-- 반송 사유 작성 모달 -->
+        </section>
+    </body>
+    <script>
+
+        var appr_no = -1;
+
+        $(document).ready(function() {
+            var parameters = getUrlParams();
+
+            appr_no = parameters.apprNo;
+
+            fetchApproval(parameters.apprNo);
+        });
+
+        function getUrlParams() {     
+            var params = {};  
+                
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+                function(str, key, value) { 
+                    params[key] = value; 
+                }
+            );     
+                
+            return params; 
+        }
+
+        function fetchApproval(val_id) {
+            let obj = new Object();
+            obj['apprIdx'] = val_id;
+
+            $.ajax ({
+                url: '/approvalDetail',
+                type: "post",
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function(data) {
+                    var approval_info = data.approval_info[0];
+                    var approver_list = data.approver_list;
+                    var fix_info = data.fix_info[0];
+
+                    document.getElementById('appr_title').value = approval_info.sApprovalTitle;
+                    document.getElementById('appr_memo').value = approval_info.sApprovalReason;
+
+                    if(approval_info.dApprovalDate != null)
+                    {
+                        document.getElementById('appr_date').value = approval_info.dApprovalDate;
+                    }
+
+                    $( '#grid_wrap_fix').empty();
+                    var table_fix = document.getElementById ("grid_wrap_fix");
+
+                    let header_fix = document.createElement("div");
+                    header_fix.className = "grid-container_productList G_grid_item_bg";
+
+                    let header_fix_item1 = document.createElement("span");
+                    header_fix_item1.className = "G_grid_item";
+                    header_fix_item1.appendChild(document.createTextNode("물품명"));
+
+                    let header_fix_item2 = document.createElement("span");
+                    header_fix_item2.className = "G_grid_item";
+                    header_fix_item2.appendChild(document.createTextNode("물품번호"));
+
+                    let header_fix_item3 = document.createElement("span");
+                    header_fix_item3.className = "G_grid_item";
+                    header_fix_item3.appendChild(document.createTextNode("건물명"));
+
+                    let header_fix_item4 = document.createElement("span");
+                    header_fix_item4.className = "G_grid_item";
+                    header_fix_item4.appendChild(document.createTextNode("호실(번호)"));
+
+                    let header_fix_item5 = document.createElement("span");
+                    header_fix_item5.className = "G_grid_item";
+                    header_fix_item5.appendChild(document.createTextNode("취득일자"));
+
+                    let header_fix_item6 = document.createElement("span");
+                    header_fix_item6.className = "G_grid_item";
+                    header_fix_item6.appendChild(document.createTextNode("취득금액"));
+
+                    let header_fix_item7 = document.createElement("span");
+                    header_fix_item7.className = "G_grid_item";
+                    header_fix_item7.appendChild(document.createTextNode("물품등급"));
+
+                    header_fix.appendChild(header_fix_item1);
+                    header_fix.appendChild(header_fix_item2);
+                    header_fix.appendChild(header_fix_item3);
+                    header_fix.appendChild(header_fix_item4);
+                    header_fix.appendChild(header_fix_item5);
+                    header_fix.appendChild(header_fix_item6);
+                    header_fix.appendChild(header_fix_item7);
+
+                    table_fix.appendChild(header_fix);
+
+                    let body_fix = document.createElement("div");
+                    body_fix.className = "grid-container_productList G_grid_item2_bg";
+
+                    let body_fix_item1 = document.createElement("span");
+                    body_fix_item1.className = "G_grid_item2";
+                    body_fix_item1.appendChild(document.createTextNode(fix_info.sFixtureName));
+
+                    let body_fix_item2 = document.createElement("span");
+                    body_fix_item2.className = "G_grid_item2";
+                    body_fix_item2.appendChild(document.createTextNode(fix_info.sFixtureNo));
+
+                    let body_fix_item3 = document.createElement("span");
+                    body_fix_item3.className = "G_grid_item2";
+                    body_fix_item3.appendChild(document.createTextNode(fix_info.sFixtureBuildName));
+
+                    let body_fix_item4 = document.createElement("span");
+                    body_fix_item4.className = "G_grid_item2";
+                    body_fix_item4.appendChild(document.createTextNode(fix_info.sFixtureRoomNo));
+
+                    var str_date = "";
+                    var str_price = "";
+                    var str_rank = "";
+
+                    if(fix_info.nReusablePrice == 1)
+                    {
+                        str_price = "1만원~99만원";
+                    }
+                    else if(fix_info.nReusablePrice == 2)
+                    {
+                        str_price = "100만원~199만원";
+                    }
+                    else if(fix_info.nReusablePrice == 3)
+                    {
+                        str_price = "200만원~299만원";
+                    }
+                    else if(fix_info.nReusablePrice == 4)
+                    {
+                        str_price = "300만원~399만원";
+                    }
+                    else if(fix_info.nReusablePrice == 5)
+                    {
+                        str_price = "400만원~499만원";
+                    }
+                    else if(fix_info.nReusablePrice == 6)
+                    {
+                        str_price = "500만원 이상";
+                    }
+                    else
+                    {
+                        str_price = "-";
+                    }
+
+                    if(fix_info.nReusableGetDate == 1)
+                    {
+                        str_date = "2024년";
+                    }
+                    else if(fix_info.nReusableGetDate == 2)
+                    {
+                        str_date = "2023년";
+                    }
+                    else if(fix_info.nReusableGetDate == 3)
+                    {
+                        str_date = "2022년";
+                    }
+                    else if(fix_info.nReusableGetDate == 4)
+                    {
+                        str_date = "2021년";
+                    }
+                    else
+                    {
+                        str_date = "-";
+                    }
+
+                    if(fix_info.nReusableRank == 1)
+                    {
+                        str_rank = "A";
+                    }
+                    else if(fix_info.nReusableRank == 2)
+                    {
+                        str_rank = "B";
+                    }
+                    else if(fix_info.nReusableRank == 3)
+                    {
+                        str_rank = "C";
+                    }
+                    else if(fix_info.nReusableRank == 4)
+                    {
+                        str_rank = "D";
+                    }
+                    else
+                    {
+                        str_rank = "-";
+                    }
+
+                    let body_fix_item5 = document.createElement("span");
+                    body_fix_item5.className = "G_grid_item2";
+                    body_fix_item5.appendChild(document.createTextNode(str_date));
+
+                    let body_fix_item6 = document.createElement("span");
+                    body_fix_item6.className = "G_grid_item2";
+                    body_fix_item6.appendChild(document.createTextNode(str_price));
+
+                    let body_fix_item7 = document.createElement("span");
+                    body_fix_item7.className = "G_grid_item2";
+                    body_fix_item7.appendChild(document.createTextNode(str_rank));
+
+                    body_fix.appendChild(body_fix_item1);
+                    body_fix.appendChild(body_fix_item2);
+                    body_fix.appendChild(body_fix_item3);
+                    body_fix.appendChild(body_fix_item4);
+                    body_fix.appendChild(body_fix_item5);
+                    body_fix.appendChild(body_fix_item6);
+                    body_fix.appendChild(body_fix_item7);
+
+                    table_fix.appendChild(body_fix);
+
+                    $( '#grid_wrap_appr').empty();
+                    var table_appr = document.getElementById ("grid_wrap_appr");
+
+                    let header_appr = document.createElement("div");
+                    header_appr.className = "grid-container_staffList04 G_grid_item_bg";
+
+                    let header_appr_item1 = document.createElement("span");
+                    header_appr_item1.className = "G_grid_item";
+                    header_appr_item1.appendChild(document.createTextNode("No"));
+
+                    let header_appr_item2 = document.createElement("span");
+                    header_appr_item2.className = "G_grid_item";
+                    header_appr_item2.appendChild(document.createTextNode("결재자"));
+
+                    let header_appr_item3 = document.createElement("span");
+                    header_appr_item3.className = "G_grid_item";
+                    header_appr_item3.appendChild(document.createTextNode("직급"));
+
+                    let header_appr_item4 = document.createElement("span");
+                    header_appr_item4.className = "G_grid_item";
+                    header_appr_item4.appendChild(document.createTextNode("부서"));
+
+                    header_appr.appendChild(header_appr_item1);
+                    header_appr.appendChild(header_appr_item2);
+                    header_appr.appendChild(header_appr_item3);
+                    header_appr.appendChild(header_appr_item4);
+
+                    table_appr.appendChild(header_appr);
+
+                    for(var idx = 0; idx < approver_list.length; approver_list++)
+                    {
+                        let body_appr = document.createElement("div");
+                        body_appr.className = "grid-container_staffList04 G_grid_item2_bg";
+
+                        let body_appr_item1 = document.createElement("span");
+                        body_appr_item1.className = "G_grid_item";
+                        body_appr_item1.appendChild(document.createTextNode((idx + 1)));
+
+                        let body_appr_item2 = document.createElement("span");
+                        body_appr_item2.className = "G_grid_item";
+                        body_appr_item2.appendChild(document.createTextNode(approver_list[idx].sName));
+
+                        let body_appr_item3 = document.createElement("span");
+                        body_appr_item3.className = "G_grid_item";
+                        body_appr_item3.appendChild(document.createTextNode());
+
+                        let body_appr_item4 = document.createElement("span");
+                        body_appr_item4.className = "G_grid_item";
+                        body_appr_item4.appendChild(document.createTextNode(approver_list[idx].sOrg));
+
+                        body_appr.appendChild(body_appr_item1);
+                        body_appr.appendChild(body_appr_item2);
+                        body_appr.appendChild(body_appr_item3);
+                        body_appr.appendChild(body_appr_item4);
+
+                        table_appr.appendChild(body_appr);
+                    }
+                }
+            });
+
+        }
+        // 팝업을 닫는 함수
+        function closePopup() {
+            window.close(); // 현재 팝업 창을 닫습니다.
+        }
+
+        function approvalOne() {
+            var obj = new Object();
+            obj['apprNo'] = appr_no;
+
+            $.ajax ({
+                url: '/returnApprovalOne',
+                type: "post",
+                dataType: "json",
+                contentType : 'application/json',
+                data: JSON.stringify(obj),
+                success: function(data) {
+                    closePopup();
+                }
+            });
+        }
+
+        // 모달 열기 함수
+        function staffInquiryList_modal() {
+            const modal = document.getElementById('staffInquiryList_modal02');
+            modal.classList.remove('hidden'); // 'hidden' 클래스를 제거하여 모달을 표시
+        }
+        // 모달 닫기 함수
+        function closeModal() {
+            const modal = document.getElementById('staffInquiryList_modal02');
+            modal.classList.add('hidden'); // 'hidden' 클래스를 추가하여 모달 숨김
+        }
+
+        // 모달 열기 함수
+        function rejectionReasons_modal() {
+            const modal = document.getElementById('rejectionReasons_modal');
+            modal.classList.remove('hidden'); // 'hidden' 클래스를 제거하여 모달을 표시
+        }
+        // 모달 닫기 함수
+        function closeModal02() {
+            const modal = document.getElementById('rejectionReasons_modal');
+            modal.classList.add('hidden'); // 'hidden' 클래스를 추가하여 모달 숨김
+        }
+    </script>
+</html>
