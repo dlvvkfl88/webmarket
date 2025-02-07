@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/sub.js"></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- skip 네비게이션 영역 -->
+            <nav id="skipToContent">
+                <ul>
+                    <li><a href="#container">본문 바로가기</a></li>
+                    <li><a href="#gnb">주메뉴 바로가기</a></li>
+                    <li><a href="#header">상위메뉴 바로가기</a></li>
+                    <li><a href="#footers">하위메뉴 바로가기</a></li>
+                </ul> 
+            </nav>
+            <!-- skip 네비게이션 영역 -->
+
+            <!-- 물품 / 비품 등록 버튼 -->
+            <div id="plus_btn">
+                <a href="#none"></a>
+            </div>
+            <!-- 물품 / 비품 등록 버튼 -->
+
+            <!-- 물품 / 비품 등록 모달 -->
+            <div id="registration_modal" class="modal_container hidden">
+                <%-/*물품 / 비품 등록*/ include ("./templates/registration_modal") %>
+            </div>
+            <!-- 물품 / 비품 등록 모달 -->
+
+            <!-- header -->
+            <header id="header">
+                <%-/*header 불러오기*/ include ("./templates/headers") %>
+            </header>
+            <!-- header -->
+
+            <!-- section -->
+            <section id="sub_section" class="center">
+                <!-- 좌측 서브 메뉴 (aside) -->
+                <aside class="aside">
+                    <div class="side_tit fix_flexcenter">
+                        <p>재사용 마켓</p>
+                    </div>
+                    <div class="side_menu">
+                        <div class="menu_info">
+                            <p>재사용 마켓은 고려대학교 교내 비품의 재사용을 촉진하는 나눔의 공간입니다.</p>
+                        </div>
+                        <ul class="menu_item">
+                            <li>
+                                <a href="reusable_market_new" class="active">마켓 보기</a>
+                            </li>
+                            <li>
+                                <a href="registration_list_new">등록 물품 관리</a>
+                            </li>
+                            <li>
+                    <!--<a href="applications_list_new">신청 물품 관리</a>-->
+                                <a href="applications_list_new">신청 물품 관리</a>
+                            </li>
+                            <li>
+                                <a href="return_application_list_new">반납 신청 목록</a>
+                            </li>
+                            <li>
+                                <a href="approval_box_new">반납 신청서 관리</a>
+                            </li>
+                            <li>
+                                <a href="transactions_list_new">양도 완료된 물품 목록</a>
+                            </li>
+                        </ul>
+                    </div> 
+                </aside>
+                <!-- 좌측 서브 메뉴 (aside) -->
+
+                <!-- 우축 서브 콘텐츠 -->
+                <div class="container">
+
+                    <!-- 모바일 location -->
+                    <div class="m_location">
+                        <ul class="fix_flexbetween">
+                            <li class="ml_home">
+                                <a href="home">
+                                    <span class="blind">홈버튼</span>
+                                    <div class="ml_home_icon"></div>
+                                </a>
+                            </li>
+                            <li id="ml_top">
+                                <a href="#none" class="fix_flexbetween">
+                                    재사용 마켓
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list1">
+                                    <li><a href="intro_greeting">소개 </a></li>
+                                    <li><a href="equipment_inquiry">비품 조회</a></li>
+                                    <li><a href="equipment_idiligence">비품 실사</a></li>
+                                    <li><a href="reusable_market_new">재사용 마켓</a></li>
+                                    <li><a href="#none">공간 정보</a></li>
+                                </ol>
+                            </li>
+                            <li id="ml_current">
+                                <a href="#none" class="fix_flexbetween">
+                                    마켓 보기
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list2">
+                                    <li><a href="reusable_market_new">마켓 보기 </a></li>
+                                    <li><a href="registration_list_new">등록 물품 관리</a></li>
+                                    <li><a href="applications_list_new">신청 물품 관리</a></li>
+                                    <li><a href="return_application_list_new">반납 신청 목록</a></li>
+                                    <li><a href="approval_box_new">반납 신청서 관리</a></li>
+                                    <li><a href="transactions_list_new">양도 완료된 물품 목록</a></li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 모바일 location -->
+
+                    <!-- location -->
+                    <ul class="location">
+                        <li>
+                            <a href="home">
+                                <span class="blind">홈버튼</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="reusable_market_new">재사용 마켓</a>
+                        </li>
+                        <li>
+                            <a href="reusable_market_new">마켓 보기</a>
+                        </li>
+                    </ul>
+                    <!-- location -->
+
+                    <!-- drop_search -->
+                    <div>
+                        <form id="searchForm" method="GET" action="/reusable_market_new" class="drop_search">
+                            <div class="dropDown">
+                                <select id="searchType" name="searchType">
+                                    <option value="1" <%=searchType==='1'?'selected':''%>>전체</option>
+                                    <option value="2" <%=searchType==='2'?'selected':''%>>제목</option>
+                                    <option value="3" <%=searchType==='3'?'selected':''%>>내용</option>
+                                </select>
+                            </div>
+                            <div class="search">
+                                <input id="searchKeyword" name="searchKeyword" value="<%=searchKeyword%>" placeholder="검색어를 입력해주세요.">
+                            </div>
+                            <button type="submit">검색</button>
+                        </form>
+                    </div>
+                    <!-- drop_search -->
+
+                    <!-- 등록 중 물품 -->
+                    <div class="contain_process">
+                        <div class="cpro_head fix_flexbetween">
+                            <div class="fix_flexstart">
+                                <h3><%= User_list[0].sName %>님 등록 진행 중 물품</h3>
+                                <p class="num_round"><%= progressItems.length %></p>
+                            </div>
+                            <div class="arrow_btn">
+                                <button class="prev <%= slideGroups.length <= 1 ? 'disabled' : '' %>"></button>
+                                <button class="next <%= slideGroups.length <= 1 ? 'disabled' : '' %>"></button>
+                            </div>
+                        </div>
+                        <div class="cpro_slide_wrap">
+                            <ul class="cpro_slide">
+                                <% slideGroups.forEach((group, groupIndex) => { %>
+                                    <% group.forEach((item, itemIndex) => { %>
+                                        <li class="slide-item" data-group="<%= groupIndex %>">
+                                            <a href="javascript:void(0)" id="reuseItemProgress_btn" 
+                                            onClick="javascript:reuseItemProgressModal('<%=item.nReusableNo%>','<%=item.sReusableEmail%>','<%=item.sReusableMobile%>',<%=item.nReusableShare%>,'<%=item.sReusableName%>','<%=item.sReusableType%>','<%=item.sReusableContent%>','<%=item.sReusablePlace%>','<%=item.sFixtureName%>','<%=item.sFixtureNo%>','<%=item.sFixtureModel%>','<%=item.sFixtureType%>','<%=item.sFixtureBuildName%>','<%=item.sFixtureRoomNo%>','<%=item.dFixtureDate%>','<%=item.sFixturePrice%>','<%=item.sImgPath%>','<%=item.sImgBin%>','<%=item.nReusableRank%>')">                                                
+                                                <img data-file="<%=item.sImgPath%>"src="<%= item.sImgBin || '/images/default-image.png' %>" 
+                                                     alt="<%= item.sReusableName %>" 
+                                                     onerror="this.src='/images/default-image.png'">
+                                                <% if(item.nReusableShare == 1) { %>
+                                                    <span class="namun"></span>
+                                                <% } %>
+                                            </a>
+                                        </li>
+                                    <% }); %>
+                                <% }); %>
+                                <% if (progressItems.length === 0) { %>
+                                    <li class="no-items">
+                                        <p>등록 진행 중인 물품이 없습니다.</p>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- 등록 중 물품 -->
+
+                    <!-- tab -->
+                    <div class="tab_container">
+                        <!-- tab menu -->
+                        <div class="tab_menu_bar">
+                            <div class="tab active" id="allTab" onclick="changeTab('all')">
+                                <a href="#none">전체</a>
+                            </div>
+                            <div class="tab" id="reuseTab" onclick="changeTab('reuse')">
+                                <a href="#none">재사용 비품</a>
+                            </div>
+                            <div class="tab" id="shareTab" onclick="changeTab('share')">
+                                <a href="#none">나눔 물품</a>
+                            </div>
+                        </div>
+                        <!-- tab menu -->
+
+                        <!-- tab contents -->
+                        <div id="tab_content">
+                            <!-- all tab -->
+                            <div class="tab_item" data-category="all">
+                                <% for (var i = 0; i < rinfos.length; i++) { %>
+                                    <% if (i % 4 == 0) { %>
+                                        <ul class="product_wrap fix_flexstart">
+                                    <% } %>
+                                    <li class="pro_inner item_card">
+                                        <a href="javascript:void(0)" class="item_info" id="pro_moreBtn<%=i%>" 
+                                        onClick="javascript:openDetailModal(<%=i%>,<%=rinfos[i].nReusableNo%>,'<%=rinfos[i].sReusableEmail%>','<%=rinfos[i].sReusableMobile%>',<%=rinfos[i].nReusableShare%>,'<%=rinfos[i].sReusableName%>','<%=rinfos[i].sReusableType%>','<%=rinfos[i].sReusableContent%>','<%=rinfos[i].sReusablePlace%>','<%=rinfos[i].sFixtureName%>','<%=rinfos[i].sFixtureNo%>','<%=rinfos[i].sFixtureModel%>','<%=rinfos[i].sFixtureType%>','<%=rinfos[i].sFixtureBuildName%>','<%=rinfos[i].sFixtureRoomNo%>','<%=rinfos[i].dFixtureDate%>','<%=rinfos[i].sFixturePrice%>','<%=rinfos[i].sImgPath%>','<%=rinfos[i].sImgBin%>','<%=rinfos[i].nReusableRank%>')">
+                                            <div class="box_img">
+                                                <img data-file="<%=rinfos[i].sImgPath%>" src="<%=rinfos[i].sImgBin%>" alt="제품 이미지"  />
+                                                <% if(rinfos[i].nReusableShare == 1) { %>
+                                                    <span class="namun"></span>
+                                                    <div class="badge">나눔</div>
+                                                <% } %>
+                                            </div>
+                                            <h2><%=rinfos[i].sReusableName%></h2>
+                                            <p class="memo_text"><%=rinfos[i].sReusableMemo%></p>
+                                        </a>
+                                    </li>
+                                    <% if (i % 4 == 3 || i == rinfos.length - 1) { %>
+                                        </ul>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                            <div class="tab_item" data-category="reuse">
+                                <%
+                                for (var i = 0; i < rinfos_reus.length; i++)
+                                {
+                                    var str_rank = "";
+                            
+                                    if(rinfos_reus[i].nReusableRank == 1)
+                                    {
+                                        str_rank = "A";
+                                    }
+                                    else if(rinfos_reus[i].nReusableRank == 2)
+                                    {
+                                        str_rank = "B";
+                                    }
+                                    else if(rinfos_reus[i].nReusableRank == 3)
+                                    {
+                                        str_rank = "C";
+                                    }
+                                    else if(rinfos_reus[i].nReusableRank == 4)
+                                    {
+                                        str_rank = "D";
+                                    }
+                                                    
+                                    if(i % 4 == 0)
+                                    {
+                                        %>
+                                        <ul class="product_wrap fix_flexstart">
+                                            <li class="pro_inner item_card" >
+                                                <a href="javascript:void(0)" class="item_info" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_reus[i].nReusableNo%>,'<%=rinfos_reus[i].sReusableEmail%>','<%=rinfos_reus[i].sReusableMobile%>',<%=rinfos_reus[i].nReusableShare%>,'<%=rinfos_reus[i].sReusableName%>','<%=rinfos_reus[i].sReusableType%>','<%=rinfos_reus[i].sReusableContent%>','<%=rinfos_reus[i].sReusablePlace%>','<%=rinfos_reus[i].sFixtureName%>','<%=rinfos_reus[i].sFixtureNo%>','<%=rinfos_reus[i].sFixtureModel%>','<%=rinfos_reus[i].sFixtureType%>','<%=rinfos_reus[i].sFixtureBuildName%>','<%=rinfos_reus[i].sFixtureRoomNo%>','<%=rinfos_reus[i].dFixtureDate%>','<%=rinfos_reus[i].sFixturePrice%>','<%=rinfos_reus[i].sImgPath%>','<%=rinfos_reus[i].sImgBin%>','<%=str_rank%>')">
+                                                    <div class="box_img">
+                                                        <img data-file="<%=rinfos_reus[i].sImgPath%>" src="<%=rinfos_reus[i].sImgBin%>" alt="제품 이미지" />
+                                                        <%
+                                                        if(rinfos_reus[i].nReusableShare == 1)
+                                                        {
+                                                            %>
+                                                            <span class="namun"></span>
+                                                            <%
+                                                        }
+                                                        %>
+                                                    </div>
+                                                    <h2><%=rinfos_reus[i].sReusableName%></h2>
+                                                    <p class="memo_text"><%=rinfos_reus[i].sReusableMemo%></p>
+                                                </a>
+                                            </li>
+                                        <%
+                                    }
+                                    else
+                                    {
+                                        %>
+                                            <li class="pro_inner item_card">
+                                                    <a href="javascript:void(0)" class="item_info" id="pro_moreBtn<%=i%>" onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_reus[i].nReusableNo%>,'<%=rinfos_reus[i].sReusableEmail%>','<%=rinfos_reus[i].sReusableMobile%>',<%=rinfos_reus[i].nReusableShare%>,'<%=rinfos_reus[i].sReusableName%>','<%=rinfos_reus[i].sReusableType%>','<%=rinfos_reus[i].sReusableContent%>','<%=rinfos_reus[i].sReusablePlace%>','<%=rinfos_reus[i].sFixtureName%>','<%=rinfos_reus[i].sFixtureNo%>','<%=rinfos_reus[i].sFixtureModel%>','<%=rinfos_reus[i].sFixtureType%>','<%=rinfos_reus[i].sFixtureBuildName%>','<%=rinfos_reus[i].sFixtureRoomNo%>','<%=rinfos_reus[i].dFixtureDate%>','<%=rinfos_reus[i].sFixturePrice%>','<%=rinfos_reus[i].sImgPath%>','<%=rinfos_reus[i].sImgBin%>','<%=str_rank%>')">
+                                                    <div class="box_img">
+                                                        <img data-file="<%=rinfos_reus[i].sImgPath%>" src="<%=rinfos_reus[i].sImgBin%>" alt="제품 이미지" />
+                                                        <%
+                                                        if(rinfos_reus[i].nReusableShare == 1)
+                                                        {
+                                                            %>
+                                                            <span class="namun"></span>
+                                                            <%
+                                                        }
+                                                        %>
+                                                    </div>
+                                                    <h2><%=rinfos_reus[i].sReusableName%></h2>
+                                                    <p class="memo_text"><%=rinfos_reus[i].sReusableMemo%></p>
+                                                </a>
+                                            </li>
+                                        <%
+                                        if(i == (rinfos_reus.length - 1) || i % 4 == 3)
+                                        {
+                                            %>
+                                        </ul>
+                                            <%
+                                        }
+                                    }
+                                }
+                                %>
+                            </div>
+                            <div class="tab_item" data-category="share">
+                                <% for (var i = 0; i < rinfos_share.length; i++) { %>
+                                    <% if(i % 4 == 0) { %>
+                                        <ul class="product_wrap fix_flexstart">
+                                    <% } %>
+                                    <li class="pro_inner item_card">
+                                        <a href="javascript:void(0)" class="item_info" id="pro_moreBtn<%=i%>"  onClick="javascript:openDetailModal(<%=i%>,<%=rinfos_share[i].nReusableNo%>,'<%=rinfos_share[i].sReusableEmail%>','<%=rinfos_share[i].sReusableMobile%>',<%=rinfos_share[i].nReusableShare%>,'<%=rinfos_share[i].sReusableName%>','<%=rinfos_share[i].sReusableType%>','<%=rinfos_share[i].sReusableContent%>','<%=rinfos_share[i].sReusablePlace%>','<%=rinfos_share[i].sFixtureName%>','<%=rinfos_share[i].sFixtureNo%>','<%=rinfos_share[i].sFixtureModel%>','<%=rinfos_share[i].sFixtureType%>','<%=rinfos_share[i].sFixtureBuildName%>','<%=rinfos_share[i].sFixtureRoomNo%>','<%=rinfos_share[i].dFixtureDate%>','<%=rinfos_share[i].sFixturePrice%>','<%=rinfos_share[i].sImgPath%>','<%=rinfos_share[i].sImgBin%>','<%=str_rank%>')">
+                                            <div class="box_img">
+                                                <img data-file="<%=rinfos_share[i].sImgPath%>" src="<%=rinfos_share[i].sImgBin%>" alt="제품 이미지"/>
+                                                <% if(rinfos_share[i].nReusableShare == 1) { %>
+                                                    <span class="namun"></span>
+                                                    <div class="badge">나눔</div>
+                                                <% } %>
+                                            </div>
+                                            <h2><%=rinfos_share[i].sReusableName%></h2>
+                                            <p class="memo_text"><%=rinfos_share[i].sReusableMemo%></p>
+                                        </a>
+                                    </li>
+                                    <% if(i == (rinfos_share.length - 1) || i % 4 == 3) { %>
+                                        </ul>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- tab -->
+                    
+                    <!-- pagination -->
+                    <div id="report_page" class="pagination">
+                        <ul>
+                            <% if (currentPage > 1) { %>
+                                <li>
+                                    <a href="?page=1&searchType=<%=searchType%>&searchKeyword=<%=searchKeyword%>" class="first">
+                                        <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <% 
+                            // 페이지 범위 계산
+                            let startPage = Math.max(currentPage - 4, 1);
+                            let endPage = Math.min(startPage + 9, totalPages);
+                            
+                            // 페이지 번호가 10개 미만일 경우 시작 페이지 조정
+                            if (endPage - startPage < 9) {
+                                startPage = Math.max(endPage - 9, 1);
+                            }
+                            
+                            // 페이지 번호 출력
+                            for (let i = startPage; i <= endPage; i++) { %>
+                                <li>
+                                    <a href="?page=<%=i%>&searchType=<%=searchType%>&searchKeyword=<%=searchKeyword%>" 
+                                    class="num <%= i === currentPage ? 'active' : '' %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <% if (currentPage < totalPages) { %>
+                                <li>
+                                    <a href="?page=<%=totalPages%>&searchType=<%=searchType%>&searchKeyword=<%=searchKeyword%>" class="last">
+                                        <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
+                                    </a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <!-- pagination -->
+                </div>
+
+                <!-- (니눔)물품 정보 상세 보기 모달 -->
+                <div id="shareitemDetail_modal" class="modal_container hidden">
+                    <%-/*물품 정보 상세 보기 모달*/ include ("./templates/shareitemDetail_modal") %>
+                </div>
+                <!-- (니눔)물품 정보 상세 보기 모달 -->
+
+                <!-- (재사용)물품 정보 상세 보기 모달 -->
+                <div id="reuseitemDetail_modal" class="modal_container hidden">
+                    <%-/*물품 정보 상세 보기 모달*/ include ("./templates/reuseitemDetail_modal") %>
+                </div>
+                <!-- (재사용)물품 정보 상세 보기 모달 -->
+
+                <!-- 등록 중 (재사용)물품 정보 상세 보기 모달 -->
+                <div id="reuseitemProgress_modal" class="modal_container hidden">
+                    <%-/*등록 중 물품 정보 상세 보기 모달*/ include ("./templates/reuseitemProgress_modal") %>
+                </div>
+                <!-- 등록 중 (재사용)물품 정보 상세 보기 모달 -->
+            </section>
+            <!-- section -->
+        </div>
+        
+        <!-- footer -->
+        <footer id="footer">
+            <%-/*footer 불러오기*/ include ("./templates/footers") %>
+        </footer>
+        <!-- footer -->
+
+        <!-- 모바일 하단 메뉴 -->
+        <div class="m_bottom">
+            <ul class="fix_flexcenter">
+                <li class="m_home">
+                    <a href="home"></a>
+                </li>
+                <li class="m_inquiry">
+                    <a href="equipment_inquiry"></a>
+                </li>
+                <li class="m_plus">
+                    <a href="reusable_market_new?category=register">
+                        <div></div>
+                    </a>
+                </li>
+                <li class="m_search">
+                    <a href="equipment_idiligence"></a>
+                </li>
+                <li class="m_reuse m_active">
+                    <a href="reusable_market_new"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 모바일 하단 메뉴 -->
+    </body>
+    <script>
+        const user_email = '<%=user_email%>';
+        const userid = '<%=userid%>';
+
+        //플러스 버튼 모달
+        const plusBtn = document.querySelector('#plus_btn a');
+        const registrationModal = document.getElementById('registration_modal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn?.addEventListener('click', closeModal);
+        modalCancelBtn?.addEventListener('click', closeModal);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            registrationModal.style.display = 'flex';
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === registrationModal) {
+                closeModal();
+            }
+        });
+        
+        // 모달 닫기 함수
+        function closeModal() {
+            registrationModal.style.display = 'none';
+        }
+                
+        //(나눔)물품 정보 상세 보기 모달
+        const shareitemDetailBtns = document.querySelectorAll('[id^="shareItemDetail_btn"]');
+        const shareitemDetailModal = document.getElementById('shareitemDetail_modal');
+        const modalCloseBtn02 = document.getElementById('modalCloseBtn02');
+        const modalCancelBtn02 = document.getElementById('modalCancelBtn02');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn02?.addEventListener('click', closeModal02);
+        modalCancelBtn02?.addEventListener('click', closeModal02);
+
+        // 모든 버튼 클릭 시 모달 열기
+        shareitemDetailBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                shareitemDetailModal.style.display = 'flex';
+            });
+        });
+
+        // URL에서 쿼리스트링 파라미터 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const itemId = urlParams.get('itemId');
+        const register = urlParams.get('register');
+
+        // category가 share이고 itemId가 있으면 모달 표시
+        if(category === 'share' && itemId==1) {
+            shareitemDetailModal.style.display = 'flex';
+        }
+
+        // category가 register면 registrationModal 표시
+        if(category === 'register') {
+            registrationModal.style.display = 'flex';
+        }
+
+        function closeModal02() {
+            shareitemDetailModal.style.display = 'none';
+        }
+
+        //(재사용)물품 정보 상세 보기 모달
+        const reuseitemDetailBtns = document.querySelectorAll('[id^="reuseItemDetail_btn"]');
+        const reuseitemDetailModal = document.getElementById('reuseitemDetail_modal');
+        const modalCloseBtn03 = document.getElementById('modalCloseBtn03');
+        const modalCancelBtn03 = document.getElementById('modalCancelBtn03');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn03?.addEventListener('click', closeModal03);
+        modalCancelBtn03?.addEventListener('click', closeModal03);
+
+        // 모든 버튼 클릭 시 모달 열기
+        reuseitemDetailBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                reuseitemDetailModal.style.display = 'flex';
+            });
+        });
+
+        if(category === 'share' && itemId==2) {
+            reuseitemDetailModal.style.display = 'flex';
+        }
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === reuseitemDetailModal) {
+                closeModal03();
+            }
+        });
+
+        function closeModal03() {
+            reuseitemDetailModal.style.display = 'none';
+            reuseitemProgressModal.style.display = 'none';
+        }
+
+        //등록 중 (재사용)물품 정보 상세 보기 모달
+        const reuseitemProgressBtns = document.querySelectorAll('[id^="reuseItemProgress_btn"]');
+        const reuseitemProgressModal = document.getElementById('reuseitemProgress_modal');
+        const modalCloseBtn04 = document.getElementById('modalCloseBtn04');
+        const modalCancelBtn04 = document.getElementById('modalCancelBtn04');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn04?.addEventListener('click', closeModal04);
+        modalCancelBtn04?.addEventListener('click', closeModal04);
+
+        // 버튼 클릭 시 모달 열기
+        reuseitemProgressBtns.forEach(btn => {
+            btn.addEventListener('click', (f) => {
+                f.preventDefault();
+                reuseitemProgressModal.style.display = 'flex';
+            });
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (f) => {
+            if (fetch.target === reuseitemProgressModal) {
+                closeModal04();
+            }
+        });
+        function closeModal04() {
+            reuseitemDetailModal.style.display = 'none';
+            reuseitemProgressModal.style.display = 'none';
+        }
+
+        /*
+        //플러스 버튼 모달 (test)
+        const plusBtn02 = document.querySelector('#plus_btn02 a');
+        const testModal = document.getElementById('test_modal');
+        const testmodalCloseBtn = document.getElementById('testmodalCloseBtn');
+        const testmodalCancelBtn = document.getElementById('testmodalCancelBtn');
+
+        // 각 닫기 버튼에 이벤트 추가
+        testmodalCloseBtn?.addEventListener('click', closeModal04);
+        testmodalCancelBtn?.addEventListener('click', closeModal04);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        plusBtn02.addEventListener('click', (e) => {
+            e.preventDefault();
+            testModal.style.display = 'flex';
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === testModal) {
+                closeModal04();
+            }
+        });
+
+        function closeModal04() {
+            testModal.style.display = 'none';
+        }
+        */
+
+        // 페이지 로드 시 URL에서 쿼리스트링 제거
+        window.onload = function() {
+            if(window.location.search) {
+                let newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({path: newUrl}, '', newUrl);
+            }
+        };
+
+        // 메인페이지 슬라이드
+        const cproWrap = document.querySelector('.cpro_slide');
+        const prevBtn = document.querySelector('.prev');
+        const nextBtn = document.querySelector('.next');
+        const slides = document.querySelectorAll('.cpro_slide li');
+
+        if (cproWrap && prevBtn && nextBtn && slides.length > 0) {
+            const totalSlides = slides.length;
+            let currentIndex = 0; // 현재 슬라이드 위치
+            let slidesToShow = 6; // 기본값 5개
+
+            // 반응형 슬라이드 개수 설정
+            function updateSlidesToShow() {
+                const windowWidth = window.innerWidth;
+                if (windowWidth <= 781) {
+                    slidesToShow = 4;
+                } else if (windowWidth <= 1075) {
+                    slidesToShow = 5;
+                } else {
+                    slidesToShow = 6;
+                }
+                moveSlider();
+            }
+
+            // 슬라이드 이동 함수
+            function moveSlider() {
+                const slideWidth = slides[0].offsetWidth; // 슬라이드 한 개의 너비
+                cproWrap.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+                // 버튼 비활성화 설정
+                prevBtn.classList.toggle('disabled', currentIndex === 0);
+                nextBtn.classList.toggle('disabled', currentIndex >= totalSlides - slidesToShow);
+            }
+
+            // 다음 버튼 클릭 이벤트
+            nextBtn.addEventListener('click', function () {
+                if (currentIndex < totalSlides - slidesToShow) {
+                    currentIndex += slidesToShow;
+                    if (currentIndex > totalSlides - slidesToShow) {
+                        currentIndex = totalSlides - slidesToShow;
+                    }
+                    moveSlider();
+                }
+            });
+
+            // 이전 버튼 클릭 이벤트
+            prevBtn.addEventListener('click', function () {
+                if (currentIndex > 0) {
+                    currentIndex -= slidesToShow;
+                    if (currentIndex < 0) {
+                        currentIndex = 0;
+                    }
+                    moveSlider();
+                }
+            });
+
+            // 윈도우 리사이즈 이벤트
+            window.addEventListener('resize', function() {
+                currentIndex = 0; // 리사이즈 시 슬라이드 위치 초기화
+                updateSlidesToShow();
+            });
+
+            // 초기 설정
+            updateSlidesToShow();
+        }
+        
+            // 모달 클릭 
+        <!-- let currentReusableNo = null; -->
+
+        function openDetailModal(idx, reusNo, userEmail, userPhone, share, title, type, content, place, item_name, item_no, model, kind, build, room, date, price, img_path, img_bin, item_rank) {
+            // Convert numeric rank to letter grade
+            let letterRank;
+            switch (parseInt(item_rank)) {
+                case 1:
+                    letterRank = 'A';
+                    break;
+                case 2:
+                    letterRank = 'B';
+                    break;
+                case 3:
+                    letterRank = 'C';
+                    break;
+                case 4:
+                    letterRank = 'D';
+                    break;
+                default:
+                    letterRank = '-';
+            }
+
+            // Store the reusable number for later use
+            currentReusableNo = reusNo;
+            
+            console.log('Opening modal with share value:', share);
+            
+            // 모달 요소 가져오기
+            const shareModal = document.getElementById('shareitemDetail_modal');
+            const reuseModal = document.getElementById('reuseitemDetail_modal');
+            
+            // 모달 상태 초기화 및 스타일 직접 설정
+            shareModal.style.cssText = 'display: none !important';
+            reuseModal.style.cssText = 'display: none !important';
+            
+            // share 값에 따라 적절한 모달 선택
+            const modal = share === 1 ? shareModal : reuseModal;
+            
+            if (!modal) {
+                console.error('Modal not found for share value:', share);
+                return;
+            }
+
+            // 모달 내용 설정
+            try {
+                // 이미지 설정
+                const modalImg = modal.querySelector(".pro_detail img");
+                if (modalImg) {
+                    modalImg.src = img_bin && img_bin !== "null" ? img_bin : "/images/pro_detail_img.png";
+                    if (img_path && img_path !== "null") {
+                        modalImg.setAttribute('data-file', img_path);
+                    }
+                    modalImg.onerror = () => modalImg.src = "/images/pro_detail_img.png";
+                }
+
+                // 제목과 내용 설정
+                const titleElement = modal.querySelector(".form_request h2");
+                const contentElement = modal.querySelector(".form_request p");
+                if (titleElement) titleElement.textContent = title || '제목 없음';
+                if (contentElement) contentElement.textContent = content || '내용 없음';
+
+                // 등급 설정
+                const rankInput = modal.querySelector(".form_request .Auto_input");
+                if (rankInput) rankInput.value = letterRank;
+
+                // 재사용 비품 정보 설정
+                if (share === 0) {
+                    const inputs = modal.querySelectorAll(".fix_flexbetween .Auto_input");
+                    if (inputs.length >= 4) {
+                        inputs[0].value = item_name || "데이터가 없음";
+                        inputs[1].value = price ? price.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "데이터가 없음";
+                        inputs[2].value = date ? `${date.substring(0, 4)}년 ${date.substring(5, 7)}월 ${date.substring(8, 10)}일` : "데이터가 없음";
+                        inputs[3].value = item_no || "데이터가 없음";
+                    }
+                }
+
+                // 모달 표시 (important 플래그 추가)
+                console.log('Showing modal for share value:', share);
+                modal.style.cssText = 'display: flex !important';
+                
+                // 모달이 실제로 표시되었는지 확인
+                console.log('Modal display style:', modal.style.display);
+                console.log('Modal visibility:', window.getComputedStyle(modal).display);
+
+                // z-index 설정 추가
+                modal.style.zIndex = '9999';
+
+            } catch (error) {
+                console.error('Error setting up modal:', error);
+            }
+
+            // 닫기 버튼 이벤트 설정
+            const closeBtn = modal.querySelector(share === 1 ? "#modalCloseBtn02" : "#modalCloseBtn03");
+            const cancelBtn = modal.querySelector(share === 1 ? "#modalCancelBtn02" : "#modalCancelBtn03");
+            
+            const closeModal = () => {
+                modal.style.cssText = 'display: none !important';
+            };
+
+            if (closeBtn) closeBtn.onclick = closeModal;
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+
+            // 모달 외부 클릭 시 닫기
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            };
+        } 
+
+        // 페이지 로드 시 모달 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            const shareModal = document.getElementById('shareitemDetail_modal');
+            const reuseModal = document.getElementById('reuseitemDetail_modal');
+            
+            if (shareModal) shareModal.style.cssText = 'display: none !important';
+            if (reuseModal) reuseModal.style.cssText = 'display: none !important';
+        });
+
+        // 탭 전환 함수 추가
+        function changeTab(category) {
+            // 모든 탭의 active 클래스 제거
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 선택된 탭에 active 클래스 추가
+            document.getElementById(category + 'Tab').classList.add('active');
+            
+            // 모든 탭 콘텐츠 숨기기
+            document.querySelectorAll('.tab_item').forEach(item => {
+                item.style.display = 'none';
+            });
+            
+            // 선택된 탭의 콘텐츠만 표시
+            document.querySelector(`.tab_item[data-category="${category}"]`).style.display = 'block';
+        }
+
+        // 초기 탭 설정
+        document.addEventListener('DOMContentLoaded', () => {
+            changeTab('all');
+        });
+
+        // 검색탭 가능
+
+        function performSearch() {
+            const searchType = document.getElementById('searchType').value;
+            const searchKeyword = document.getElementById('searchKeyword').value;
+            
+            if (searchType === '0') {
+                alert('검색 유형을 선택해주세요.');
+                return;
+            }
+            
+            if (!searchKeyword.trim()) {
+                alert('검색어를 입력해주세요.');
+                return;
+            }
+            
+            // 현재 URL의 기본 경로 가져오기
+            const baseUrl = window.location.pathname;
+            
+            // 새로운 URL 생성
+            const searchParams = new URLSearchParams();
+            searchParams.set('searchType', searchType);
+            searchParams.set('searchKeyword', searchKeyword);
+            
+            // 페이지 이동
+            window.location.href = `${baseUrl}?${searchParams.toString()}`;
+        }
+        
+        // Enter 키 이벤트 추가
+        document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function handleRequestClick() {
+            if (currentReusableNo) {
+                requestReusable(currentReusableNo, user_email, userid);
+                closeModal02(); // Close the modal after request
+            } else {
+                console.error('No reusable number found');
+            }
+        }
+
+        function requestReusable(resu_no, email, userid) {
+            var requestCheck = confirm('신청하시겠습니까?');
+
+            if (requestCheck) {
+                let obj = {
+                    resu_no: resu_no,
+                    email: email,
+                    userno: userid
+                };
+
+                $.ajax({
+                    url: '/requestReusable_List2',
+                    type: "post",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function(result) {
+                        if (result) {
+                            alert(result.result || '신청이 완료되었습니다!');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('신청 처리 중 오류가 발생했습니다.');
+                    },
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                alert('신청이 취소되었습니다.');
+            }
+        }
+
+        // 등록중 모달 
+        function reuseItemProgressModal(reusNo, userEmail, userPhone, share, title, type, content, place, item_name, item_no, model, kind, build, room, date, price, img_path, img_bin, item_rank) {
+            // Convert numeric rank to letter grade
+            let letterRank;
+            switch (parseInt(item_rank)) {
+                case 1: letterRank = 'A'; break;
+                case 2: letterRank = 'B'; break;
+                case 3: letterRank = 'C'; break;
+                case 4: letterRank = 'D'; break;
+                default: letterRank = '-';
+            }
+        
+            // Get progress modal
+            const progressModal = document.getElementById('reuseitemProgress_modal');
+            
+            try {
+                // Set reusableNo in hidden input
+                const reusableNoInput = progressModal.querySelector('input[name="reusableNo"]');
+                if (reusableNoInput) {
+                    reusableNoInput.value = reusNo;
+                }
+        
+                // Set image
+                const modalImg = progressModal.querySelector(".pic_wrap.pic_right img");
+                if (modalImg) {
+                    modalImg.src = img_bin && img_bin !== "null" ? img_bin : "/images/default-image.png";
+                    if (img_path && img_path !== "null") {
+                        modalImg.setAttribute('data-file', img_path);
+                    }
+                    modalImg.onerror = () => modalImg.src = "/images/default-image.png";
+                }
+        
+                // Set title and content in input fields
+                const titleInput = progressModal.querySelector(".form_request .Direct_input[placeholder*='제목']");
+                const contentInput = progressModal.querySelector(".form_request .Direct_input[placeholder*='내용']");
+                if (titleInput) titleInput.value = title || '';
+                if (contentInput) contentInput.value = content || '';
+        
+                // Set rank
+                const rankInput = progressModal.querySelector(".form_request .Auto_input");
+                if (rankInput) rankInput.value = letterRank;
+        
+                // Set fixture information
+                const inputs = progressModal.querySelectorAll(".form_request .Auto_input");
+                if (inputs.length >= 4) {
+                    inputs[1].value = item_name || "데이터가 없음";
+                    inputs[2].value = price ? price.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "데이터가 없음";
+                    inputs[3].value = date ? `${date.substring(0, 4)}년 ${date.substring(5, 7)}월 ${date.substring(8, 10)}일` : "데이터가 없음";
+                    inputs[4].value = item_no || "데이터가 없음";
+                }
+        
+                // Show modal
+                progressModal.style.cssText = 'display: flex !important';
+                progressModal.style.zIndex = '9999';
+        
+            } catch (error) {
+                console.error('Error setting up progress modal:', error);
+            }
+        
+            // Close button events
+            const closeBtn = progressModal.querySelector("#modalCloseBtn04");
+            const cancelBtn = progressModal.querySelector("#modalCancelBtn04");
+            
+            const closeModal = () => {
+                progressModal.style.cssText = 'display: none !important';
+            };
+        
+            if (closeBtn) closeBtn.onclick = closeModal;
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+        
+            // Close on outside click
+            window.onclick = (event) => {
+                if (event.target === progressModal) {
+                    closeModal();
+                }
+            };
+        }
+
+        // form 제출 이벤트 핸들러 수정
+        const form = document.getElementById('updateProgressForm');
+        form.onsubmit = async function(e) {
+            e.preventDefault();
+            
+            try {
+                // 폼 데이터 수집
+                const reusableNo = document.getElementById('reusableNo').value;
+                const title = document.getElementById('title').value;
+                const content = document.getElementById('content').value;
+                
+                // 데이터 유효성 검사
+                if (!reusableNo || !title || !content) {
+                    alert('모든 필수 필드를 입력해주세요.');
+                    return;
+                }
+
+                // 이미지 처리
+                const fileInput = document.getElementById('file');
+                let reusableImg = null;
+                let reusableImgBin = null;
+
+                if (fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    
+                    // 파일 크기 체크 (5MB 제한)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('파일 크기는 5MB를 초과할 수 없습니다.');
+                        return;
+                    }
+
+                    reusableImg = file.name;
+                    reusableImgBin = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                // 요청 데이터 구성
+                const requestData = {
+                    reusableNo,
+                    title,
+                    content,
+                    reusableImg,
+                    reusableImgBin
+                };
+
+                console.log('Sending data:', { ...requestData, reusableImgBin: reusableImgBin ? 'BASE64_STRING' : null });
+
+                // API 요청
+                const response = await fetch('/reusable/update-progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                // 응답 처리
+                const responseData = await response.json();
+                console.log('Server response:', responseData);
+
+                if (!response.ok) {
+                    throw new Error(responseData.message || '서버 오류가 발생했습니다.');
+                }
+
+                if (responseData.success) {
+                    alert('수정이 완료되었습니다.');
+                    window.location.reload();
+                } else {
+                    throw new Error(responseData.message || '알 수 없는 오류가 발생했습니다.');
+                }
+
+            } catch (error) {
+                console.error('Error details:', error);
+                alert(`수정 중 오류가 발생했습니다: ${error.message}`);
+            }
+        };
+
+        // 이미지 미리보기 함수 수정
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const preview = document.querySelector('#reuseitemProgress_modal #preview_image');
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // URL에서 autoOpen 파라미터 확인하여 모달 자동 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoOpenItemId = urlParams.get('autoOpen');
+            
+            if (autoOpenItemId) {
+                // 해당 아이템 찾기
+                const items = <%- JSON.stringify(rinfos) %>;
+                const item = items.find(item => item.nReusableNo == autoOpenItemId);
+                
+                if (item) {
+                    // 아이템 찾으면 모달 열기
+                    openDetailModal(
+                        0, // index
+                        item.nReusableNo,
+                        item.sReusableEmail,
+                        item.sReusableMobile,
+                        item.nReusableShare,
+                        item.sReusableName,
+                        item.sReusableType,
+                        item.sReusableContent,
+                        item.sReusablePlace,
+                        item.sFixtureName,
+                        item.sFixtureNo,
+                        item.sFixtureModel,
+                        item.sFixtureType,
+                        item.sFixtureBuildName,
+                        item.sFixtureRoomNo,
+                        item.dFixtureDate,
+                        item.sFixturePrice,
+                        item.sImgPath,
+                        item.sImgBin,
+                        item.nReusableRank
+                    );
+                }
+            }
+        });
+
+    </script>
+</html>
