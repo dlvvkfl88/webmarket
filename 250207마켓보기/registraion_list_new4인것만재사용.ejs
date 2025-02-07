@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+        <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+        <meta name="author" content="고려대학교" /> 
+
+        <!-- 상태바 색상-->
+        <meta name="theme-color" content="#0A8467"/>
+        <meta name="msapplication-navbutton-color" content="#0A8467" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+        <!-- 홈화면추가시 주소창 제거 -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" /> 
+        
+        <title>자산관리시스템</title>
+        
+        <link rel="stylesheet" href="/css/total.css">
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/sub.js"></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- skip 네비게이션 영역 -->
+            <nav id="skipToContent">
+                <ul>
+                    <li><a href="#container">본문 바로가기</a></li>
+                    <li><a href="#gnb">주메뉴 바로가기</a></li>
+                    <li><a href="#header">상위메뉴 바로가기</a></li>
+                    <li><a href="#footers">하위메뉴 바로가기</a></li>
+                </ul> 
+            </nav>
+            <!-- skip 네비게이션 영역 -->
+
+            <!-- 물품 / 비품 등록 버튼 -->
+            <div id="plus_btn">
+                <a href="#none"></a>
+            </div>
+            <!-- 물품 / 비품 등록 버튼 -->
+
+            <!-- 물품 / 비품 등록 모달 -->
+            <div id="registration_modal" class="modal_container hidden">
+                <%-/*물품 / 비품 등록*/ include ("./templates/registration_modal") %>
+            </div>
+            <!-- 물품 / 비품 등록 모달 -->
+
+            <!-- header -->
+            <header id="header">
+                <%-/*header 불러오기*/ include ("./templates/headers") %>
+            </header>
+            <!-- header -->
+
+            <!-- section -->
+            <section id="sub_section" class="center">
+                <!-- 좌측 서브 메뉴 (aside) -->
+                <aside class="aside">
+                    <div class="side_tit fix_flexcenter">
+                        <p>등록 물품 관리</p>
+                    </div>
+                    <div class="side_menu">
+                        <div class="menu_info">
+                            <p>재사용 마켓에서 내가 등록한 물품을 조회합니다.</p>
+                        </div>
+                        <ul class="menu_item">
+                            <li>
+                                <a href="reusable_market_new">마켓 보기</a>
+                            </li>
+                            <li>
+                                <a href="registration_list_new" class="active">등록 물품 관리</a>
+                            </li>
+                            <li>
+                                <!--<a href="applications_list_new">신청 물품 관리</a>-->
+                                <a href="applications_list_new">신청 물품 관리</a>
+                            </li>
+                            <li>
+                                <a href="return_application_list_new">반납 신청 목록</a>
+                            </li>
+                            <li>
+                                <a href="approval_box_new">반납 신청서 관리</a>
+                            </li>
+                            <li>
+                                <a href="transactions_list_new">양도 완료된 물품 목록</a>
+                            </li>
+                        </ul>
+                    </div> 
+                </aside>
+                <!-- 좌측 서브 메뉴 (aside) -->
+
+                <!-- 우축 서브 콘텐츠 -->
+                <div class="container">
+                    <!-- 모바일 location -->
+                    <div class="m_location">
+                        <ul class="fix_flexbetween">
+                            <li class="ml_home">
+                                <a href="home">
+                                    <span class="blind">홈버튼</span>
+                                    <div class="ml_home_icon"></div>
+                                </a>
+                            </li>
+                            <li id="ml_top">
+                                <a href="#none" class="fix_flexbetween">
+                                    재사용 마켓
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list1">
+                                    <li><a href="intro_greeting">소개 </a>
+                                    <li><a href="equipment_inquiry">비품 조회</a></li>
+                                    <li><a href="equipment_idiligence">비품 실사</a></li>
+                                    <li><a href="reusable_market_new">재사용 마켓</a></li>
+                                    <li><a href="#none">공간 정보</a></li>
+                                </ol>
+                            </li>
+                            <li id="ml_current">
+                                <a href="#none" class="fix_flexbetween">
+                                    등록 물품 관리
+                                    <div class="ml_arrow"></div>
+                                </a>
+                                <ol id="ml_list2">
+                                    <li><a href="reusable_market_new">마켓 보기 </a>
+                                    <li><a href="registration_list_new">등록 물품 관리</a></li>
+                                    <li><a href="applications_list_new">신청 물품 관리</a></li>
+                                    <li><a href="return_application_list_new">반납 신청 목록</a></li>
+                                    <li><a href="approval_box_new">반납 신청서 관리</a></li>
+                                    <li><a href="transactions_list_new">양도 완료된 물품 목록</a></li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 모바일 location -->
+                     
+                    <!-- location -->
+                    <ul class="location">
+                        <li>
+                            <a href="home">
+                                <span class="blind">홈버튼</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="reusable_market_new">재사용 마켓</a>
+                        </li>
+                        <li>
+                            <a href="registration_list_new">등록 물품 관리</a>
+                        </li>
+                    </ul>
+                    <!-- location -->
+
+                    <!-- grid -->
+                    <div id="grid_wrap" class="grid">
+                        <!-- grid title -->
+                        <div class="grid-container_registrationList grid_item_bg">
+                            <span class="grid_item">No</span>
+                            <span class="grid_item">물품 이미지</span>
+                            <span class="grid_item">물품번호</span>
+                            <span class="grid_item">수령위치</span>
+                            <span class="grid_item">물품등급</span>
+                            <span class="grid_item">조회</span>
+                            <span class="grid_item">상태</span>
+                            <span class="grid_item">취소 / 완료</span>
+                        </div>
+                        <!-- grid title -->
+                        <%
+                        for (var i = 0; i < rinfos.length; i++) {
+                            // nReusableShare가 0일 경우, nApprovalState가 4가 아닌 제품은 생략합니다.
+                            if (rinfos[i].nReusableShare === 0 && rinfos[i].nApprovalState !== 4) {
+                                continue;
+                            }
+                            
+                            var str_rank = "";
+                            if (rinfos[i].nReusableRank == 1) {
+                                str_rank = "A";
+                            } else if (rinfos[i].nReusableRank == 2) {
+                                str_rank = "B";
+                            } else if (rinfos[i].nReusableRank == 3) {
+                                str_rank = "C";
+                            } else if (rinfos[i].nReusableRank == 4) {
+                                str_rank = "D";
+                            }
+                        %>
+                            <!-- grid inner -->
+                            <div class="grid-container_registrationList grid_item2_bg">
+                                <span class="grid-item2"><%=(page_data.count * 10 + i + 1)%></span>
+                                <span class="grid_item2">
+                                    <button class="detail_modal" onclick="showDetailModal(<%=rinfos[i].nReusableShare%>, <%=rinfos[i].nReusableNo%>)">
+                                        <img data-file="<%=rinfos[i].sImgPath%>" src="<%=rinfos[i].sImgBin%>" alt="제품 이미지" /> 
+                                    </button>
+                                </span>
+                                <span class="grid-item2"><%=rinfos[i].sFixtureNo%></span>
+                                <span class="grid-item2"><%=rinfos[i].sReusablePlace%></span>
+                                <span class="grid-item2"><%=str_rank%></span>
+                                <span class="grid_item2">
+                                    <button class="green_border_btn" onclick="applicant_checkPopup(<%=rinfos[i].nReusableNo%>)">신청자 확인</button>
+                                </span>
+                                <span class="grid_item2 <%= 
+                                    rinfos[i].nReusableState === 3 ? 'transaction_completed' :
+                                    rinfos[i].nReusableState === 2 ? 'waiting_receive' : 
+                                    rinfos[i].hasApplicants ? 'applicant_present' : 'registering' 
+                                %>">
+                                    <%= 
+                                    rinfos[i].nReusableState === 3 ? '수령 완료' :
+                                    rinfos[i].nReusableState === 2 ? '수령 대기' : 
+                                    rinfos[i].hasApplicants ? '신청자 있음' : '등록중' 
+                                    %>
+                                </span>
+                                <span class="grid_item2">
+                                    <span class="grid_item2"><button type="button" class="gray_btn" onclick="cancelReusable(<%=rinfos[i].nReusableNo%>)"><i class="icofont icofont-pencil-alt-2"></i>취소</button></span>
+                                    <% if (rinfos[i].nReusableState === 2) { %>
+                                        <button class="green_btn02" onclick="completeReusableReceipt(<%=rinfos[i].nReusableNo%>)">완료</button>
+                                    <% } else { %>
+                                        <button class="gray_btn02" disabled>완료</button>
+                                    <% } %>
+                                </span>
+                            </div>
+                        <% } %>
+ 
+                    </div>
+                    <!-- grid -->
+
+                    <!-- pagination -->
+                    <div id="report_page" class="pagination">
+                        <ul>
+                            <% if (page_data.currentPage > 1) { %>
+                                <li>
+                                    <a href="?page=1" class="first">
+                                        <img src="/images/page_prev.svg" alt="처음 페이지 이동 화살표">
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <% 
+                            const startPage = Math.max(1, page_data.currentPage - 4);
+                            const endPage = Math.min(page_data.totalPages, startPage + 9);
+                            
+                            for (let i = startPage; i <= endPage; i++) { %>
+                                <li>
+                                    <a href="?page=<%= i %>" class="num <%= i === page_data.currentPage ? 'active' : '' %>"><%= i %></a>
+                                </li>
+                            <% } %>
+
+                            <% if (page_data.currentPage < page_data.totalPages) { %>
+                                <li>
+                                    <a href="?page=<%= page_data.totalPages %>" class="last">
+                                        <img src="/images/page_next.svg" alt="마지막 페이지 이동 화살표">
+                                    </a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <!-- pagination -->
+
+                </div>
+                <!-- 우축 서브 콘텐츠 -->
+                
+                <!-- 물품 정보 상세 보기 모달 -->
+                <div id="registereditemDetail_modal" class="modal_container hidden">
+                    <%-/*물품 정보 상세 보기 모달*/ include ("./templates/registereditemDetail_modal") %>
+                </div>
+
+            </section>
+            <!-- section -->
+        </div>
+        
+        <!-- footer -->
+        <footer id="footer">
+            <%-/*footer 불러오기*/ include ("./templates/footers") %>
+        </footer>
+        <!-- footer -->
+
+        <!-- 모바일 하단 메뉴 -->
+        <div class="m_bottom">
+            <ul class="fix_flexcenter">
+                <li class="m_home">
+                    <a href="home"></a>
+                </li>
+                <li class="m_inquiry">
+                    <a href="equipment_inquiry"></a>
+                </li>
+                <li class="m_plus">
+                    <a href="reusable_market_new?category=register">
+                        <div></div>
+                    </a>
+                </li>
+                <li class="m_search">
+                    <a href="equipment_idiligence"></a>
+                </li>
+                <li class="m_reuse m_active">
+                    <a href="reusable_market_new"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 모바일 하단 메뉴 -->
+    </body>
+    <script>
+
+        //플러스 버튼 모달
+        const plusBtn = document.querySelector('#plus_btn a');
+        const registrationModal = document.getElementById('registration_modal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+        // 각 닫기 버튼에 이벤트 추가
+        modalCloseBtn?.addEventListener('click', closeModal);
+        modalCancelBtn?.addEventListener('click', closeModal);
+
+        // 플러스 버튼 클릭 시 모달 열기
+        plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            registrationModal.style.display = 'flex';
+        });
+
+        // 모달 외부 영역 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            if (e.target === registrationModal) {
+                closeModal();
+            }
+        });
+        
+        // 모달 닫기 함수
+        function closeModal() {
+            registrationModal.style.display = 'none';
+        }
+
+
+        // 모달 열기 함수
+        function showDetailModal(shareType, reusableNo) {
+            const modal = document.getElementById('registereditemDetail_modal');
+            
+            fetch('/getReusableDetail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ reusableNo: reusableNo })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 숫자 등급을 문자 등급으로 변환
+                let rankLetter;
+                switch(data.rank) {
+                    case 1: rankLetter = 'A'; break;
+                    case 2: rankLetter = 'B'; break;
+                    case 3: rankLetter = 'C'; break;
+                    case 4: rankLetter = 'D'; break;
+                    default: rankLetter = '-';
+                }
+
+                // 공통 필드 설정
+                document.getElementById('modal-image').src = data.imgSrc;
+                document.getElementById('modal-name').textContent = data.name;
+                document.getElementById('modal-content').textContent = data.content;
+                document.getElementById('modal-rank').value = rankLetter;
+
+                // 나눔/재사용에 따른 설정 구분
+                if (shareType === 1) {
+                    document.querySelector('.modal-title').textContent = '물품 정보 (나눔 물품)';
+                    document.getElementById('share-badge').style.display = 'flex';
+                    document.getElementById('fixture-info').style.display = 'none';
+                } else {
+                    document.querySelector('.modal-title').textContent = '물품 정보 (재사용 비품)';
+                    document.getElementById('share-badge').style.display = 'none';
+                    document.getElementById('fixture-info').style.display = 'block';
+
+                    // 비품 정보 설정
+                    const formattedPrice = Number(data.fixturePrice).toLocaleString('ko-KR') + "원";
+                    document.getElementById('modal-fixture-name').value = data.fixtureName;
+                    document.getElementById('modal-fixture-price').value = formattedPrice;
+                    document.getElementById('modal-fixture-date').value = data.fixtureDate.substring(0, 10);
+                    document.getElementById('modal-fixture-no').value = data.fixtureNo;
+                }
+
+                // 모달 표시
+                modal.classList.remove('hidden');
+            });
+        }
+
+        // 모달 닫기 함수
+        function registereditemDetailModal_close() {
+            document.getElementById('registereditemDetail_modal').classList.add('hidden');
+        }
+
+        //open popup
+        function applicant_checkPopup(resuNo) {
+            const popupOptions = 'width=1200,height=750,scrollbars=yes,resizable=yes';
+            window.open('applicant_checkPopup?resuNo='+ resuNo, 'applicantPopup', popupOptions);
+        }
+        // 등록물품관리 - > 취소 삭제 동작
+        function cancelReusable(resu_no) { 
+            // 확인 경고창 표시
+            let confirmCancel = confirm('등록을 취소하시겠습니까?');
+            
+            // '취소'를 선택한 경우 함수 종료
+            if (!confirmCancel) return;
+
+            let obj = new Object();
+            obj['resu_no'] = resu_no;
+
+            $.ajax({
+                url: '/cancelReusable',
+                type: "post",
+                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function(result) {
+                    if (result) {
+                        alert(result.result);
+                    }
+                }
+            })
+            .always(() => {
+                window.location.reload();
+            });
+        }
+
+        function completeReusableReceipt(resu_no) {
+            var requestCheck = confirm('신청자에게 물품을 전달하셨습니까?');
+
+            let obj = new Object();
+            obj['resu_no'] = resu_no;
+
+            if (requestCheck) {
+                $.ajax({
+                    url: '/completeReusableReceipt',
+                    type: "post",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function(result) {
+                        if (result) {
+                            // 해당 행의 상태 텍스트와 클래스를 업데이트
+                            const statusCell = $(`button[onclick="completeReusableReceipt(${resu_no})"]`)
+                                .closest('.grid-container_registrationList')
+                                .find('.grid_item2:nth-last-child(2)');
+                            
+                            // 기존 클래스 제거 및 새 클래스 추가
+                            statusCell.removeClass('waiting_receive applicant_present registering')
+                                .addClass('transaction_completed')
+                                .text('수령 완료');
+
+                            // 완료 버튼 비활성화
+                            const completeButton = $(`button[onclick="completeReusableReceipt(${resu_no})"]`);
+                            completeButton.prop('disabled', true)
+                                .removeClass('green_btn02')
+                                .addClass('gray_btn02');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        }
+
+    </script>
+</html>
