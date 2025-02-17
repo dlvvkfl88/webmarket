@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+    <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+    <meta name="author" content="고려대학교" />   
+    <!-- 상태바 색상-->
+    <meta name="theme-color" content="#0A8467"/>
+    <meta name="msapplication-navbutton-color" content="#0A8467" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+    <!-- 홈화면추가시 상단 주소창 제거 -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+
+    <title>탄소중립 자산관리 시스템</title>
+    <link rel="icon" href="./images/favicon32.png">
+    <link rel="icon" href="./images/favicon196.png">
+    <link rel="shortcut icon" href="./images/favicon114.ico">
+    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png" >
+
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/assets.css">
+
+    
+    <!-- <link rel="stylesheet" href="./css/style.css"> -->
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="./css/swiper-bundle.min.css"/>
+    <script src="./js/jquery-3.6.3.min.js"></script>
+    <script src="./js/assetsj.js"></script>
+
+    <script>
+        var pageUrl ='';
+        
+        $(document).ready(function(){ 
+            onLoad();
+        })
+
+        function onLoad(){
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+
+            const modex = urlParams.get("modex");
+
+            if(modex == 1)
+            {
+                $("#mainContent").load("/personal");
+                 document.getElementById("nowLocation").innerHTML = "개인물품";
+            }
+            else if (modex == 2) {
+                $("#mainContent").load("/public");
+                 document.getElementById("nowLocation").innerHTML = "공용물품";
+            }
+            else if (modex == 3) {
+                $("#mainContent").load("/organization");
+                 document.getElementById("nowLocation").innerHTML = "부서별";
+            }
+            else if (modex == 4) {
+                $("#mainContent").load("/space");
+                 document.getElementById("nowLocation").innerHTML = "공간별";
+            }
+            else if (modex == 5) {
+                $("#mainContent").load("/classroom");
+                 document.getElementById("nowLocation").innerHTML = "강의실별";
+            }
+            // 강의실고장점검현황 페이지 잠시 안보이도록
+            // else if (modex == 6) {
+            //     $("#mainContent").load("/status");
+            //      document.getElementById("nowLocation").innerHTML = "강의실고장점검현황";
+            // }
+            //강의실고장점검현황 페이지 잠시 안보이도록
+            else if (modex == 6) {
+                $("#mainContent").load("/none");
+                 document.getElementById("nowLocation").innerHTML = "강의실고장점검현황";
+            }
+            else if (modex == 7) {
+                $("#mainContent").load("/takeover");
+                 document.getElementById("nowLocation").innerHTML = "인수인계";
+            }
+            else if (modex == 8) {
+                $("#mainContent").load("/personalCheck");
+                 document.getElementById("nowLocation").innerHTML = "연간물품실사";
+            }
+            else {
+                $("#mainContent").load("/personal");
+                 document.getElementById("nowLocation").innerHTML = "개인물품";
+            }
+            
+            //const room = urlParams.get("room");
+
+            //$("#mainContent").load("/classroom");
+        }
+    </script>
+</head>
+<body>
+    <!-- skip 접근성 메뉴 -->
+    <iframe src="http://cafm.korea.ac.kr/archibus/archi_cookie.jsp" hidden></iframe>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <div id="skip">
+        <a href="#nav"><h3>내비게이션바로가기</h3></a>
+        <a href="#main"><h3>컨텐츠바로가기</h3></a>
+        <a href="#footer"><h3>하단바로가기</h3></a> 
+    </div>
+    <a name="top"></a>
+    <!--------------------------------------------------------
+        header
+    ---------------------------------------------------------->
+    <header id="header" class="fcenter">
+        <nav id="nav" class=" fcenter">
+            <ul class="mnav fcenter">
+                <li><a href="#" class="gnbIcon"><img src="./images/menu_icon.svg" alt="메뉴아이콘"></a></li>
+                <li class="mlogo">
+                    <a href="home"><img src="./images/logo.svg" alt="고려대학교 로고"></a>
+                </li>
+                <li class="m_snb">
+                    <div>
+                        <select id="m_authorityDropdown" onchange="m_chageAuthoritySelect()">
+                            <option value="<%=userid%>" <%=(userid==sel_authority?' selected':'')%>>본 계정</option>
+                            <%
+                            for(var idx = 0; idx < authority_list.length; idx++)
+                            {
+                            %>
+                            <option value="<%=authority_list[idx].sStdId%>" <%=(authority_list[idx].sStdId==sel_authority?' selected':'')%>><%=authority_list[idx].sName%></option>
+                            <%
+                            }
+                            %>
+                        </select>
+                    </div>
+                    <%
+                    if(stdtype == 1)
+                    {
+                    %>
+                    <div class="snb_icon01">
+                        <a href="authorityDelegation_list">
+                            <img src="./images/snb_icon01.svg" alt="권한위임아이콘">
+                        </a>
+                    </div>
+                    <%
+                    }
+                    %>
+                    <div class="snb_icon02">
+                        <a href="#none">
+                            <img src="./images/snb_icon02.svg" alt="로그인아이콘">
+                            <!-- <p id="bookerName"><%=idx%></p> -->
+                        </a>
+                    </div>
+                </li>
+            </ul><!--//mnav-->
+            <ul class="wnav fcenter">
+                <li class="wlogo"><a href="home" class="gnbIcon"><img src="./images/logo.svg" alt="고려대학교로고"></a></li>
+                <li class="gnbbox">
+                    <ul class="gnb fcenter">
+                        <li class="gnb01"><img src="./images/co2_icon.svg" alt="탄소중립아이콘"><a href="#" class="gnb001">탄소중립관리시스템</a></li>
+                        <li class="gnb02"><img src="./images/assets_icon.svg" alt="자산관리아이콘"><a href="#" class="gnb002">자산관리시스템</a></li>
+                    </ul>
+                    <ul class="user_login fend">
+                        <li>
+                            <select id="authorityDropdown" onchange="chageAuthoritySelect()">
+                                <option value="<%=userid%>" <%=(userid==sel_authority?' selected':'')%>>본 계정</option>
+                                <%
+                                for(var indrx = 0; indrx < authority_list.length; indrx++)
+                                {
+                                %>
+                                <option value="<%=authority_list[indrx].sStdId%>" <%=(authority_list[indrx].sStdId==sel_authority?' selected':'')%>><%=authority_list[indrx].sName%></option>
+                                <%
+                                }
+                                %>
+                            </select>
+                        </li>
+                        <%
+                        if(stdtype == 1)
+                        {
+                        %>
+                        <li class="snb_icon01">
+                            <a href="authorityDelegation_list">
+                                <img src="./images/snb_icon01.svg" alt="권한위임아이콘">
+                                <p>권한 위임</p>
+                            </a>
+                        </li>
+                        <%
+                        }
+                        %>
+                        <li class="snb_icon02">
+                            <a href="#none">
+                                <img src="./images/snb_icon02.svg" alt="로그인아이콘">
+                                <p id="bookerName"><%=uname%></p>
+                            </a>
+                        </li>
+                        <li class="snb_icon03">
+                            <button onclick="logOut()" class="btn_none">
+                                <img src="./images/snb_icon03.svg" alt="로그아웃아이콘"><p>LOGOUT</p>
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+            </ul><!--//wnav-->
+        </nav><!--//#nav-->
+        <!------------ 웹 GNB ------------------>
+        <div class="wLnb fcenter">
+            <%-/*헤더 네비게이션*/ include ("./templates/nav") %>
+        </div><!--//wLnb--> 
+        <!------------ //웹 GNB ------------------>
+        <script type="text/javascript">
+
+        function logOut()
+        {
+            
+
+            $.ajax({
+                url: '/logout',
+                type: "post",
+                success: function(res){
+                    window.location.href = "login";
+                }
+            });
+        }
+
+        </script>
+    </header><!--//#header-->
+    <!------------ 모바일 GNB ---------------->
+    <div id="mGnb">
+        <div class="mUser">
+            <ul>
+                <li><img src="./images/user_icon_m.svg" alt="유저아이콘"></li>
+                <li><p class="user"><%=idx%></p><p class="user_id"><%=userid%></p></li>
+                <li class="closebtn"> <a href="#"><img src="./images/closebtn.svg" alt="닫기버튼"></a></li>
+            </ul>
+        </div> <!--//mUser-->  
+        <%-/*헤더 네비게이션 모바일*/ include ("./templates/nav_m") %> <!--//mGnb-->
+        <div class="mLogout">
+            <ul>
+                <li><button style="font-weight: 600; font-size: 0.9rem; line-height: 2.5; color: #606060; border-width: 0px;" onclick="mLogOut()">로그아웃</button></li>
+                <li>ⓒ 2023 Korea University.</li>
+            </ul>
+        </div> <!--//mLogout-->
+        <script type="text/javascript">
+            function mLogOut()
+            {
+                console.log("mLogOut");
+
+                $.ajax({
+                    url: '/logout',
+                    type: "post",
+                    success: function(res){
+                        //console.log(res);
+                        window.location.href = "login";
+                    }
+                });
+            }
+        </script>
+    </div><!--//#mGnb-->
+    <ul>
+        <li><a class="top" href="#top" title="top"><img src="./images/top.svg" alt="위로버튼"> </a></li>
+        <li><a class="bottom" href="#bottom" title="bottom"><img src="./images/bottom.svg" alt="아래로버튼"> </a></li>
+    </ul>    
+    <div id="mGnb_bg"></div>
+    <!------------ //모바일 GNB ----------------> 
+
+    <!--------------------------------------------------------
+        carousel
+    ---------------------------------------------------------->
+    <!-- <section id="subImg" class="fcenter">
+        <div class="subtxtWrap">
+            <div class="subtxtBox">
+                <ul class="subtxt">
+                    <li>자산 관리 시스템<span>l</span>비품</li>
+                </ul>
+            </div>
+        </div>
+        <//!-- Swiper --//>
+        <div class="swiper mySwiper swiper-initialized swiper-horizontal swiper-backface-hidden">
+            <div class="swiper-wrapper" id="swiper-wrapper-8adfef949af9acb10" aria-live="off">
+                <div class="swiper-slide swiper-slide-active" role="group" aria-label="1 / 1" style="width: 1199px; margin-right: 30px;"><img src="./images/sub_img_assets.png" alt=""></div>
+            </div>
+        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span></div>
+    </section> -->
+    <!-- //carousel -->
+
+    <!--------------------------------------------------------
+        main
+    ---------------------------------------------------------->
+    <main id="sub" class="fcenter">
+        <input type="hidden" id="modex" value="<%=modex%>" />
+        <div class="locationBox">
+            <div class="title_txt">
+                <p>비품 조회</p>
+            </div>
+            <ul class="location">
+                <li><a href="home"><img src="./images/icon_home.svg" alt="Home"></a><span class="this1">자산관리시스템 > <span class="this1">비품 관리 > <span class="this1">비품 조회 > </span><span id="nowLocation" class="this2">강의실별</span></li>
+            </ul><!--//location--> 
+        </div>
+        <!-- <div class="locationBox">
+            <ul class="location">
+                <li><img src="./images/icon_home.svg" alt="Home"><a href="#" class="this1"> 자산관리시스템</a><span class="this1">비품 > </span><span id="nowLocation" class="this2">강의실별</span></li>
+            </ul><//!--//location--//> 
+        </div> -->
+
+        <div class="assetsGnbBox">
+            <div class="assetsGnb">
+                <ul>
+                    <%
+                    if(stdtype == 1)
+                    {
+                    %>
+                    <li><button onclick="goPersonal()"><img src="images/assets/assetsGnb_04.png" alt=""></button>
+                        <p>개인물품</p>
+                    </li>
+                    <li><button onclick="goPublic()"><img src="images/assets/assetsGnb_05.png" alt=""></button>
+                        <p>공용물품</p>
+                    </li>
+                    <li><button onclick="goOrganization()"><img src="images/assets/assetsGnb_02.png" alt=""></button>
+                        <p>부서별</p>
+                    </li>
+                    <li><button onclick="goSpace()"><img src="images/assets/assetsGnb_03.png" alt=""></button>
+                        <p>공간별</p>
+                        <!--<input type="button" value="갤러리/NFT ▶" onclick="location.href='#'">--> 
+                    </li>
+                    <li><button onclick="goClassroom()"><img src="images/assets/assetsGnb_01.png" alt=""></button>
+                        <p>강의실별</p>
+                        <!--<input type="button" value="갤러리/NFT ▶" onclick="location.href='#'">--> 
+                    </li>
+                    <!-- <li><button onclick="goStatus()"><img src="images/assets/assetsGnb_08.png" alt=""></button>
+                        <p>강의실고장점검현황</p>
+                    </li> -->
+                    <li><button onclick="goStatus()"><img src="images/assets/assetsGnb_08.png" alt=""></button>
+                        <p>강의실고장점검현황<br>(준비중)</p>
+                    </li>
+                    
+                    <li><button onclick="goTakeover()"><img src="images/assets/assetsGnb_07.png" alt=""></button>
+                        <p>인수인계</p>
+                        <!--<input type="button" value="NFT 화면 ▶" onclick="location.href='#'">--> 
+                    </li>
+                    <li><button onclick="goPersonalCheck()"><img src="images/assets/assetsGnb_06.png" alt=""></button>
+                        <p>연간물품실사</p>
+                        <!--<input type="button" value="NFT 화면 ▶" onclick="location.href='#'">--> 
+                    </li>
+                    <%
+                    }
+                    else
+                    {
+                    %>
+                    <li><button onclick="goPersonal()"><img src="images/assets/assetsGnb_04.png" alt=""></button>
+                        <p>개인물품</p>
+                    </li>
+                    <li><button onclick="goPersonalCheck()"><img src="images/assets/assetsGnb_06.png" alt=""></button>
+                        <p>연간물품실사</p>
+                        <!--<input type="button" value="NFT 화면 ▶" onclick="location.href='#'">--> 
+                    </li>
+                    <%
+                    }
+                    %>
+                </ul>
+            </div><!--//assetsGnb-->
+            
+            <div class="amenuBox">
+                <img src="images/assets/amenu.png" alt="" class="amenu">
+                <img src="images/assets/amenu_close.png" alt="" class="amenuClose">
+            </div>
+        </div><!--//assetsGnbBox-->
+        <section class="subContent">
+            <div id="mainContent"></div>
+        </section>
+        <script type="text/javascript">
+            $(".amenuClose").click(function(){
+                $(".assetsGnb, .amenuClose").hide(100);
+                // $(".amenu").show();
+                $(".amenu").addClass('amenuadd');
+            });
+            $(".amenu").click(function(){
+                $(".assetsGnb, .amenuClose").show(100)
+                $(".amenu").removeClass('amenuadd')
+            });
+
+            function goPersonal()
+            {
+                window.location.href = "/fixtures?modex=1";
+            }
+
+            function goPublic()
+            {
+                window.location.href = "/fixtures?modex=2";
+            }
+
+            function goOrganization()
+            {
+                window.location.href = "/fixtures?modex=3";
+            }
+
+            function goSpace()
+            {
+                window.location.href = "/fixtures?modex=4";
+            }
+
+            function goClassroom()
+            {
+                window.location.href = "/fixtures?modex=5";
+            }
+
+            function goStatus()
+            {
+                window.location.href = "/fixtures?modex=6";
+            }
+
+            function goTakeover()
+            {
+                window.location.href = "/fixtures?modex=7";
+            }
+
+            function goPersonalCheck()
+            {
+                window.location.href = "/fixtures?modex=8";
+            }
+
+            function m_chageAuthoritySelect() {
+                var sel_authority = document.getElementById ("m_authorityDropdown").value;
+
+                if(sel_authority == 0)
+                {
+                    return;
+                }
+
+                let obj = new Object();
+                obj['sel_authority'] = sel_authority;
+
+                $.ajax ({
+                    url: '/selectAuthority',
+                    type: 'POST',
+                    dataType: "json",
+                    contentType : 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function (result) {
+                        if (result) {
+                            window.location.href = "/home";
+                        }
+                    }
+                });
+            }
+
+            function chageAuthoritySelect() {
+                var sel_authority = document.getElementById ("authorityDropdown").value;
+
+                console.log("sel_authority",sel_authority);
+
+                if(sel_authority == 0)
+                {
+                    return;
+                }
+
+                let obj = new Object();
+                obj['sel_authority'] = sel_authority;
+
+                $.ajax ({
+                    url: '/selectAuthority',
+                    type: 'POST',
+                    dataType: "json",
+                    contentType : 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function (result) {
+                        if (result) {
+                            window.location.href = "/home";
+                        }
+                    }
+                });
+            }
+            
+        </script>
+    </main>
+
+    <!--------------------------------------------------------
+        footer 
+    ---------------------------------------------------------->
+    <footer id="bottom">
+        <div class="footerWrap fcenter">
+            <div class="footer">
+                <ul class="footerL">
+                    <li><img src="./images/footer_logo.svg" alt="고려대학교로고"></li>
+                    <li class="addr">
+                        <p>02841 서울특별시 성북구 안암로 145</p>
+                        <p class="tel">TEL.02.3290.1114</p>
+                        <p>webmaster@korea.ac.kr</p>
+                    </li>
+                </ul>
+                <ul class="footerR">
+                    <li>
+                        FAMILY SITE 
+                        <select onchange="if(this.value) window.open(this.value);">
+                            <option value="https://korea.ac.kr/mbshome/mbs/university/index.do"> 고려대학교</option>
+                            <option value="https://portal.korea.ac.kr/front/Intro.kpd"> 고려대학교 포털시스템</option>
+                            <option value="https://www.korea.ac.kr/mbshome/mbs/university/subview5.jsp?id=university_010501000000#1"> 고려대학교 캠퍼스 안내</option>
+                        </select>
+                    </li>
+                </ul>
+            </div><!--//#footer-->
+        </div><!--//footerWrap-->
+        <div class="copyright">
+            <ul>
+                <li>Copyrightⓒ 2023 Korea University All Rights Reserved.</li>
+            </ul>  
+        </div>
+    </footer><!-- //footer -->
+
+    <!--------------script ------------------>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <script src="./js/indexj.js"></script>
+</body>
+</html>
