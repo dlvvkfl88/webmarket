@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="keywords" content="고려대학교, 탄소중립, 자산관리, 탄소중립 자산관리" />
+    <meta name="description" content="ESG기반 스마트 캠퍼스 인프라 혁신사업 관련 스마트 자산관리"/>
+    <meta name="author" content="고려대학교" /> 
+
+    <!-- 상태바 색상-->
+    <meta name="theme-color" content="#0A8467"/>
+    <meta name="msapplication-navbutton-color" content="#0A8467" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0A8467" />
+
+    <!-- 홈화면추가시 주소창 제거 -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    
+    <title>자산관리시스템</title>
+    
+    <link rel="stylesheet" href="css/total.css">
+
+</head>
+<body class="login_body">
+    <!-- skip 접근성 메뉴 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <nav id="skipToContent">
+            <ul>
+                <li><a href="#container">본문 바로가기</a></li>
+                <li><a href="#gnb">주메뉴 바로가기</a></li>
+                <li><a href="#header">상위메뉴 바로가기</a></li>
+                <li><a href="#footers">하위메뉴 바로가기</a></li>
+            </ul> 
+        </nav>
+    <!--------------------------------------------------------
+        header
+    ---------------------------------------------------------->
+    <header id="login_header">
+        <div class="login_logo fix_flexcenter login_center">
+            <img src="images/login_logo.svg">
+        </div> 
+        <script type="text/javascript">
+
+            getLoginSession();
+
+            function getLoginSession()
+            {
+				console.log("getLoginSession start!!");
+				//alert("getLoginSession start!!2");
+                $.ajax({
+                url: '/getLoginSession',
+                type: "post",
+                success: function(res){
+
+                        if(res.code == 100){
+                            alert(res.msg);
+                        }
+                    }
+                });
+				console.log("getLoginSession end!!");
+            }
+        </script>
+
+    <!--------------------------------------------------------
+        main
+    ---------------------------------------------------------->
+        <div class="login_wrap login_center">
+            <div class="title">
+                <p>로그인</p>
+            </div>
+                <!----------------로그인 박스 삽입 위치임------------------------>
+            <div class="login_container"> 
+                <div class="form">
+                    <form id="loginForm" action="/login" method="post">
+                        <div class="form_inner">
+                            <div class="loginInput">
+                                <label for="chk">
+                                    <img src="./images/inputID.svg" alt="아이디아이콘">
+                                </label>
+                                <input name="userid" type="text" maxlength="30" placeholder="아이디" onfocus="this.placeholder = ''" onblur="this.placeholder ='아이디'">
+                            </div>
+                        </div>
+                        <div class="form_inner">
+                            <div class="loginInput">
+                                <label for="">
+                                    <img src="./images/inputPW.svg" alt="비밀번호 아이콘">
+                                </label>
+                                <input name="userpw" type="password" maxlength="30" placeholder="비밀번호" onfocus="this.placeholder = ''" onblur="this.placeholder = '비밀번호'">
+                            </div> 
+                        </div>
+                        <button type="button" class="login_btn" onclick="getLoginSession(); document.getElementById('loginForm').submit();">로그인</button>
+                    </form>
+                </div>
+                <!---------------//로그인 박스 삽입 위치------------------------->            
+                <div class="info_text">
+                    <p>탄소중립 자산관리 시스템은 고려대학교의 관계자만 로그인이 가능하며 고려대학교 포털 ID와 연동됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <p class="copyright fix_flexcenter">ⓒ 2023 Korea University.</p>
+
+    <!--------------------------------------------------------
+        footer 
+    ---------------------------------------------------------->
+</body>
+
+</html>
+
+
